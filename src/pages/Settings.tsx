@@ -242,112 +242,34 @@ const Settings = () => {
                   <Button>Save System Settings</Button>
                 </CardContent>
               </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Email Configuration</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label>SMTP Server</Label>
-                    <Input placeholder="smtp.wajir.go.ke" />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label>Port</Label>
-                      <Input type="number" defaultValue="587" />
-                    </div>
-                    <div>
-                      <Label>Encryption</Label>
-                      <Select defaultValue="tls">
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">None</SelectItem>
-                          <SelectItem value="tls">TLS</SelectItem>
-                          <SelectItem value="ssl">SSL</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <Button>Save Email Settings</Button>
-                </CardContent>
-              </Card>
             </div>
           </TabsContent>
         )}
 
         <TabsContent value="security">
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Change Password</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label>Current Password</Label>
-                  <Input type="password" />
-                </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Security Settings</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label>Current Password</Label>
+                <Input type="password" placeholder="Enter current password" />
+              </div>
 
-                <div>
-                  <Label>New Password</Label>
-                  <Input type="password" />
-                </div>
+              <div>
+                <Label>New Password</Label>
+                <Input type="password" placeholder="Enter new password" />
+              </div>
 
-                <div>
-                  <Label>Confirm New Password</Label>
-                  <Input type="password" />
-                </div>
+              <div>
+                <Label>Confirm New Password</Label>
+                <Input type="password" placeholder="Confirm new password" />
+              </div>
 
-                <Button>Change Password</Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Two-Factor Authentication</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label>Enable 2FA</Label>
-                    <p className="text-sm text-gray-600">Add an extra layer of security to your account</p>
-                  </div>
-                  <Switch />
-                </div>
-
-                <Button variant="outline">Configure 2FA</Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Active Sessions</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 border rounded">
-                    <div>
-                      <p className="font-medium">Current Session</p>
-                      <p className="text-sm text-gray-600">Chrome on Windows • 192.168.1.100</p>
-                    </div>
-                    <Badge variant="secondary">Active</Badge>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-3 border rounded">
-                    <div>
-                      <p className="font-medium">Mobile App</p>
-                      <p className="text-sm text-gray-600">Android • 192.168.1.105</p>
-                    </div>
-                    <Button variant="outline" size="sm">Revoke</Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              <Button>Change Password</Button>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

@@ -3,7 +3,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'requester' | 'approver' | 'technician' | 'admin';
+  role: 'admin' | 'approver' | 'technician' | 'requester';
   department?: string;
   skills?: string[];
   isActive: boolean;
@@ -17,19 +17,15 @@ export interface Ticket {
   description: string;
   category: 'hardware' | 'software' | 'network' | 'email' | 'phone' | 'other';
   priority: 'low' | 'medium' | 'high' | 'critical';
-  status: 'open' | 'pending' | 'in_progress' | 'resolved' | 'closed';
+  status: 'open' | 'in_progress' | 'resolved' | 'closed';
   requesterId: string;
   requesterName: string;
   assignedTechnicianId?: string;
   assignedTechnicianName?: string;
-  approverId?: string;
-  approverName?: string;
-  attachments?: string[];
   comments: Comment[];
   createdAt: string;
   updatedAt: string;
   resolvedAt?: string;
-  slaDeadline?: string;
 }
 
 export interface Comment {
@@ -63,20 +59,6 @@ export interface Notification {
   message: string;
   type: 'info' | 'success' | 'warning' | 'error';
   isRead: boolean;
-  ticketId?: string;
-  createdAt: string;
-}
-
-export interface AuditLog {
-  id: string;
-  userId: string;
-  userName: string;
-  action: string;
-  resource: string;
-  resourceId: string;
-  details: string;
-  ipAddress: string;
-  userAgent: string;
   createdAt: string;
 }
 
