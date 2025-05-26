@@ -125,14 +125,14 @@ const Tickets = () => {
             
             <Select
               onValueChange={(value) => 
-                dispatch(setFilters({ status: value ? [value] : [] }))
+                dispatch(setFilters({ status: value === 'all' ? [] : [value] }))
               }
             >
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Status</SelectItem>
+                <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="open">Open</SelectItem>
                 <SelectItem value="in_progress">In Progress</SelectItem>
                 <SelectItem value="resolved">Resolved</SelectItem>
@@ -142,14 +142,14 @@ const Tickets = () => {
 
             <Select
               onValueChange={(value) => 
-                dispatch(setFilters({ priority: value ? [value] : [] }))
+                dispatch(setFilters({ priority: value === 'all' ? [] : [value] }))
               }
             >
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Priority" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Priorities</SelectItem>
+                <SelectItem value="all">All Priorities</SelectItem>
                 <SelectItem value="critical">Critical</SelectItem>
                 <SelectItem value="high">High</SelectItem>
                 <SelectItem value="medium">Medium</SelectItem>
@@ -159,14 +159,14 @@ const Tickets = () => {
 
             <Select
               onValueChange={(value) => 
-                dispatch(setFilters({ category: value ? [value] : [] }))
+                dispatch(setFilters({ category: value === 'all' ? [] : [value] }))
               }
             >
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Categories</SelectItem>
+                <SelectItem value="all">All Categories</SelectItem>
                 <SelectItem value="hardware">Hardware</SelectItem>
                 <SelectItem value="software">Software</SelectItem>
                 <SelectItem value="network">Network</SelectItem>
