@@ -135,7 +135,7 @@ const KnowledgeBase = () => {
               >
                 All Categories
               </Button>
-              {categories.map((category) => (
+              {categories.map((category: string) => (
                 <Button
                   key={category}
                   variant={selectedCategory === category ? 'default' : 'outline'}
@@ -178,7 +178,7 @@ const KnowledgeBase = () => {
                 </p>
                 
                 <div className="flex flex-wrap gap-1">
-                  {article.tags.map((tag) => (
+                  {article.tags.map((tag: string) => (
                     <Badge key={tag} variant="outline" className="text-xs">
                       {tag}
                     </Badge>
