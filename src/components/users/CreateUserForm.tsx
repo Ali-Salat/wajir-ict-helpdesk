@@ -24,17 +24,17 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const availableSkills = ['الأجهزة', 'البرمجيات', 'الشبكات', 'البريد الإلكتروني', 'الهاتف', 'قواعد البيانات', 'الأمن السيبراني'];
+  const availableSkills = ['Hardware', 'Software', 'Network', 'Email', 'Phone', 'Database', 'Security'];
 
   const islamicNames = [
-    'أحمد محمد علي',
-    'فاطمة عبد الله حسن',
-    'محمد إبراهيم يوسف',
-    'عائشة عمر محمود',
-    'علي حسن أحمد',
-    'خديجة محمد إبراهيم',
-    'عبد الله يوسف محمد',
-    'زينب علي حسن'
+    'Ahmad Mohammed Ali',
+    'Fatima Abdullah Hassan',
+    'Mohammed Ibrahim Yusuf',
+    'Aisha Omar Mahmoud',
+    'Ali Hassan Ahmad',
+    'Khadija Mohammed Ibrahim',
+    'Abdullah Yusuf Mohammed',
+    'Zainab Ali Hassan'
   ];
 
   const handleSkillChange = (skill: string, checked: boolean) => {
@@ -77,16 +77,16 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
       }
 
       toast({
-        title: 'تم إنشاء المستخدم بنجاح',
-        description: `تم إضافة ${formData.fullName} إلى النظام`,
+        title: 'User created successfully',
+        description: `${formData.fullName} has been added to the system`,
       });
 
       onUserCreated();
       onClose();
     } catch (error: any) {
       toast({
-        title: 'خطأ في إنشاء المستخدم',
-        description: error.message || 'يرجى المحاولة مرة أخرى',
+        title: 'Error creating user',
+        description: error.message || 'Please try again',
         variant: 'destructive',
       });
     } finally {
@@ -98,17 +98,16 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="fullName">الاسم الكامل</Label>
+          <Label htmlFor="fullName">Full Name</Label>
           <Input
             id="fullName"
             value={formData.fullName}
             onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-            placeholder="اختر من الأسماء الإسلامية"
+            placeholder="Choose from Islamic names"
             required
-            className="text-right"
           />
           <div className="mt-2">
-            <Label className="text-xs text-gray-500">أمثلة للأسماء الإسلامية:</Label>
+            <Label className="text-xs text-gray-500">Islamic name examples:</Label>
             <div className="flex flex-wrap gap-1 mt-1">
               {islamicNames.slice(0, 3).map((name) => (
                 <button
@@ -125,62 +124,60 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
         </div>
 
         <div>
-          <Label htmlFor="email">البريد الإلكتروني</Label>
+          <Label htmlFor="email">Email Address</Label>
           <Input
             id="email"
             type="email"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            placeholder="البريد@wajir.go.ke"
+            placeholder="email@wajir.go.ke"
             required
-            className="text-right"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="password">كلمة المرور</Label>
+          <Label htmlFor="password">Password</Label>
           <Input
             id="password"
             type="password"
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            placeholder="كلمة مرور قوية"
+            placeholder="Strong password"
             required
           />
         </div>
 
         <div>
-          <Label>الدور</Label>
+          <Label>Role</Label>
           <Select onValueChange={(value) => setFormData({ ...formData, role: value })}>
             <SelectTrigger>
-              <SelectValue placeholder="اختر الدور" />
+              <SelectValue placeholder="Select role" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="requester">طالب الخدمة</SelectItem>
-              <SelectItem value="technician">فني</SelectItem>
-              <SelectItem value="approver">مشرف</SelectItem>
-              <SelectItem value="admin">مدير</SelectItem>
+              <SelectItem value="requester">Requester</SelectItem>
+              <SelectItem value="technician">Technician</SelectItem>
+              <SelectItem value="approver">Supervisor</SelectItem>
+              <SelectItem value="admin">Administrator</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
       <div>
-        <Label htmlFor="department">القسم</Label>
+        <Label htmlFor="department">Department</Label>
         <Input
           id="department"
           value={formData.department}
           onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-          placeholder="اسم القسم"
-          className="text-right"
+          placeholder="Department name"
         />
       </div>
 
       {formData.role === 'technician' && (
         <div>
-          <Label>المهارات التقنية</Label>
+          <Label>Technical Skills</Label>
           <div className="grid grid-cols-2 gap-2 mt-2">
             {availableSkills.map((skill) => (
               <div key={skill} className="flex items-center space-x-2">
@@ -198,10 +195,10 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
 
       <div className="flex justify-end space-x-2 pt-4">
         <Button type="button" variant="outline" onClick={onClose}>
-          إلغاء
+          Cancel
         </Button>
         <Button type="submit" disabled={isSubmitting} className="bg-blue-600 hover:bg-blue-700">
-          {isSubmitting ? 'جاري الإنشاء...' : 'إنشاء مستخدم'}
+          {isSubmitting ? 'Creating...' : 'Create User'}
         </Button>
       </div>
     </form>

@@ -20,13 +20,13 @@ const Users = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
-  useEffect(() => {
-    // Mock users data - replace with actual API call
+  const fetchUsers = () => {
+    // Mock users data with Islamic names in English - replace with actual API call
     const mockUsers: User[] = [
       {
         id: '1',
         email: 'admin@wajir.go.ke',
-        name: 'Admin User',
+        name: 'Ahmad Administrator',
         role: 'admin',
         department: 'ICT',
         isActive: true,
@@ -36,7 +36,7 @@ const Users = () => {
       {
         id: '2',
         email: 'tech@wajir.go.ke',
-        name: 'John Technician',
+        name: 'Ibrahim Technician',
         role: 'technician',
         department: 'ICT',
         skills: ['Hardware', 'Network', 'Software'],
@@ -47,7 +47,7 @@ const Users = () => {
       {
         id: '3',
         email: 'user@wajir.go.ke',
-        name: 'Jane Requester',
+        name: 'Fatima Requester',
         role: 'requester',
         department: 'Finance',
         isActive: true,
@@ -57,7 +57,7 @@ const Users = () => {
       {
         id: '4',
         email: 'approver@wajir.go.ke',
-        name: 'Mike Approver',
+        name: 'Mohammed Supervisor',
         role: 'approver',
         department: 'ICT',
         isActive: true,
@@ -67,6 +67,10 @@ const Users = () => {
     ];
 
     dispatch(setUsers(mockUsers));
+  };
+
+  useEffect(() => {
+    fetchUsers();
   }, [dispatch]);
 
   if (!canManageUsers) {
@@ -112,7 +116,10 @@ const Users = () => {
             <DialogHeader>
               <DialogTitle>Add New User</DialogTitle>
             </DialogHeader>
-            <CreateUserForm onClose={() => setIsCreateDialogOpen(false)} />
+            <CreateUserForm 
+              onClose={() => setIsCreateDialogOpen(false)} 
+              onUserCreated={fetchUsers}
+            />
           </DialogContent>
         </Dialog>
       </div>

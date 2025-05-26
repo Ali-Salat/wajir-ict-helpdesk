@@ -24,14 +24,14 @@ const Header = () => {
     const { error } = await signOut();
     if (error) {
       toast({
-        title: 'خطأ في تسجيل الخروج',
-        description: 'حدث خطأ أثناء تسجيل الخروج',
+        title: 'Logout Error',
+        description: 'An error occurred during logout',
         variant: 'destructive',
       });
     } else {
       toast({
-        title: 'تم تسجيل الخروج بنجاح',
-        description: 'إلى اللقاء!',
+        title: 'Logged out successfully',
+        description: 'See you soon!',
       });
       navigate('/auth');
     }
@@ -41,7 +41,7 @@ const Header = () => {
     if (user?.user_metadata?.full_name) {
       return user.user_metadata.full_name;
     }
-    return user?.email?.split('@')[0] || 'المستخدم';
+    return user?.email?.split('@')[0] || 'User';
   };
 
   return (
@@ -49,16 +49,16 @@ const Header = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <img 
-            src="/lovable-uploads/6e5b8a89-5ba8-4c1a-a94b-e1ae5b8b7c45.png" 
-            alt="شعار مقاطعة واجير"
+            src="/lovable-uploads/b82dd6de-7a50-48ff-884a-07b73a15eed4.png" 
+            alt="Wajir County Logo"
             className="w-12 h-12 object-contain"
           />
           <div>
             <h2 className="text-2xl font-semibold text-blue-800">
-              أهلاً وسهلاً، {getUserDisplayName()}
+              Welcome, {getUserDisplayName()}
             </h2>
             <p className="text-sm text-gray-600">
-              {new Date().toLocaleDateString('ar-SA', { 
+              {new Date().toLocaleDateString('en-US', { 
                 weekday: 'long', 
                 year: 'numeric', 
                 month: 'long', 
@@ -90,11 +90,11 @@ const Header = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => navigate('/settings')}>
                 <User className="mr-2 h-4 w-4" />
-                الملف الشخصي
+                Profile
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
-                تسجيل الخروج
+                Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

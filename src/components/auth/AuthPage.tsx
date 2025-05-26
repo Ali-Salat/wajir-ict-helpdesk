@@ -23,14 +23,14 @@ const AuthPage = () => {
     
     if (error) {
       toast({
-        title: 'خطأ في تسجيل الدخول',
-        description: 'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+        title: 'Login Error',
+        description: 'Invalid email or password',
         variant: 'destructive',
       });
     } else {
       toast({
-        title: 'تم تسجيل الدخول بنجاح',
-        description: 'مرحباً بك في نظام المساعدة التقنية',
+        title: 'Login Successful',
+        description: 'Welcome to the IT Help Desk System',
       });
     }
     setIsLoading(false);
@@ -44,14 +44,14 @@ const AuthPage = () => {
     
     if (error) {
       toast({
-        title: 'خطأ في إنشاء الحساب',
+        title: 'Account Creation Error',
         description: error.message,
         variant: 'destructive',
       });
     } else {
       toast({
-        title: 'تم إنشاء الحساب بنجاح',
-        description: 'يرجى التحقق من بريدك الإلكتروني لتفعيل الحساب',
+        title: 'Account Created Successfully',
+        description: 'Please check your email to activate your account',
       });
     }
     setIsLoading(false);
@@ -63,50 +63,49 @@ const AuthPage = () => {
         <CardHeader className="text-center space-y-4">
           <div className="mx-auto w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center">
             <img 
-              src="/lovable-uploads/6e5b8a89-5ba8-4c1a-a94b-e1ae5b8b7c45.png" 
-              alt="شعار مقاطعة واجير"
+              src="/lovable-uploads/b82dd6de-7a50-48ff-884a-07b73a15eed4.png" 
+              alt="Wajir County Logo"
               className="w-16 h-16 object-contain rounded-full"
             />
           </div>
           <CardTitle className="text-2xl font-bold text-blue-800">
-            نظام المساعدة التقنية
+            IT Help Desk System
           </CardTitle>
-          <p className="text-gray-600">حكومة مقاطعة واجير</p>
+          <p className="text-gray-600">Wajir County Government</p>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="signin">تسجيل الدخول</TabsTrigger>
-              <TabsTrigger value="signup">إنشاء حساب</TabsTrigger>
+              <TabsTrigger value="signin">Sign In</TabsTrigger>
+              <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signin-email">البريد الإلكتروني</Label>
+                  <Label htmlFor="signin-email">Email Address</Label>
                   <Input
                     id="signin-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="ادخل بريدك الإلكتروني"
+                    placeholder="Enter your email"
                     required
-                    className="text-right"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signin-password">كلمة المرور</Label>
+                  <Label htmlFor="signin-password">Password</Label>
                   <Input
                     id="signin-password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="ادخل كلمة المرور"
+                    placeholder="Enter your password"
                     required
                   />
                 </div>
                 <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
-                  {isLoading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
+                  {isLoading ? 'Signing in...' : 'Sign In'}
                 </Button>
               </form>
             </TabsContent>
@@ -114,55 +113,53 @@ const AuthPage = () => {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-name">الاسم الكامل</Label>
+                  <Label htmlFor="signup-name">Full Name</Label>
                   <Input
                     id="signup-name"
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="ادخل اسمك الكامل"
+                    placeholder="Enter your full name"
                     required
-                    className="text-right"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">البريد الإلكتروني</Label>
+                  <Label htmlFor="signup-email">Email Address</Label>
                   <Input
                     id="signup-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="ادخل بريدك الإلكتروني"
+                    placeholder="Enter your email"
                     required
-                    className="text-right"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">كلمة المرور</Label>
+                  <Label htmlFor="signup-password">Password</Label>
                   <Input
                     id="signup-password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="ادخل كلمة مرور قوية"
+                    placeholder="Enter a strong password"
                     required
                   />
                 </div>
                 <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={isLoading}>
-                  {isLoading ? 'جاري إنشاء الحساب...' : 'إنشاء حساب جديد'}
+                  {isLoading ? 'Creating account...' : 'Create Account'}
                 </Button>
               </form>
             </TabsContent>
           </Tabs>
           
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm font-medium mb-2 text-center">حسابات تجريبية:</p>
+            <p className="text-sm font-medium mb-2 text-center">Demo Accounts:</p>
             <div className="text-xs space-y-1 text-center">
-              <div>مدير: ahmad.administrator@wajir.go.ke</div>
-              <div>تقني: ibrahim.technician@wajir.go.ke</div>
-              <div>مشرف: mohammed.supervisor@wajir.go.ke</div>
-              <div>مستخدم: fatima.user@wajir.go.ke</div>
-              <div className="font-medium">كلمة المرور: password123</div>
+              <div>Admin: ahmad.administrator@wajir.go.ke</div>
+              <div>Technician: ibrahim.technician@wajir.go.ke</div>
+              <div>Supervisor: mohammed.supervisor@wajir.go.ke</div>
+              <div>User: fatima.user@wajir.go.ke</div>
+              <div className="font-medium">Password: password123</div>
             </div>
           </div>
         </CardContent>

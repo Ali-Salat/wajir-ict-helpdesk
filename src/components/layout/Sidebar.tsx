@@ -16,13 +16,13 @@ const Sidebar = () => {
   const { user } = useSupabaseAuth();
 
   const navigation = [
-    { name: 'لوحة التحكم', href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'approver', 'technician', 'requester'] },
-    { name: 'التذاكر', href: '/tickets', icon: Ticket, roles: ['admin', 'approver', 'technician', 'requester'] },
-    { name: 'المستخدمون', href: '/users', icon: Users, roles: ['admin'] },
-    { name: 'قاعدة المعرفة', href: '/knowledge-base', icon: BookOpen, roles: ['admin', 'approver', 'technician', 'requester'] },
-    { name: 'التحليلات', href: '/analytics', icon: BarChart3, roles: ['admin', 'approver'] },
-    { name: 'سجل التدقيق', href: '/audit-logs', icon: FileText, roles: ['admin'] },
-    { name: 'الإعدادات', href: '/settings', icon: Settings, roles: ['admin', 'approver', 'technician', 'requester'] },
+    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'approver', 'technician', 'requester'] },
+    { name: 'Tickets', href: '/tickets', icon: Ticket, roles: ['admin', 'approver', 'technician', 'requester'] },
+    { name: 'Users', href: '/users', icon: Users, roles: ['admin'] },
+    { name: 'Knowledge Base', href: '/knowledge-base', icon: BookOpen, roles: ['admin', 'approver', 'technician', 'requester'] },
+    { name: 'Analytics', href: '/analytics', icon: BarChart3, roles: ['admin', 'approver'] },
+    { name: 'Audit Logs', href: '/audit-logs', icon: FileText, roles: ['admin'] },
+    { name: 'Settings', href: '/settings', icon: Settings, roles: ['admin', 'approver', 'technician', 'requester'] },
   ];
 
   return (
@@ -30,13 +30,13 @@ const Sidebar = () => {
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center space-x-3">
           <img 
-            src="/lovable-uploads/6e5b8a89-5ba8-4c1a-a94b-e1ae5b8b7c45.png" 
-            alt="شعار مقاطعة واجير"
+            src="/lovable-uploads/b82dd6de-7a50-48ff-884a-07b73a15eed4.png" 
+            alt="Wajir County Logo"
             className="w-10 h-10 object-contain"
           />
           <div>
-            <h1 className="text-lg font-bold text-blue-800">مكتب المساعدة التقنية</h1>
-            <p className="text-xs text-gray-600">حكومة مقاطعة واجير</p>
+            <h1 className="text-lg font-bold text-blue-800">IT Help Desk</h1>
+            <p className="text-xs text-gray-600">Wajir County Government</p>
           </div>
         </div>
       </div>
@@ -55,7 +55,7 @@ const Sidebar = () => {
                   }`
                 }
               >
-                <item.icon className="ml-3 h-5 w-5" />
+                <item.icon className="mr-3 h-5 w-5" />
                 {item.name}
               </NavLink>
             </li>
