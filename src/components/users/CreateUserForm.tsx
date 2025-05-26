@@ -1,31 +1,41 @@
 
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { addUser } from '../../store/slices/usersSlice';
-import { User } from '../../types';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
 interface CreateUserFormProps {
   onClose: () => void;
+  onUserCreated: () => void;
 }
 
-const CreateUserForm = ({ onClose }: CreateUserFormProps) => {
-  const dispatch = useDispatch();
+const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
   const [formData, setFormData] = useState({
-    name: '',
+    fullName: '',
     email: '',
+    password: '',
     role: '',
     department: '',
     skills: [] as string[],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const availableSkills = ['Hardware', 'Software', 'Network', 'Email', 'Phone', 'Database', 'Security'];
+  const availableSkills = ['الأجهزة', 'البرمجيات', 'الشبكات', 'البريد الإلكتروني', 'الهاتف', 'قواعد البيانات', 'الأمن السيبراني'];
+
+  const islamicNames = [
+    'أحمد محمد علي',
+    'فاطمة عبد الله حسن',
+    'محمد إبراهيم يوسف',
+    'عائشة عمر محمود',
+    'علي حسن أحمد',
+    'خديجة محمد إبراهيم',
+    'عبد الله يوسف محمد',
+    'زينب علي حسن'
+  ];
 
   const handleSkillChange = (skill: string, checked: boolean) => {
     if (checked) {
@@ -40,30 +50,43 @@ const CreateUserForm = ({ onClose }: CreateUserFormProps) => {
     setIsSubmitting(true);
 
     try {
-      const newUser: User = {
-        id: Date.now().toString(),
-        name: formData.name,
+      // Create user with Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email: formData.email,
-        role: formData.role as any,
-        department: formData.department || undefined,
-        skills: formData.skills.length > 0 ? formData.skills : undefined,
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      dispatch(addUser(newUser));
-      
-      toast({
-        title: 'User created successfully',
-        description: `${newUser.name} has been added to the system.`,
+        password: formData.password,
+        user_metadata: {
+          full_name: formData.fullName,
+        },
       });
 
-      onClose();
-    } catch (error) {
+      if (authError) throw authError;
+
+      // Update profile
+      if (authData.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({
+            full_name: formData.fullName,
+            role: formData.role,
+            department: formData.department || null,
+            skills: formData.skills.length > 0 ? formData.skills : null,
+          })
+          .eq('id', authData.user.id);
+
+        if (profileError) throw profileError;
+      }
+
       toast({
-        title: 'Error creating user',
-        description: 'Please try again.',
+        title: 'تم إنشاء المستخدم بنجاح',
+        description: `تم إضافة ${formData.fullName} إلى النظام`,
+      });
+
+      onUserCreated();
+      onClose();
+    } catch (error: any) {
+      toast({
+        title: 'خطأ في إنشاء المستخدم',
+        description: error.message || 'يرجى المحاولة مرة أخرى',
         variant: 'destructive',
       });
     } finally {
@@ -75,59 +98,89 @@ const CreateUserForm = ({ onClose }: CreateUserFormProps) => {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="fullName">الاسم الكامل</Label>
           <Input
-            id="name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="Full name"
+            id="fullName"
+            value={formData.fullName}
+            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+            placeholder="اختر من الأسماء الإسلامية"
             required
+            className="text-right"
           />
+          <div className="mt-2">
+            <Label className="text-xs text-gray-500">أمثلة للأسماء الإسلامية:</Label>
+            <div className="flex flex-wrap gap-1 mt-1">
+              {islamicNames.slice(0, 3).map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, fullName: name })}
+                  className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200"
+                >
+                  {name}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">البريد الإلكتروني</Label>
           <Input
             id="email"
             type="email"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            placeholder="email@wajir.go.ke"
+            placeholder="البريد@wajir.go.ke"
             required
+            className="text-right"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label>Role</Label>
-          <Select onValueChange={(value) => setFormData({ ...formData, role: value })}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select role" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="requester">Requester</SelectItem>
-              <SelectItem value="technician">Technician</SelectItem>
-              <SelectItem value="approver">Approver</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
-            </SelectContent>
-          </Select>
+          <Label htmlFor="password">كلمة المرور</Label>
+          <Input
+            id="password"
+            type="password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            placeholder="كلمة مرور قوية"
+            required
+          />
         </div>
 
         <div>
-          <Label htmlFor="department">Department</Label>
-          <Input
-            id="department"
-            value={formData.department}
-            onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-            placeholder="Department name"
-          />
+          <Label>الدور</Label>
+          <Select onValueChange={(value) => setFormData({ ...formData, role: value })}>
+            <SelectTrigger>
+              <SelectValue placeholder="اختر الدور" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="requester">طالب الخدمة</SelectItem>
+              <SelectItem value="technician">فني</SelectItem>
+              <SelectItem value="approver">مشرف</SelectItem>
+              <SelectItem value="admin">مدير</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
+      </div>
+
+      <div>
+        <Label htmlFor="department">القسم</Label>
+        <Input
+          id="department"
+          value={formData.department}
+          onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+          placeholder="اسم القسم"
+          className="text-right"
+        />
       </div>
 
       {formData.role === 'technician' && (
         <div>
-          <Label>Skills</Label>
+          <Label>المهارات التقنية</Label>
           <div className="grid grid-cols-2 gap-2 mt-2">
             {availableSkills.map((skill) => (
               <div key={skill} className="flex items-center space-x-2">
@@ -145,10 +198,10 @@ const CreateUserForm = ({ onClose }: CreateUserFormProps) => {
 
       <div className="flex justify-end space-x-2 pt-4">
         <Button type="button" variant="outline" onClick={onClose}>
-          Cancel
+          إلغاء
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Creating...' : 'Create User'}
+        <Button type="submit" disabled={isSubmitting} className="bg-blue-600 hover:bg-blue-700">
+          {isSubmitting ? 'جاري الإنشاء...' : 'إنشاء مستخدم'}
         </Button>
       </div>
     </form>

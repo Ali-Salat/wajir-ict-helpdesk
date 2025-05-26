@@ -6,8 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { store } from './store/store';
-import { useAuth } from './hooks/useAuth';
-import LoginForm from './components/auth/LoginForm';
+import { useSupabaseAuth } from './hooks/useSupabaseAuth';
+import AuthPage from './components/auth/AuthPage';
 import MainLayout from './components/layout/MainLayout';
 import Dashboard from './pages/Dashboard';
 import Tickets from './pages/Tickets';
@@ -22,21 +22,45 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
+  const { isAuthenticated, isLoading } = useSupabaseAuth();
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">جاري التحميل...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  return isAuthenticated ? <>{children}</> : <Navigate to="/auth" replace />;
 };
 
 const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useSupabaseAuth();
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">جاري التحميل...</p>
+        </div>
+      </div>
+    );
+  }
+  
   return !isAuthenticated ? <>{children}</> : <Navigate to="/dashboard" replace />;
 };
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/login" element={
+      <Route path="/auth" element={
         <PublicRoute>
-          <LoginForm />
+          <AuthPage />
         </PublicRoute>
       } />
       <Route path="/" element={

@@ -9,7 +9,185 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      comments: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string | null
+          id: string
+          is_internal: boolean | null
+          ticket_id: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string | null
+          id?: string
+          is_internal?: boolean | null
+          ticket_id: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_internal?: boolean | null
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_articles: {
+        Row: {
+          author_id: string
+          category: string | null
+          content: string
+          created_at: string | null
+          id: string
+          is_published: boolean | null
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+          view_count: number | null
+        }
+        Insert: {
+          author_id: string
+          category?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          is_published?: boolean | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Update: {
+          author_id?: string
+          category?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_published?: boolean | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          title: string
+          type: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          title: string
+          type?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          title?: string
+          type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          department: string | null
+          full_name: string | null
+          id: string
+          is_active: boolean | null
+          role: string | null
+          skills: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          department?: string | null
+          full_name?: string | null
+          id: string
+          is_active?: boolean | null
+          role?: string | null
+          skills?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          department?: string | null
+          full_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          role?: string | null
+          skills?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      tickets: {
+        Row: {
+          assigned_technician_id: string | null
+          category: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          priority: string | null
+          requester_id: string
+          resolved_at: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_technician_id?: string | null
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          priority?: string | null
+          requester_id: string
+          resolved_at?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_technician_id?: string | null
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          priority?: string | null
+          requester_id?: string
+          resolved_at?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

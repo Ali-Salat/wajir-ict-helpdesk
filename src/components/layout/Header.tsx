@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,36 +10,62 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Bell, LogOut, User } from 'lucide-react';
-import { logout } from '../../store/slices/authSlice';
+import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { useAuth } from '../../hooks/useAuth';
+import { toast } from '@/hooks/use-toast';
 
 const Header = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useSupabaseAuth();
   const { unreadCount } = useSelector((state: RootState) => state.notifications);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate('/login');
+  const handleLogout = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: 'خطأ في تسجيل الخروج',
+        description: 'حدث خطأ أثناء تسجيل الخروج',
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'تم تسجيل الخروج بنجاح',
+        description: 'إلى اللقاء!',
+      });
+      navigate('/auth');
+    }
+  };
+
+  const getUserDisplayName = () => {
+    if (user?.user_metadata?.full_name) {
+      return user.user_metadata.full_name;
+    }
+    return user?.email?.split('@')[0] || 'المستخدم';
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4">
+    <header className="bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-semibold text-gray-900">
-            Welcome back, {user?.name}
-          </h2>
-          <p className="text-sm text-gray-600">
-            {new Date().toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </p>
+        <div className="flex items-center space-x-4">
+          <img 
+            src="/lovable-uploads/6e5b8a89-5ba8-4c1a-a94b-e1ae5b8b7c45.png" 
+            alt="شعار مقاطعة واجير"
+            className="w-12 h-12 object-contain"
+          />
+          <div>
+            <h2 className="text-2xl font-semibold text-blue-800">
+              أهلاً وسهلاً، {getUserDisplayName()}
+            </h2>
+            <p className="text-sm text-gray-600">
+              {new Date().toLocaleDateString('ar-SA', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
+            </p>
+          </div>
         </div>
         
         <div className="flex items-center space-x-4">
@@ -56,20 +81,20 @@ const Header = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="flex items-center space-x-2">
-                <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-xs font-medium">
-                  {user?.name.charAt(0).toUpperCase()}
+                <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium">
+                  {getUserDisplayName().charAt(0).toUpperCase()}
                 </div>
-                <span className="text-sm">{user?.name}</span>
+                <span className="text-sm">{getUserDisplayName()}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => navigate('/settings')}>
                 <User className="mr-2 h-4 w-4" />
-                Profile
+                الملف الشخصي
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
-                Logout
+                تسجيل الخروج
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
