@@ -68,7 +68,7 @@ const AuthPage = () => {
         <CardHeader className="text-center space-y-4">
           <div className="mx-auto w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center">
             <img 
-              src="https://wajir.go.ke/wp-content/uploads/2023/11/Wajir-County-Logo-1.png" 
+              src="/lovable-uploads/78d372ae-dd0e-4d1d-a648-9cfad21eba95.png" 
               alt="Wajir County Logo"
               className="w-16 h-16 object-contain rounded-full"
             />
