@@ -29,14 +29,18 @@ const Sidebar = () => {
     <div className="w-64 bg-sidebar border-r border-sidebar-border h-screen shadow-sm">
       <div className="p-6 border-b border-sidebar-border">
         <div className="flex items-center space-x-3">
-          <img 
-            src="/lovable-uploads/78d372ae-dd0e-4d1d-a648-9cfad21eba95.png" 
-            alt="Wajir County Logo"
-            className="w-10 h-10 object-contain"
-          />
+          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md">
+            <img 
+              src="/lovable-uploads/78d372ae-dd0e-4d1d-a648-9cfad21eba95.png" 
+              alt="Wajir County Logo"
+              className="w-8 h-8 object-contain"
+            />
+          </div>
           <div>
             <h1 className="text-lg font-bold text-wajir-green">IT Help Desk</h1>
-            <p className="text-xs text-muted-foreground">Wajir County Government</p>
+            <p className="text-xs text-muted-foreground font-bold">
+              <span className="font-extrabold">WAJIR COUNTY GOVERNMENT</span>
+            </p>
           </div>
         </div>
       </div>

@@ -21,12 +21,22 @@ const Users = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   const fetchUsers = () => {
-    // Mock users data with Islamic names in English - replace with actual API call
+    // Mock users data with Islamic names in English
     const mockUsers: User[] = [
+      {
+        id: '0',
+        email: 'superuser@wajir.go.ke',
+        name: 'Mohamed Shahid',
+        role: 'admin',
+        department: 'ICT',
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
       {
         id: '1',
         email: 'admin@wajir.go.ke',
-        name: 'Ahmad Administrator',
+        name: 'Ahmad',
         role: 'admin',
         department: 'ICT',
         isActive: true,
@@ -36,7 +46,7 @@ const Users = () => {
       {
         id: '2',
         email: 'tech@wajir.go.ke',
-        name: 'Ibrahim Technician',
+        name: 'Ibrahim',
         role: 'technician',
         department: 'ICT',
         skills: ['Hardware', 'Network', 'Software'],
@@ -47,7 +57,7 @@ const Users = () => {
       {
         id: '3',
         email: 'user@wajir.go.ke',
-        name: 'Fatima Requester',
+        name: 'Fatima',
         role: 'requester',
         department: 'Finance',
         isActive: true,
@@ -56,8 +66,8 @@ const Users = () => {
       },
       {
         id: '4',
-        email: 'approver@wajir.go.ke',
-        name: 'Mohammed Supervisor',
+        email: 'supervisor@wajir.go.ke',
+        name: 'Mohammed',
         role: 'approver',
         department: 'ICT',
         isActive: true,
@@ -101,8 +111,8 @@ const Users = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Users</h1>
-          <p className="text-gray-600">Manage system users and permissions</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Users</h1>
+          <p className="text-gray-600 dark:text-gray-400">Manage system users and permissions</p>
         </div>
         
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
@@ -147,7 +157,10 @@ const Users = () => {
               <div className="flex items-start justify-between">
                 <div>
                   <CardTitle className="text-lg">{user.name}</CardTitle>
-                  <p className="text-sm text-gray-600">{user.email}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{user.email}</p>
+                  {user.email === 'superuser@wajir.go.ke' && (
+                    <p className="text-xs text-wajir-green font-medium">Director ICT</p>
+                  )}
                 </div>
                 <div className="flex space-x-1">
                   <Button variant="ghost" size="sm">
@@ -162,7 +175,7 @@ const Users = () => {
             <CardContent>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Role:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Role:</span>
                   <Badge variant={getRoleColor(user.role)}>
                     {user.role}
                   </Badge>
@@ -170,14 +183,14 @@ const Users = () => {
                 
                 {user.department && (
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Department:</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Department:</span>
                     <span className="text-sm">{user.department}</span>
                   </div>
                 )}
                 
                 {user.skills && user.skills.length > 0 && (
                   <div>
-                    <span className="text-sm text-gray-600">Skills:</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Skills:</span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {user.skills.map((skill, index) => (
                         <Badge key={index} variant="outline" className="text-xs">
@@ -189,7 +202,7 @@ const Users = () => {
                 )}
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Status:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Status:</span>
                   <Badge variant={user.isActive ? 'secondary' : 'destructive'}>
                     {user.isActive ? 'Active' : 'Inactive'}
                   </Badge>

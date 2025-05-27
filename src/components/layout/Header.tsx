@@ -49,17 +49,19 @@ const Header = () => {
     <header className="bg-card border-b border-border px-6 py-4 shadow-sm wajir-header">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <img 
-            src="/lovable-uploads/78d372ae-dd0e-4d1d-a648-9cfad21eba95.png" 
-            alt="Wajir County Logo"
-            className="w-12 h-12 object-contain"
-          />
+          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md">
+            <img 
+              src="/lovable-uploads/78d372ae-dd0e-4d1d-a648-9cfad21eba95.png" 
+              alt="Wajir County Logo"
+              className="w-10 h-10 object-contain"
+            />
+          </div>
           <div>
             <h2 className="text-2xl font-semibold text-primary-foreground">
               Welcome, {getUserDisplayName()}
             </h2>
-            <p className="text-sm text-primary-foreground/80">
-              {new Date().toLocaleDateString('en-US', { 
+            <p className="text-sm text-primary-foreground/80 font-bold">
+              <span className="font-extrabold">WAJIR COUNTY GOVERNMENT</span> • {new Date().toLocaleDateString('en-US', { 
                 weekday: 'long', 
                 year: 'numeric', 
                 month: 'long', 
