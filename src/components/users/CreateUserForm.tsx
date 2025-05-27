@@ -27,14 +27,32 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
   const availableSkills = ['Hardware', 'Software', 'Network', 'Email', 'Phone', 'Database', 'Security'];
 
   const islamicNames = [
-    'Ahmad Al-Rashid',
-    'Fatima Al-Zahra',
-    'Mohammed Al-Hassan',
-    'Aisha Al-Mahmoud',
-    'Ali Al-Ibrahim',
-    'Khadija Al-Yusuf',
-    'Abdullah Al-Omar',
-    'Zainab Al-Ahmad'
+    'Ahmad Hassan',
+    'Fatima Omar',
+    'Mohammed Ali',
+    'Aisha Ibrahim',
+    'Ali Ahmed',
+    'Khadija Yusuf',
+    'Abdullah Omar',
+    'Zainab Ahmad'
+  ];
+
+  const wajirDepartments = [
+    'Office of the Governor',
+    'Deputy Governor\'s Office',
+    'County Assembly',
+    'County Secretary',
+    'Health Services',
+    'Education and ICT',
+    'Agriculture and Livestock',
+    'Water and Sanitation',
+    'Roads and Public Works',
+    'Trade and Industry',
+    'Youth and Sports',
+    'Gender and Social Services',
+    'Lands and Urban Planning',
+    'Finance and Economic Planning',
+    'Public Service Management'
   ];
 
   const handleSkillChange = (skill: string, checked: boolean) => {
@@ -170,13 +188,17 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
       </div>
 
       <div>
-        <Label htmlFor="department">Department</Label>
-        <Input
-          id="department"
-          value={formData.department}
-          onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-          placeholder="Department name"
-        />
+        <Label>Department</Label>
+        <Select onValueChange={(value) => setFormData({ ...formData, department: value })}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select department" />
+          </SelectTrigger>
+          <SelectContent>
+            {wajirDepartments.map((dept) => (
+              <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {formData.role === 'technician' && (

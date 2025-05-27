@@ -30,7 +30,7 @@ const Sidebar = () => {
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center space-x-3">
           <img 
-            src="/lovable-uploads/b82dd6de-7a50-48ff-884a-07b73a15eed4.png" 
+            src="https://wajir.go.ke/wp-content/uploads/2023/11/Wajir-County-Logo-1.png" 
             alt="Wajir County Logo"
             className="w-10 h-10 object-contain"
           />

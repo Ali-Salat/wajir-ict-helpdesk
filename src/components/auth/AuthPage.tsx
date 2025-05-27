@@ -59,7 +59,7 @@ const AuthPage = () => {
 
   const fillDemoCredentials = (email: string) => {
     setEmail(email);
-    setPassword('password123');
+    setPassword('Demo123!@#');
   };
 
   return (
@@ -68,7 +68,7 @@ const AuthPage = () => {
         <CardHeader className="text-center space-y-4">
           <div className="mx-auto w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center">
             <img 
-              src="/lovable-uploads/b82dd6de-7a50-48ff-884a-07b73a15eed4.png" 
+              src="https://wajir.go.ke/wp-content/uploads/2023/11/Wajir-County-Logo-1.png" 
               alt="Wajir County Logo"
               className="w-16 h-16 object-contain rounded-full"
             />
@@ -161,30 +161,30 @@ const AuthPage = () => {
             <p className="text-sm font-medium mb-2 text-center">Demo Accounts:</p>
             <div className="text-xs space-y-1">
               <button 
-                onClick={() => fillDemoCredentials('ahmad.administrator@wajir.go.ke')}
+                onClick={() => fillDemoCredentials('admin@wajir.go.ke')}
                 className="block w-full text-left text-blue-600 hover:text-blue-800"
               >
-                Admin: Ahmad Al-Rashid (ahmad.administrator@wajir.go.ke)
+                Admin: Ahmad Hassan (admin@wajir.go.ke)
               </button>
               <button 
-                onClick={() => fillDemoCredentials('ibrahim.technician@wajir.go.ke')}
+                onClick={() => fillDemoCredentials('tech@wajir.go.ke')}
                 className="block w-full text-left text-blue-600 hover:text-blue-800"
               >
-                Technician: Ibrahim Al-Hassan (ibrahim.technician@wajir.go.ke)
+                Technician: Ibrahim Ahmed (tech@wajir.go.ke)
               </button>
               <button 
-                onClick={() => fillDemoCredentials('mohammed.supervisor@wajir.go.ke')}
+                onClick={() => fillDemoCredentials('supervisor@wajir.go.ke')}
                 className="block w-full text-left text-blue-600 hover:text-blue-800"
               >
-                Supervisor: Mohammed Al-Mahmoud (mohammed.supervisor@wajir.go.ke)
+                Supervisor: Mohammed Ali (supervisor@wajir.go.ke)
               </button>
               <button 
-                onClick={() => fillDemoCredentials('fatima.user@wajir.go.ke')}
+                onClick={() => fillDemoCredentials('user@wajir.go.ke')}
                 className="block w-full text-left text-blue-600 hover:text-blue-800"
               >
-                User: Fatima Al-Zahra (fatima.user@wajir.go.ke)
+                User: Fatima Omar (user@wajir.go.ke)
               </button>
-              <div className="font-medium text-center mt-2">Password: password123</div>
+              <div className="font-medium text-center mt-2">Password: Demo123!@#</div>
             </div>
           </div>
         </CardContent>

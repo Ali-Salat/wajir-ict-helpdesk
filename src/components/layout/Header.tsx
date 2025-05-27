@@ -49,7 +49,7 @@ const Header = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <img 
-            src="/lovable-uploads/b82dd6de-7a50-48ff-884a-07b73a15eed4.png" 
+            src="https://wajir.go.ke/wp-content/uploads/2023/11/Wajir-County-Logo-1.png" 
             alt="Wajir County Logo"
             className="w-12 h-12 object-contain"
           />
