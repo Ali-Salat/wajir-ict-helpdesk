@@ -16,13 +16,13 @@ const Sidebar = () => {
   const { user } = useSupabaseAuth();
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'approver', 'technician', 'requester'] },
-    { name: 'Tickets', href: '/tickets', icon: Ticket, roles: ['admin', 'approver', 'technician', 'requester'] },
-    { name: 'Users', href: '/users', icon: Users, roles: ['admin'] },
-    { name: 'Knowledge Base', href: '/knowledge-base', icon: BookOpen, roles: ['admin', 'approver', 'technician', 'requester'] },
-    { name: 'Analytics', href: '/analytics', icon: BarChart3, roles: ['admin', 'approver'] },
-    { name: 'Audit Logs', href: '/audit-logs', icon: FileText, roles: ['admin'] },
-    { name: 'Settings', href: '/settings', icon: Settings, roles: ['admin', 'approver', 'technician', 'requester'] },
+    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Tickets', href: '/tickets', icon: Ticket },
+    { name: 'Users', href: '/users', icon: Users },
+    { name: 'Knowledge Base', href: '/knowledge-base', icon: BookOpen },
+    { name: 'Analytics', href: '/analytics', icon: BarChart3 },
+    { name: 'Audit Logs', href: '/audit-logs', icon: FileText },
+    { name: 'Settings', href: '/settings', icon: Settings },
   ];
 
   return (

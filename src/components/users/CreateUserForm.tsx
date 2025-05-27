@@ -27,14 +27,14 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
   const availableSkills = ['Hardware', 'Software', 'Network', 'Email', 'Phone', 'Database', 'Security'];
 
   const islamicNames = [
-    'Ahmad Mohammed Ali',
-    'Fatima Abdullah Hassan',
-    'Mohammed Ibrahim Yusuf',
-    'Aisha Omar Mahmoud',
-    'Ali Hassan Ahmad',
-    'Khadija Mohammed Ibrahim',
-    'Abdullah Yusuf Mohammed',
-    'Zainab Ali Hassan'
+    'Ahmad Al-Rashid',
+    'Fatima Al-Zahra',
+    'Mohammed Al-Hassan',
+    'Aisha Al-Mahmoud',
+    'Ali Al-Ibrahim',
+    'Khadija Al-Yusuf',
+    'Abdullah Al-Omar',
+    'Zainab Al-Ahmad'
   ];
 
   const handleSkillChange = (skill: string, checked: boolean) => {
@@ -51,17 +51,19 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
 
     try {
       // Create user with Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
-        user_metadata: {
-          full_name: formData.fullName,
+        options: {
+          data: {
+            full_name: formData.fullName,
+          },
         },
       });
 
       if (authError) throw authError;
 
-      // Update profile
+      // Update profile after signup
       if (authData.user) {
         const { error: profileError } = await supabase
           .from('profiles')
@@ -73,7 +75,9 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
           })
           .eq('id', authData.user.id);
 
-        if (profileError) throw profileError;
+        if (profileError) {
+          console.warn('Profile update error:', profileError);
+        }
       }
 
       toast({

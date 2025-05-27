@@ -24,13 +24,13 @@ const AuthPage = () => {
     if (error) {
       toast({
         title: 'Login Error',
-        description: 'Invalid email or password',
+        description: error.message || 'Invalid email or password',
         variant: 'destructive',
       });
     } else {
       toast({
         title: 'Login Successful',
-        description: 'Welcome to the IT Help Desk System',
+        description: 'Welcome to the Wajir County IT Help Desk System',
       });
     }
     setIsLoading(false);
@@ -55,6 +55,11 @@ const AuthPage = () => {
       });
     }
     setIsLoading(false);
+  };
+
+  const fillDemoCredentials = (email: string) => {
+    setEmail(email);
+    setPassword('password123');
   };
 
   return (
@@ -154,12 +159,32 @@ const AuthPage = () => {
           
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
             <p className="text-sm font-medium mb-2 text-center">Demo Accounts:</p>
-            <div className="text-xs space-y-1 text-center">
-              <div>Admin: ahmad.administrator@wajir.go.ke</div>
-              <div>Technician: ibrahim.technician@wajir.go.ke</div>
-              <div>Supervisor: mohammed.supervisor@wajir.go.ke</div>
-              <div>User: fatima.user@wajir.go.ke</div>
-              <div className="font-medium">Password: password123</div>
+            <div className="text-xs space-y-1">
+              <button 
+                onClick={() => fillDemoCredentials('ahmad.administrator@wajir.go.ke')}
+                className="block w-full text-left text-blue-600 hover:text-blue-800"
+              >
+                Admin: Ahmad Al-Rashid (ahmad.administrator@wajir.go.ke)
+              </button>
+              <button 
+                onClick={() => fillDemoCredentials('ibrahim.technician@wajir.go.ke')}
+                className="block w-full text-left text-blue-600 hover:text-blue-800"
+              >
+                Technician: Ibrahim Al-Hassan (ibrahim.technician@wajir.go.ke)
+              </button>
+              <button 
+                onClick={() => fillDemoCredentials('mohammed.supervisor@wajir.go.ke')}
+                className="block w-full text-left text-blue-600 hover:text-blue-800"
+              >
+                Supervisor: Mohammed Al-Mahmoud (mohammed.supervisor@wajir.go.ke)
+              </button>
+              <button 
+                onClick={() => fillDemoCredentials('fatima.user@wajir.go.ke')}
+                className="block w-full text-left text-blue-600 hover:text-blue-800"
+              >
+                User: Fatima Al-Zahra (fatima.user@wajir.go.ke)
+              </button>
+              <div className="font-medium text-center mt-2">Password: password123</div>
             </div>
           </div>
         </CardContent>
