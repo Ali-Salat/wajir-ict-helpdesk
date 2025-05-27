@@ -6,81 +6,96 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 210 20% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 210 20% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 210 20% 15%;
 
-    --primary: 213 87% 50%;
-    --primary-foreground: 210 40% 98%;
+    /* Wajir County Flag Colors - Light Theme */
+    --primary: 142 76% 36%; /* Green from flag */
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 210 20% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 210 100% 50%; /* Blue from flag */
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 213 87% 50%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 142 76% 36%;
 
     --radius: 0.5rem;
 
+    /* Sidebar colors inspired by flag */
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 213 87% 50%;
+    --sidebar-foreground: 210 20% 15%;
+    --sidebar-primary: 142 76% 36%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 213 87% 50%;
+    --sidebar-accent: 142 76% 96%;
+    --sidebar-accent-foreground: 142 76% 20%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 142 76% 36%;
+
+    /* Wajir theme colors */
+    --wajir-green: 142 76% 36%;
+    --wajir-blue: 210 100% 50%;
+    --wajir-gold: 45 100% 60%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 210 20% 8%;
+    --foreground: 0 0% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 210 20% 10%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 210 20% 10%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 213 87% 50%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Wajir County Flag Colors - Dark Theme */
+    --primary: 142 76% 45%; /* Brighter green for dark mode */
+    --primary-foreground: 210 20% 8%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 210 20% 15%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 210 20% 15%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 210 100% 60%; /* Brighter blue for dark mode */
+    --accent-foreground: 210 20% 8%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 213 87% 50%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 213 87% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 213 87% 50%;
+    --border: 210 20% 20%;
+    --input: 210 20% 20%;
+    --ring: 142 76% 45%;
+
+    /* Dark sidebar with flag colors */
+    --sidebar-background: 210 20% 12%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 142 76% 45%;
+    --sidebar-primary-foreground: 210 20% 8%;
+    --sidebar-accent: 210 20% 18%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 210 20% 20%;
+    --sidebar-ring: 142 76% 45%;
+
+    /* Dark theme Wajir colors */
+    --wajir-green: 142 76% 45%;
+    --wajir-blue: 210 100% 60%;
+    --wajir-gold: 45 100% 70%;
   }
 }
 
@@ -101,12 +116,21 @@
   text-align: right;
 }
 
-/* Professional government styling */
-.gov-header {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+/* Wajir County Government styling */
+.wajir-header {
+  background: linear-gradient(135deg, hsl(var(--wajir-green)) 0%, hsl(var(--wajir-blue)) 100%);
 }
 
-.gov-card {
+.wajir-card {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(59, 130, 246, 0.1);
+  border: 1px solid hsl(var(--wajir-green) / 0.2);
+}
+
+.wajir-accent {
+  color: hsl(var(--wajir-gold));
+}
+
+/* Theme transition */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }

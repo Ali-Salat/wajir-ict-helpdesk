@@ -14,6 +14,7 @@ import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { toast } from '@/hooks/use-toast';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
+    <header className="bg-card border-b border-border px-6 py-4 shadow-sm wajir-header">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <img 
@@ -54,10 +55,10 @@ const Header = () => {
             className="w-12 h-12 object-contain"
           />
           <div>
-            <h2 className="text-2xl font-semibold text-blue-800">
+            <h2 className="text-2xl font-semibold text-primary-foreground">
               Welcome, {getUserDisplayName()}
             </h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-primary-foreground/80">
               {new Date().toLocaleDateString('en-US', { 
                 weekday: 'long', 
                 year: 'numeric', 
@@ -69,7 +70,9 @@ const Header = () => {
         </div>
         
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="sm" className="relative">
+          <ThemeToggle />
+          
+          <Button variant="ghost" size="sm" className="relative text-primary-foreground hover:bg-primary-foreground/10">
             <Bell className="h-4 w-4" />
             {unreadCount > 0 && (
               <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs">
@@ -80,8 +83,8 @@ const Header = () => {
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="flex items-center space-x-2">
-                <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium">
+              <Button variant="ghost" size="sm" className="flex items-center space-x-2 text-primary-foreground hover:bg-primary-foreground/10">
+                <div className="w-6 h-6 bg-wajir-green rounded-full flex items-center justify-center text-white text-xs font-medium">
                   {getUserDisplayName().charAt(0).toUpperCase()}
                 </div>
                 <span className="text-sm">{getUserDisplayName()}</span>

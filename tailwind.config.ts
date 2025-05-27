@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,12 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Wajir County theme colors
+				wajir: {
+					green: 'hsl(var(--wajir-green))',
+					blue: 'hsl(var(--wajir-blue))',
+					gold: 'hsl(var(--wajir-gold))'
 				}
 			},
 			borderRadius: {

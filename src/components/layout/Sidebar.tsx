@@ -26,8 +26,8 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 h-screen shadow-sm">
-      <div className="p-6 border-b border-gray-200">
+    <div className="w-64 bg-sidebar border-r border-sidebar-border h-screen shadow-sm">
+      <div className="p-6 border-b border-sidebar-border">
         <div className="flex items-center space-x-3">
           <img 
             src="https://wajir.go.ke/wp-content/uploads/2023/11/Wajir-County-Logo-1.png" 
@@ -35,8 +35,8 @@ const Sidebar = () => {
             className="w-10 h-10 object-contain"
           />
           <div>
-            <h1 className="text-lg font-bold text-blue-800">IT Help Desk</h1>
-            <p className="text-xs text-gray-600">Wajir County Government</p>
+            <h1 className="text-lg font-bold text-wajir-green">IT Help Desk</h1>
+            <p className="text-xs text-muted-foreground">Wajir County Government</p>
           </div>
         </div>
       </div>
@@ -50,8 +50,8 @@ const Sidebar = () => {
                 className={({ isActive }) =>
                   `flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700'
+                      ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-md'
+                      : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
                   }`
                 }
               >
