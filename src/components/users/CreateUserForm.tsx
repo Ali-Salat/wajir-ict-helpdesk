@@ -81,20 +81,22 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
 
       if (authError) throw authError;
 
-      // Update profile after signup
+      // Insert user data into the users table
       if (authData.user) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({
-            full_name: formData.fullName,
+        const { error: userError } = await supabase
+          .from('users')
+          .insert({
+            id: authData.user.id,
+            name: formData.fullName,
+            email: formData.email,
             role: formData.role,
-            department: formData.department || null,
-            skills: formData.skills.length > 0 ? formData.skills : null,
-          })
-          .eq('id', authData.user.id);
+            department: formData.department || 'General',
+            title: formData.skills.length > 0 ? formData.skills.join(', ') : null,
+          });
 
-        if (profileError) {
-          console.warn('Profile update error:', profileError);
+        if (userError) {
+          console.error('User insert error:', userError);
+          throw userError;
         }
       }
 
