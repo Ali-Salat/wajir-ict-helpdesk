@@ -9,49 +9,94 @@ export const useSupabaseAuth = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener first
+    // Get initial session
+    const getSession = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error('Error getting session:', error);
+      }
+      setSession(session);
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    };
+
+    getSession();
+
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
+        console.log('Auth state changed:', event, session);
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoading(false);
       }
     );
 
-    // Then check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setIsLoading(false);
-    });
-
     return () => subscription.unsubscribe();
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { data, error };
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      
+      if (error) {
+        console.error('Sign in error:', error);
+        return { data: null, error };
+      }
+      
+      console.log('Sign in successful:', data);
+      return { data, error: null };
+    } catch (error) {
+      console.error('Sign in exception:', error);
+      return { data: null, error: error as any };
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+          },
         },
-      },
-    });
-    return { data, error };
+      });
+      
+      if (error) {
+        console.error('Sign up error:', error);
+        return { data: null, error };
+      }
+      
+      console.log('Sign up successful:', data);
+      return { data, error: null };
+    } catch (error) {
+      console.error('Sign up exception:', error);
+      return { data: null, error: error as any };
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    return { error };
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Sign out error:', error);
+      }
+      return { error };
+    } catch (error) {
+      console.error('Sign out exception:', error);
+      return { error: error as any };
+    }
   };
 
   return {

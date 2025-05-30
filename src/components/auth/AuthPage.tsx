@@ -21,14 +21,36 @@ const AuthPage = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!email || !password) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please enter both email and password',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsLoading(true);
+    console.log('Attempting sign in with:', email);
 
     const { error } = await signIn(email, password);
     
     if (error) {
+      console.error('Sign in failed:', error);
+      let errorMessage = 'Invalid email or password';
+      
+      if (error.message.includes('Invalid login credentials')) {
+        errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+      } else if (error.message.includes('Email not confirmed')) {
+        errorMessage = 'Please check your email and click the confirmation link before signing in.';
+      } else if (error.message.includes('Too many requests')) {
+        errorMessage = 'Too many login attempts. Please wait a moment and try again.';
+      }
+      
       toast({
         title: 'Login Error',
-        description: error.message || 'Invalid email or password',
+        description: errorMessage,
         variant: 'destructive',
       });
     } else {
@@ -42,6 +64,15 @@ const AuthPage = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!email || !password || !fullName) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please fill in all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
     
     if (password !== confirmPassword) {
       toast({
@@ -66,9 +97,16 @@ const AuthPage = () => {
     const { error } = await signUp(email, password, fullName);
     
     if (error) {
+      console.error('Sign up failed:', error);
+      let errorMessage = error.message;
+      
+      if (error.message.includes('already registered')) {
+        errorMessage = 'An account with this email already exists. Please sign in instead.';
+      }
+      
       toast({
         title: 'Account Creation Error',
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive',
       });
     } else {
@@ -80,8 +118,8 @@ const AuthPage = () => {
     setIsLoading(false);
   };
 
-  const fillDemoCredentials = (email: string) => {
-    setEmail(email);
+  const fillDemoCredentials = (demoEmail: string) => {
+    setEmail(demoEmail);
     setPassword('Demo123!@#');
   };
 
@@ -96,18 +134,18 @@ const AuthPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
       <Card className="w-full max-w-md shadow-2xl border-0">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg p-2">
+          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-blue-50 to-white rounded-full flex items-center justify-center shadow-lg p-3 border-2 border-blue-100">
             <img 
-              src="/lovable-uploads/fc3c48c1-3ac9-4c40-b09b-49e47e5b91c7.png" 
+              src="/lovable-uploads/78b5eeef-e936-4b28-ae8e-42ab51b52dfa.png" 
               alt="Wajir County Logo"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain filter drop-shadow-sm"
             />
           </div>
           <CardTitle className="text-2xl font-bold text-wajir-green">
             IT Help Desk System
           </CardTitle>
-          <p className="text-lg font-bold text-wajir-blue">
-            <span className="font-extrabold text-xl">WAJIR COUNTY GOVERNMENT</span>
+          <p className="text-lg text-wajir-blue">
+            <span className="font-extrabold text-xl tracking-wide">WAJIR COUNTY GOVERNMENT</span>
           </p>
         </CardHeader>
         <CardContent>
@@ -128,6 +166,7 @@ const AuthPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     required
+                    autoComplete="email"
                   />
                 </div>
                 <div className="space-y-2">
@@ -141,6 +180,7 @@ const AuthPage = () => {
                       placeholder="Enter your password"
                       required
                       className="pr-10"
+                      autoComplete="current-password"
                     />
                     <button
                       type="button"
@@ -168,6 +208,7 @@ const AuthPage = () => {
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Enter your full name"
                     required
+                    autoComplete="name"
                   />
                 </div>
                 <div className="space-y-2">
@@ -179,6 +220,7 @@ const AuthPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     required
+                    autoComplete="email"
                   />
                 </div>
                 <div className="space-y-2">
@@ -193,6 +235,7 @@ const AuthPage = () => {
                       required
                       minLength={6}
                       className="pr-10"
+                      autoComplete="new-password"
                     />
                     <button
                       type="button"
@@ -214,6 +257,7 @@ const AuthPage = () => {
                       placeholder="Confirm your password"
                       required
                       className="pr-10"
+                      autoComplete="new-password"
                     />
                     <button
                       type="button"
@@ -238,31 +282,31 @@ const AuthPage = () => {
                 onClick={() => fillDemoCredentials('superuser@wajir.go.ke')}
                 className="block w-full text-left p-2 rounded text-wajir-green hover:text-wajir-green/80 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium transition-colors"
               >
-                📧 superuser@wajir.go.ke
+                📧 Super User
               </button>
               <button 
                 onClick={() => fillDemoCredentials('admin@wajir.go.ke')}
                 className="block w-full text-left p-2 rounded text-wajir-blue hover:text-wajir-blue/80 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                📧 admin@wajir.go.ke
+                📧 Admin
               </button>
               <button 
                 onClick={() => fillDemoCredentials('tech@wajir.go.ke')}
                 className="block w-full text-left p-2 rounded text-wajir-blue hover:text-wajir-blue/80 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                📧 tech@wajir.go.ke
+                📧 Technician
               </button>
               <button 
                 onClick={() => fillDemoCredentials('supervisor@wajir.go.ke')}
                 className="block w-full text-left p-2 rounded text-wajir-blue hover:text-wajir-blue/80 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                📧 supervisor@wajir.go.ke
+                📧 Supervisor
               </button>
               <button 
                 onClick={() => fillDemoCredentials('user@wajir.go.ke')}
                 className="block w-full text-left p-2 rounded text-wajir-blue hover:text-wajir-blue/80 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                📧 user@wajir.go.ke
+                📧 User
               </button>
               <div className="font-medium text-center mt-3 pt-2 border-t border-gray-200 dark:border-gray-600 text-wajir-green">
                 🔑 Password: Demo123!@#
