@@ -49,11 +49,11 @@ const Header = () => {
     <header className="bg-card border-b border-border px-6 py-4 shadow-sm wajir-header">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md">
+          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md p-2">
             <img 
-              src="/lovable-uploads/78d372ae-dd0e-4d1d-a648-9cfad21eba95.png" 
+              src="/lovable-uploads/fc3c48c1-3ac9-4c40-b09b-49e47e5b91c7.png" 
               alt="Wajir County Logo"
-              className="w-10 h-10 object-contain"
+              className="w-full h-full object-contain"
             />
           </div>
           <div>
