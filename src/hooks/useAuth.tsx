@@ -9,26 +9,35 @@ export const useAuth = () => {
   // Find the user in our users table to get role and other details
   const user = users.find(u => u.id === supabaseUser?.id);
 
+  // Check if user is super user
+  const isSuperUser = user?.email === 'ellisalat@gmail.com';
+
   const hasRole = (roles: string | string[]) => {
     if (!user) return false;
+    // Super user has all roles
+    if (isSuperUser) return true;
     const roleArray = Array.isArray(roles) ? roles : [roles];
     return roleArray.includes(user.role);
   };
 
   const canAccessAdminPanel = () => {
-    return hasRole(['admin']);
+    return isSuperUser || hasRole(['admin']);
   };
 
   const canManageUsers = () => {
-    return hasRole(['admin']);
+    return isSuperUser || hasRole(['admin']);
   };
 
   const canAssignTickets = () => {
-    return hasRole(['admin', 'approver']);
+    return isSuperUser || hasRole(['admin', 'approver']);
   };
 
   const canViewAllTickets = () => {
-    return hasRole(['admin', 'approver', 'technician']);
+    return isSuperUser || hasRole(['admin', 'approver', 'technician']);
+  };
+
+  const canManageSystem = () => {
+    return isSuperUser;
   };
 
   return {
@@ -36,10 +45,12 @@ export const useAuth = () => {
     token: null,
     isAuthenticated,
     isLoading,
+    isSuperUser,
     hasRole,
     canAccessAdminPanel,
     canManageUsers,
     canAssignTickets,
     canViewAllTickets,
+    canManageSystem,
   };
 };

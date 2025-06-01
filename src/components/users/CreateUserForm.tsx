@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,20 +38,23 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
 
   const wajirDepartments = [
     'Office of the Governor',
-    'Deputy Governor\'s Office',
-    'County Assembly',
+    'Deputy Governor\'s Office', 
     'County Secretary',
+    'County Assembly',
     'Health Services',
     'Education and ICT',
-    'Agriculture and Livestock',
-    'Water and Sanitation',
-    'Roads and Public Works',
-    'Trade and Industry',
-    'Youth and Sports',
-    'Gender and Social Services',
-    'Lands and Urban Planning',
+    'Agriculture and Livestock Development',
+    'Water, Environment and Natural Resources',
+    'Roads, Transport and Public Works',
+    'Trade, Industry and Tourism',
+    'Youth, Gender and Social Services',
+    'Lands, Housing and Urban Development',
     'Finance and Economic Planning',
-    'Public Service Management'
+    'Public Service and Administration',
+    'Emergency Services',
+    'Legal Affairs',
+    'Internal Audit',
+    'Communications'
   ];
 
   const handleSkillChange = (skill: string, checked: boolean) => {
@@ -129,9 +131,10 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
             onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
             placeholder="Choose from Islamic names"
             required
+            className="border-blue-200 focus:border-blue-500"
           />
           <div className="mt-2">
-            <Label className="text-xs text-gray-500">Islamic name examples:</Label>
+            <Label className="text-xs text-blue-500">Islamic name examples:</Label>
             <div className="flex flex-wrap gap-1 mt-1">
               {islamicNames.slice(0, 3).map((name) => (
                 <button
@@ -156,6 +159,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             placeholder="email@wajir.go.ke"
             required
+            className="border-blue-200 focus:border-blue-500"
           />
         </div>
       </div>
@@ -170,13 +174,14 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             placeholder="Strong password"
             required
+            className="border-blue-200 focus:border-blue-500"
           />
         </div>
 
         <div>
           <Label>Role</Label>
           <Select onValueChange={(value) => setFormData({ ...formData, role: value })}>
-            <SelectTrigger>
+            <SelectTrigger className="border-blue-200 focus:border-blue-500">
               <SelectValue placeholder="Select role" />
             </SelectTrigger>
             <SelectContent>
@@ -192,10 +197,10 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
       <div>
         <Label>Department</Label>
         <Select onValueChange={(value) => setFormData({ ...formData, department: value })}>
-          <SelectTrigger>
+          <SelectTrigger className="border-blue-200 focus:border-blue-500">
             <SelectValue placeholder="Select department" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-h-60 overflow-y-auto">
             {wajirDepartments.map((dept) => (
               <SelectItem key={dept} value={dept}>{dept}</SelectItem>
             ))}
