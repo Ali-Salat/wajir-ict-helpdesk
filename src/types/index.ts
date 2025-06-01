@@ -20,6 +20,8 @@ export interface Ticket {
   status: 'open' | 'in_progress' | 'resolved' | 'closed';
   requesterId: string;
   requesterName: string;
+  requesterDepartment: string;
+  requesterOffice?: string;
   assignedTechnicianId?: string;
   assignedTechnicianName?: string;
   comments: Comment[];

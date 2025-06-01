@@ -29,9 +29,6 @@ const Sidebar = () => {
 
   const wajirLinks = [
     { name: 'Wajir County Website', url: 'https://wajir.go.ke', external: true },
-    { name: 'County Assembly', url: 'https://wajircountyassembly.go.ke', external: true },
-    { name: 'E-Services Portal', url: 'https://services.wajir.go.ke', external: true },
-    { name: 'Procurement Portal', url: 'https://procurement.wajir.go.ke', external: true },
   ];
 
   return (
@@ -40,11 +37,11 @@ const Sidebar = () => {
         <div className="flex items-center space-x-3">
           <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md p-2">
             <img 
-              src="https://wajir.go.ke/wp-content/uploads/2021/03/coat-of-arms.png" 
+              src="/lovable-uploads/37b18ab6-301e-4fea-860d-a70e3041499a.png" 
               alt="Wajir County Coat of Arms"
               className="w-full h-full object-contain"
               onError={(e) => {
-                e.currentTarget.src = "/lovable-uploads/fc3c48c1-3ac9-4c40-b09b-49e47e5b91c7.png";
+                e.currentTarget.src = "https://wajir.go.ke/wp-content/uploads/2021/03/coat-of-arms.png";
               }}
             />
           </div>

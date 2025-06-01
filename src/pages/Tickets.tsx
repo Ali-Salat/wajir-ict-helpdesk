@@ -35,7 +35,9 @@ const Tickets = () => {
 
     // Search filter
     if (searchTerm && !ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) && 
-        !ticket.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+        !ticket.description.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !ticket.requesterDepartment?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !ticket.requesterOffice?.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
     }
 
@@ -115,7 +117,7 @@ const Tickets = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
-                  placeholder="Search tickets..."
+                  placeholder="Search tickets, departments, offices..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -202,9 +204,13 @@ const Tickets = () => {
                   
                   <p className="text-gray-600 mb-3 line-clamp-2">{ticket.description}</p>
                   
-                  <div className="flex items-center text-sm text-gray-500 space-x-4">
+                  <div className="flex items-center text-sm text-gray-500 space-x-4 flex-wrap">
                     <span>#{ticket.id}</span>
                     <span>By: {ticket.requesterName}</span>
+                    <span>Department: {ticket.requesterDepartment}</span>
+                    {ticket.requesterOffice && (
+                      <span>Office: {ticket.requesterOffice}</span>
+                    )}
                     {ticket.assignedTechnicianName && (
                       <span>Assigned to: {ticket.assignedTechnicianName}</span>
                     )}

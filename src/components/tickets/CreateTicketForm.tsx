@@ -24,8 +24,28 @@ const CreateTicketForm = ({ onClose }: CreateTicketFormProps) => {
     description: '',
     category: '',
     priority: '',
+    requesterDepartment: user?.department || '',
+    requesterOffice: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const wajirDepartments = [
+    'ICT Department',
+    'Finance Department',
+    'Human Resources Department',
+    'Administration Department',
+    'Health Department',
+    'Education Department',
+    'Agriculture Department',
+    'Water Department',
+    'Transport Department',
+    'Trade Department',
+    'Land & Physical Planning Department',
+    'Environment Department',
+    'Youth & Sports Department',
+    'Gender & Social Services Department',
+    'Public Service Board'
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +61,8 @@ const CreateTicketForm = ({ onClose }: CreateTicketFormProps) => {
         status: 'open',
         requesterId: user!.id,
         requesterName: user!.name,
+        requesterDepartment: formData.requesterDepartment,
+        requesterOffice: formData.requesterOffice,
         comments: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -88,6 +110,32 @@ const CreateTicketForm = ({ onClose }: CreateTicketFormProps) => {
           rows={4}
           required
         />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label>Department</Label>
+          <Select onValueChange={(value) => setFormData({ ...formData, requesterDepartment: value })}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select department" />
+            </SelectTrigger>
+            <SelectContent>
+              {wajirDepartments.map((dept) => (
+                <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <Label htmlFor="office">Office/Sub-Department</Label>
+          <Input
+            id="office"
+            value={formData.requesterOffice}
+            onChange={(e) => setFormData({ ...formData, requesterOffice: e.target.value })}
+            placeholder="e.g., Procurement Office"
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
