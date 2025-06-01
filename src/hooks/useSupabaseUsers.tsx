@@ -22,7 +22,7 @@ export const useSupabaseUsers = () => {
         id: user.id,
         email: user.email,
         name: user.name,
-        role: user.role,
+        role: user.role as 'admin' | 'approver' | 'technician' | 'requester',
         department: user.department,
         skills: user.title ? user.title.split(', ') : [],
         isActive: true,
