@@ -1,16 +1,13 @@
 
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-import { RootState } from '../store/store';
-import { initializeAuth } from '../store/slices/authSlice';
+import { useSupabaseAuth } from './useSupabaseAuth';
+import { useSupabaseUsers } from './useSupabaseUsers';
 
 export const useAuth = () => {
-  const dispatch = useDispatch();
-  const { user, token, isAuthenticated, isLoading } = useSelector((state: RootState) => state.auth);
+  const { user: supabaseUser, isAuthenticated, isLoading } = useSupabaseAuth();
+  const { users } = useSupabaseUsers();
 
-  useEffect(() => {
-    dispatch(initializeAuth());
-  }, [dispatch]);
+  // Find the user in our users table to get role and other details
+  const user = users.find(u => u.id === supabaseUser?.id);
 
   const hasRole = (roles: string | string[]) => {
     if (!user) return false;
@@ -35,8 +32,8 @@ export const useAuth = () => {
   };
 
   return {
-    user,
-    token,
+    user: user || null,
+    token: null,
     isAuthenticated,
     isLoading,
     hasRole,

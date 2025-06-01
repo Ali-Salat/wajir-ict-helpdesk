@@ -1,92 +1,33 @@
 
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus, Search, Edit, Trash2 } from 'lucide-react';
-import { RootState } from '../store/store';
-import { setUsers } from '../store/slices/usersSlice';
 import { useAuth } from '../hooks/useAuth';
-import { User } from '../types';
+import { useSupabaseUsers } from '../hooks/useSupabaseUsers';
 import CreateUserForm from '../components/users/CreateUserForm';
 
 const Users = () => {
-  const dispatch = useDispatch();
   const { canManageUsers } = useAuth();
-  const { users } = useSelector((state: RootState) => state.users);
+  const { users, isLoading, refetchUsers } = useSupabaseUsers();
   const [searchTerm, setSearchTerm] = useState('');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-
-  const fetchUsers = () => {
-    // Mock users data with Islamic names in English
-    const mockUsers: User[] = [
-      {
-        id: '0',
-        email: 'superuser@wajir.go.ke',
-        name: 'Mohamed Shahid',
-        role: 'admin',
-        department: 'ICT',
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: '1',
-        email: 'admin@wajir.go.ke',
-        name: 'Ahmad',
-        role: 'admin',
-        department: 'ICT',
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: '2',
-        email: 'tech@wajir.go.ke',
-        name: 'Ibrahim',
-        role: 'technician',
-        department: 'ICT',
-        skills: ['Hardware', 'Network', 'Software'],
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: '3',
-        email: 'user@wajir.go.ke',
-        name: 'Fatima',
-        role: 'requester',
-        department: 'Finance',
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: '4',
-        email: 'supervisor@wajir.go.ke',
-        name: 'Mohammed',
-        role: 'approver',
-        department: 'ICT',
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ];
-
-    dispatch(setUsers(mockUsers));
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, [dispatch]);
 
   if (!canManageUsers) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-500">You don't have permission to manage users.</p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -128,7 +69,10 @@ const Users = () => {
             </DialogHeader>
             <CreateUserForm 
               onClose={() => setIsCreateDialogOpen(false)} 
-              onUserCreated={fetchUsers}
+              onUserCreated={() => {
+                refetchUsers();
+                setIsCreateDialogOpen(false);
+              }}
             />
           </DialogContent>
         </Dialog>
