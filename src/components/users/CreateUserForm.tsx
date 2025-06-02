@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -70,6 +71,8 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
     setIsSubmitting(true);
 
     try {
+      console.log('Creating user with data:', formData);
+
       // Create user with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -81,11 +84,16 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
         },
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        console.error('Auth error:', authError);
+        throw authError;
+      }
+
+      console.log('Auth user created:', authData);
 
       // Insert user data into the users table
       if (authData.user) {
-        const { error: userError } = await supabase
+        const { data: userData, error: userError } = await supabase
           .from('users')
           .insert({
             id: authData.user.id,
@@ -94,12 +102,16 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
             role: formData.role,
             department: formData.department || 'General',
             title: formData.skills.length > 0 ? formData.skills.join(', ') : null,
-          });
+          })
+          .select()
+          .single();
 
         if (userError) {
           console.error('User insert error:', userError);
           throw userError;
         }
+
+        console.log('User data inserted:', userData);
       }
 
       toast({
@@ -110,6 +122,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
       onUserCreated();
       onClose();
     } catch (error: any) {
+      console.error('Error creating user:', error);
       toast({
         title: 'Error creating user',
         description: error.message || 'Please try again',
@@ -129,7 +142,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
             id="fullName"
             value={formData.fullName}
             onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-            placeholder="Choose from Islamic names"
+            placeholder="Enter full name"
             required
             className="border-blue-200 focus:border-blue-500"
           />
@@ -174,13 +187,14 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             placeholder="Strong password"
             required
+            minLength={6}
             className="border-blue-200 focus:border-blue-500"
           />
         </div>
 
         <div>
           <Label>Role</Label>
-          <Select onValueChange={(value) => setFormData({ ...formData, role: value })}>
+          <Select onValueChange={(value) => setFormData({ ...formData, role: value })} required>
             <SelectTrigger className="border-blue-200 focus:border-blue-500">
               <SelectValue placeholder="Select role" />
             </SelectTrigger>
@@ -196,7 +210,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
 
       <div>
         <Label>Department</Label>
-        <Select onValueChange={(value) => setFormData({ ...formData, department: value })}>
+        <Select onValueChange={(value) => setFormData({ ...formData, department: value })} required>
           <SelectTrigger className="border-blue-200 focus:border-blue-500">
             <SelectValue placeholder="Select department" />
           </SelectTrigger>

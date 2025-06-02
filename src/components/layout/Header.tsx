@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Bell, LogOut, User, Shield, Crown } from 'lucide-react';
+import { Bell, LogOut, User, Crown } from 'lucide-react';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import { useAuth } from '@/hooks/useAuth';
 import { useSelector } from 'react-redux';
@@ -41,11 +41,11 @@ const Header = () => {
   };
 
   const getUserDisplayName = () => {
+    if (user?.email === 'ellisalat@gmail.com') {
+      return 'Ali Salat';
+    }
     if (user?.user_metadata?.full_name) {
       return user.user_metadata.full_name;
-    }
-    if (user?.email === 'ellisalat@gmail.com') {
-      return 'Ellis A. Lat';
     }
     return user?.email?.split('@')[0] || 'User';
   };
@@ -69,13 +69,6 @@ const Header = () => {
     <header className="bg-gradient-to-r from-slate-800 via-blue-900 to-indigo-900 border-b border-slate-700 px-6 py-4 shadow-lg">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg p-2 border border-white/20">
-            <img 
-              src="/lovable-uploads/37b18ab6-301e-4fea-860d-a70e3041499a.png" 
-              alt="Wajir County Logo"
-              className="w-full h-full object-contain filter brightness-0 invert"
-            />
-          </div>
           <div>
             <div className="flex items-center space-x-2">
               <h2 className="text-xl font-semibold text-white">
