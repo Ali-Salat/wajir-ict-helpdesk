@@ -6,25 +6,25 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 210 20% 15%;
+    --foreground: 215 20% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 20% 15%;
+    --card-foreground: 215 20% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 20% 15%;
+    --popover-foreground: 215 20% 15%;
 
-    /* Wajir County Flag Colors - Light Theme */
-    --primary: 142 76% 36%; /* Green from flag */
+    /* Modern Professional Theme - Light Mode */
+    --primary: 217 91% 60%; /* Modern Blue */
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 210 20% 15%;
+    --secondary: 215 27% 96%;
+    --secondary-foreground: 215 20% 15%;
 
-    --muted: 210 40% 96%;
+    --muted: 215 27% 96%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 210 100% 50%; /* Blue from flag */
+    --accent: 217 91% 60%; /* Modern Blue */
     --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84% 60%;
@@ -32,69 +32,69 @@
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 142 76% 36%;
+    --ring: 217 91% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    /* Sidebar colors inspired by flag */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 210 20% 15%;
-    --sidebar-primary: 142 76% 36%;
+    /* Professional Sidebar */
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 213 31% 91%;
+    --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 142 76% 96%;
-    --sidebar-accent-foreground: 142 76% 20%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 142 76% 36%;
+    --sidebar-accent: 216 34% 17%;
+    --sidebar-accent-foreground: 213 31% 91%;
+    --sidebar-border: 216 34% 17%;
+    --sidebar-ring: 217 91% 60%;
 
-    /* Wajir theme colors */
+    /* Wajir theme colors - Enhanced */
     --wajir-green: 142 76% 36%;
-    --wajir-blue: 210 100% 50%;
+    --wajir-blue: 217 91% 60%;
     --wajir-gold: 45 100% 60%;
   }
 
   .dark {
-    --background: 210 20% 8%;
-    --foreground: 0 0% 95%;
+    --background: 222 47% 11%;
+    --foreground: 213 31% 91%;
 
-    --card: 210 20% 10%;
-    --card-foreground: 0 0% 95%;
+    --card: 222 47% 11%;
+    --card-foreground: 213 31% 91%;
 
-    --popover: 210 20% 10%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 213 31% 91%;
 
-    /* Wajir County Flag Colors - Dark Theme */
-    --primary: 142 76% 45%; /* Brighter green for dark mode */
-    --primary-foreground: 210 20% 8%;
+    /* Modern Professional Theme - Dark Mode */
+    --primary: 217 91% 65%; /* Brighter modern blue for dark mode */
+    --primary-foreground: 222 47% 11%;
 
-    --secondary: 210 20% 15%;
-    --secondary-foreground: 0 0% 95%;
+    --secondary: 216 34% 17%;
+    --secondary-foreground: 213 31% 91%;
 
-    --muted: 210 20% 15%;
+    --muted: 216 34% 17%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 210 100% 60%; /* Brighter blue for dark mode */
-    --accent-foreground: 210 20% 8%;
+    --accent: 217 91% 65%; /* Brighter modern blue for dark mode */
+    --accent-foreground: 222 47% 11%;
 
     --destructive: 0 62% 50%;
-    --destructive-foreground: 0 0% 95%;
+    --destructive-foreground: 213 31% 91%;
 
-    --border: 210 20% 20%;
-    --input: 210 20% 20%;
-    --ring: 142 76% 45%;
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --ring: 217 91% 65%;
 
-    /* Dark sidebar with flag colors */
-    --sidebar-background: 210 20% 12%;
-    --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 142 76% 45%;
-    --sidebar-primary-foreground: 210 20% 8%;
-    --sidebar-accent: 210 20% 18%;
-    --sidebar-accent-foreground: 0 0% 90%;
-    --sidebar-border: 210 20% 20%;
-    --sidebar-ring: 142 76% 45%;
+    /* Dark sidebar with modern colors */
+    --sidebar-background: 222 47% 8%;
+    --sidebar-foreground: 213 31% 91%;
+    --sidebar-primary: 217 91% 65%;
+    --sidebar-primary-foreground: 222 47% 8%;
+    --sidebar-accent: 216 34% 15%;
+    --sidebar-accent-foreground: 213 31% 91%;
+    --sidebar-border: 216 34% 15%;
+    --sidebar-ring: 217 91% 65%;
 
-    /* Dark theme Wajir colors */
+    /* Dark theme colors */
     --wajir-green: 142 76% 45%;
-    --wajir-blue: 210 100% 60%;
+    --wajir-blue: 217 91% 65%;
     --wajir-gold: 45 100% 70%;
   }
 }
@@ -106,31 +106,107 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
   }
 }
 
-/* Arabic text styling */
-.rtl {
-  direction: rtl;
-  text-align: right;
+/* Professional header styling */
+.professional-header {
+  background: linear-gradient(135deg, hsl(222, 47%, 11%) 0%, hsl(217, 91%, 25%) 50%, hsl(215, 83%, 30%) 100%);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
 }
 
-/* Wajir County Government styling */
-.wajir-header {
-  background: linear-gradient(135deg, hsl(var(--wajir-green)) 0%, hsl(var(--wajir-blue)) 100%);
-}
-
-.wajir-card {
+/* Enhanced card styling */
+.professional-card {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid hsl(var(--wajir-green) / 0.2);
+  border: 1px solid hsl(var(--border));
+  background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.95) 100%);
 }
 
-.wajir-accent {
-  color: hsl(var(--wajir-gold));
+/* Modern button enhancements */
+.modern-button {
+  background: linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(217, 91%, 55%) 100%);
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.modern-button:hover {
+  background: linear-gradient(135deg, hsl(217, 91%, 55%) 0%, hsl(217, 91%, 50%) 100%);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Glass morphism effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Professional animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-slide-in-up {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.3s ease-out;
 }
 
 /* Theme transition */
 * {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Enhanced focus states */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
+}
+
+/* Professional status indicators */
+.status-indicator {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.status-open {
+  @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400;
+}
+
+.status-in-progress {
+  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400;
+}
+
+.status-resolved {
+  @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+}
+
+.status-closed {
+  @apply bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400;
 }

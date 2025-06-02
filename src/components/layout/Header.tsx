@@ -9,8 +9,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Bell, LogOut, User } from 'lucide-react';
+import { Bell, LogOut, User, Shield } from 'lucide-react';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { toast } from '@/hooks/use-toast';
@@ -19,6 +20,7 @@ import { ThemeToggle } from '@/components/theme/ThemeToggle';
 const Header = () => {
   const navigate = useNavigate();
   const { user, signOut } = useSupabaseAuth();
+  const { isSuperUser } = useAuth();
   const { unreadCount } = useSelector((state: RootState) => state.notifications);
 
   const handleLogout = async () => {
@@ -45,36 +47,55 @@ const Header = () => {
     return user?.email?.split('@')[0] || 'User';
   };
 
+  const getUserRole = () => {
+    if (isSuperUser) return 'Super Administrator';
+    if (user?.email?.includes('admin')) return 'System Administrator';
+    if (user?.email?.includes('tech')) return 'IT Technician';
+    if (user?.email?.includes('supervisor')) return 'IT Supervisor';
+    return 'End User';
+  };
+
   return (
-    <header className="bg-card border-b border-border px-6 py-4 shadow-sm wajir-header">
+    <header className="bg-gradient-to-r from-slate-800 via-blue-900 to-indigo-900 border-b border-slate-700 px-6 py-4 shadow-lg">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md p-2">
+          <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg p-2 border border-white/20">
             <img 
-              src="/lovable-uploads/fc3c48c1-3ac9-4c40-b09b-49e47e5b91c7.png" 
+              src="/lovable-uploads/37b18ab6-301e-4fea-860d-a70e3041499a.png" 
               alt="Wajir County Logo"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain filter brightness-0 invert"
             />
           </div>
           <div>
-            <h2 className="text-2xl font-semibold text-primary-foreground">
-              Welcome, {getUserDisplayName()}
-            </h2>
-            <p className="text-sm text-primary-foreground/80 font-bold">
-              <span className="font-extrabold">WAJIR COUNTY GOVERNMENT</span> • {new Date().toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              })}
-            </p>
+            <div className="flex items-center space-x-2">
+              <h2 className="text-xl font-semibold text-white">
+                Welcome, {getUserDisplayName()}
+              </h2>
+              {isSuperUser && (
+                <Shield className="h-5 w-5 text-yellow-400" />
+              )}
+            </div>
+            <div className="flex flex-col md:flex-row md:items-center md:space-x-2 text-sm text-blue-100">
+              <span className="font-medium">{getUserRole()}</span>
+              <span className="hidden md:inline">•</span>
+              <span className="font-bold">WAJIR COUNTY GOVERNMENT</span>
+              <span className="hidden md:inline">•</span>
+              <span className="text-blue-200">
+                {new Date().toLocaleDateString('en-US', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </span>
+            </div>
           </div>
         </div>
         
         <div className="flex items-center space-x-4">
           <ThemeToggle />
           
-          <Button variant="ghost" size="sm" className="relative text-primary-foreground hover:bg-primary-foreground/10">
+          <Button variant="ghost" size="sm" className="relative text-white hover:bg-white/10 border border-white/20">
             <Bell className="h-4 w-4" />
             {unreadCount > 0 && (
               <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs">
@@ -85,17 +106,20 @@ const Header = () => {
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="flex items-center space-x-2 text-primary-foreground hover:bg-primary-foreground/10">
-                <div className="w-6 h-6 bg-wajir-green rounded-full flex items-center justify-center text-white text-xs font-medium">
+              <Button variant="ghost" size="sm" className="flex items-center space-x-3 text-white hover:bg-white/10 border border-white/20 px-4">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md">
                   {getUserDisplayName().charAt(0).toUpperCase()}
                 </div>
-                <span className="text-sm">{getUserDisplayName()}</span>
+                <div className="text-left">
+                  <div className="text-sm font-medium">{getUserDisplayName()}</div>
+                  <div className="text-xs text-blue-200">{getUserRole()}</div>
+                </div>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem onClick={() => navigate('/settings')}>
                 <User className="mr-2 h-4 w-4" />
-                Profile
+                Profile Settings
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
