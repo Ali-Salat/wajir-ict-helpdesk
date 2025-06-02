@@ -24,25 +24,47 @@ const Header = () => {
   const { unreadCount } = useSelector((state: RootState) => state.notifications);
 
   const handleLogout = async () => {
-    const { error } = await signOut();
-    if (error) {
+    try {
+      const { error } = await signOut();
+      if (error) {
+        console.error('Logout error:', error);
+        toast({
+          title: 'Logout Error',
+          description: 'An error occurred during logout',
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Logged out successfully',
+          description: 'See you soon!',
+        });
+        navigate('/auth');
+      }
+    } catch (error) {
+      console.error('Logout exception:', error);
       toast({
         title: 'Logout Error',
-        description: 'An error occurred during logout',
+        description: 'An unexpected error occurred',
         variant: 'destructive',
       });
-    } else {
-      toast({
-        title: 'Logged out successfully',
-        description: 'See you soon!',
-      });
-      navigate('/auth');
     }
   };
 
   const getUserDisplayName = () => {
     if (user?.email === 'ellisalat@gmail.com') {
       return 'Ali Salat';
+    }
+    if (user?.email === 'yussuf@wajir.go.ke') {
+      return 'Yussuf Abdullahi';
+    }
+    if (user?.email === 'abdille@wajir.go.ke') {
+      return 'Abdille Osman';
+    }
+    if (user?.email === 'mabdisalaam@wajir.go.ke') {
+      return 'Mohamed Abdisalaam';
+    }
+    if (user?.email === 'mshahid@wajir.go.ke') {
+      return 'Mohamed Shahid';
     }
     if (user?.user_metadata?.full_name) {
       return user.user_metadata.full_name;
@@ -52,6 +74,10 @@ const Header = () => {
 
   const getUserRole = () => {
     if (user?.email === 'ellisalat@gmail.com') return 'System Super Administrator';
+    if (user?.email === 'mshahid@wajir.go.ke') return 'System Administrator';
+    if (user?.email === 'yussuf@wajir.go.ke') return 'IT Technician';
+    if (user?.email === 'mabdisalaam@wajir.go.ke') return 'IT Technician';
+    if (user?.email === 'abdille@wajir.go.ke') return 'IT Supervisor';
     if (user?.email?.includes('admin')) return 'System Administrator';
     if (user?.email?.includes('tech')) return 'IT Technician';
     if (user?.email?.includes('supervisor')) return 'IT Supervisor';

@@ -37,7 +37,7 @@ const Sidebar = () => {
         <div className="flex items-center space-x-3">
           <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md p-2">
             <img 
-              src="/lovable-uploads/37b18ab6-301e-4fea-860d-a70e3041499a.png" 
+              src="/lovable-uploads/0235ab6a-0d67-467b-92bc-7a11d4edf9ec.png" 
               alt="Wajir County Coat of Arms"
               className="w-full h-full object-contain"
               onError={(e) => {
@@ -80,7 +80,7 @@ const Sidebar = () => {
 
         <div className="mt-8 pt-4 border-t border-blue-700">
           <h3 className="text-xs font-semibold text-blue-300 uppercase tracking-wider px-4 mb-3">
-            County Links
+            County Resources
           </h3>
           <ul className="space-y-1">
             {wajirLinks.map((link) => (
@@ -88,10 +88,10 @@ const Sidebar = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="w-full justify-start text-blue-200 hover:text-white hover:bg-blue-700 text-xs"
+                  className="w-full justify-start text-blue-100 hover:text-white hover:bg-blue-700 text-sm px-4 py-2"
                   onClick={() => window.open(link.url, '_blank')}
                 >
-                  <ExternalLink className="mr-2 h-3 w-3" />
+                  <ExternalLink className="mr-2 h-4 w-4" />
                   {link.name}
                 </Button>
               </li>

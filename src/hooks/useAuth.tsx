@@ -12,6 +12,9 @@ export const useAuth = () => {
   // Check if user is super user - ellisalat@gmail.com has all privileges
   const isSuperUser = supabaseUser?.email === 'ellisalat@gmail.com';
 
+  // Check if user is admin - includes super user and specific admin emails
+  const isAdmin = isSuperUser || supabaseUser?.email === 'mshahid@wajir.go.ke';
+
   const hasRole = (roles: string | string[]) => {
     // Super user has all roles automatically
     if (isSuperUser) return true;
@@ -21,23 +24,23 @@ export const useAuth = () => {
   };
 
   const canAccessAdminPanel = () => {
-    return isSuperUser || hasRole(['admin']);
+    return isAdmin;
   };
 
   const canManageUsers = () => {
-    return isSuperUser || hasRole(['admin']);
+    return isAdmin;
   };
 
   const canAssignTickets = () => {
-    return isSuperUser || hasRole(['admin', 'approver']);
+    return isAdmin || hasRole(['approver', 'technician']);
   };
 
   const canViewAllTickets = () => {
-    return isSuperUser || hasRole(['admin', 'approver', 'technician']);
+    return isAdmin || hasRole(['approver', 'technician']);
   };
 
   const canManageSystem = () => {
-    return isSuperUser || hasRole(['admin']);
+    return isAdmin;
   };
 
   const canCreateTickets = () => {
@@ -45,11 +48,11 @@ export const useAuth = () => {
   };
 
   const canEditTickets = () => {
-    return isSuperUser || hasRole(['admin', 'technician']);
+    return isAdmin || hasRole(['technician']);
   };
 
   const canDeleteTickets = () => {
-    return isSuperUser || hasRole(['admin']);
+    return isAdmin;
   };
 
   return {
@@ -59,6 +62,7 @@ export const useAuth = () => {
     isAuthenticated,
     isLoading,
     isSuperUser,
+    isAdmin,
     hasRole,
     canAccessAdminPanel,
     canManageUsers,

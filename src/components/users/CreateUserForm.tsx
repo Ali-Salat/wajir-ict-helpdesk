@@ -26,15 +26,11 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
 
   const availableSkills = ['Hardware', 'Software', 'Network', 'Email', 'Phone', 'Database', 'Security'];
 
-  const islamicNames = [
-    'Ahmad Hassan',
-    'Fatima Omar',
-    'Mohammed Ali',
-    'Aisha Ibrahim',
-    'Ali Ahmed',
-    'Khadija Yusuf',
-    'Abdullah Omar',
-    'Zainab Ahmad'
+  const systemUsers = [
+    { name: 'Yussuf Abdullahi', email: 'yussuf@wajir.go.ke', role: 'technician' },
+    { name: 'Abdille Osman', email: 'abdille@wajir.go.ke', role: 'approver' },
+    { name: 'Mohamed Abdisalaam', email: 'mabdisalaam@wajir.go.ke', role: 'technician' },
+    { name: 'Mohamed Shahid', email: 'mshahid@wajir.go.ke', role: 'admin' }
   ];
 
   const wajirDepartments = [
@@ -73,6 +69,9 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
     try {
       console.log('Creating user with data:', formData);
 
+      // Check if this is a system user that shouldn't require email verification
+      const isSystemUser = systemUsers.some(user => user.email === formData.email);
+
       // Create user with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -81,6 +80,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
           data: {
             full_name: formData.fullName,
           },
+          emailRedirectTo: isSystemUser ? undefined : `${window.location.origin}/`,
         },
       });
 
@@ -112,11 +112,26 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
         }
 
         console.log('User data inserted:', userData);
+
+        // If this is a system user, automatically confirm their email
+        if (isSystemUser) {
+          try {
+            const { error: confirmError } = await supabase.auth.admin.updateUserById(
+              authData.user.id,
+              { email_confirm: true }
+            );
+            if (confirmError) {
+              console.warn('Could not auto-confirm email:', confirmError);
+            }
+          } catch (confirmError) {
+            console.warn('Could not auto-confirm email:', confirmError);
+          }
+        }
       }
 
       toast({
         title: 'User created successfully',
-        description: `${formData.fullName} has been added to the system`,
+        description: `${formData.fullName} has been added to the system${isSystemUser ? ' (No email verification required)' : ''}`,
       });
 
       onUserCreated();
@@ -133,8 +148,35 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
     }
   };
 
+  const fillSystemUser = (user: any) => {
+    setFormData({
+      ...formData,
+      fullName: user.name,
+      email: user.email,
+      role: user.role,
+      department: 'Education and ICT',
+      skills: user.role === 'technician' ? ['Hardware', 'Software', 'Network'] : [],
+    });
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+        <Label className="text-sm font-medium text-blue-800 mb-2 block">Quick Fill System Users:</Label>
+        <div className="grid grid-cols-2 gap-2">
+          {systemUsers.map((user) => (
+            <button
+              key={user.email}
+              type="button"
+              onClick={() => fillSystemUser(user)}
+              className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200 text-left"
+            >
+              {user.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label htmlFor="fullName">Full Name</Label>
@@ -146,21 +188,6 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
             required
             className="border-blue-200 focus:border-blue-500"
           />
-          <div className="mt-2">
-            <Label className="text-xs text-blue-500">Islamic name examples:</Label>
-            <div className="flex flex-wrap gap-1 mt-1">
-              {islamicNames.slice(0, 3).map((name) => (
-                <button
-                  key={name}
-                  type="button"
-                  onClick={() => setFormData({ ...formData, fullName: name })}
-                  className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200"
-                >
-                  {name}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         <div>
@@ -194,7 +221,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
 
         <div>
           <Label>Role</Label>
-          <Select onValueChange={(value) => setFormData({ ...formData, role: value })} required>
+          <Select onValueChange={(value) => setFormData({ ...formData, role: value })} value={formData.role} required>
             <SelectTrigger className="border-blue-200 focus:border-blue-500">
               <SelectValue placeholder="Select role" />
             </SelectTrigger>
@@ -210,7 +237,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
 
       <div>
         <Label>Department</Label>
-        <Select onValueChange={(value) => setFormData({ ...formData, department: value })} required>
+        <Select onValueChange={(value) => setFormData({ ...formData, department: value })} value={formData.department} required>
           <SelectTrigger className="border-blue-200 focus:border-blue-500">
             <SelectValue placeholder="Select department" />
           </SelectTrigger>
