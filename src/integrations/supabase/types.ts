@@ -18,6 +18,7 @@ export type Database = {
           description: string
           id: string
           priority: string
+          specific_office: string
           status: string
           submitted_by_department: string
           submitted_by_email: string
@@ -34,6 +35,7 @@ export type Database = {
           description: string
           id?: string
           priority: string
+          specific_office?: string
           status: string
           submitted_by_department: string
           submitted_by_email: string
@@ -50,6 +52,7 @@ export type Database = {
           description?: string
           id?: string
           priority?: string
+          specific_office?: string
           status?: string
           submitted_by_department?: string
           submitted_by_email?: string

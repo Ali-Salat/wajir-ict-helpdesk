@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -36,6 +35,8 @@ const Dashboard = () => {
         status: 'open',
         requesterId: '3',
         requesterName: 'Jane Requester',
+        requesterDepartment: 'Finance Department',
+        requesterOffice: 'Procurement Office',
         comments: [],
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
@@ -49,6 +50,8 @@ const Dashboard = () => {
         status: 'in_progress',
         requesterId: '3',
         requesterName: 'Jane Requester',
+        requesterDepartment: 'ICT Department',
+        requesterOffice: 'Systems Administration',
         assignedTechnicianId: '2',
         assignedTechnicianName: 'John Technician',
         comments: [],
@@ -64,6 +67,8 @@ const Dashboard = () => {
         status: 'resolved',
         requesterId: '3',
         requesterName: 'Jane Requester',
+        requesterDepartment: 'Health Department',
+        requesterOffice: 'Medical Records',
         assignedTechnicianId: '2',
         assignedTechnicianName: 'John Technician',
         comments: [],
