@@ -291,8 +291,8 @@ const AuthPage = () => {
                   onClick={() => fillDemoCredentials('ellisalat@gmail.com')}
                   className="block w-full text-left p-3 rounded-lg bg-gradient-to-r from-yellow-50 to-amber-50 hover:from-yellow-100 hover:to-amber-100 dark:from-yellow-900/20 dark:to-amber-900/20 border border-yellow-200 dark:border-yellow-700 font-semibold text-yellow-800 dark:text-yellow-200 transition-all duration-200"
                 >
-                  🛡️ Super Administrator
-                  <span className="block text-xs text-yellow-600 dark:text-yellow-300 mt-1">ellisalat@gmail.com</span>
+                  👑 System Super Administrator
+                  <span className="block text-xs text-yellow-600 dark:text-yellow-300 mt-1">ellisalat@gmail.com - All System Rights</span>
                 </button>
                 <button 
                   onClick={() => fillDemoCredentials('admin@wajir.go.ke')}

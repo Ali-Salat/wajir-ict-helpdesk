@@ -9,13 +9,13 @@ export const useAuth = () => {
   // Find the user in our users table to get role and other details
   const user = users.find(u => u.id === supabaseUser?.id);
 
-  // Check if user is super user
-  const isSuperUser = user?.email === 'ellisalat@gmail.com';
+  // Check if user is super user - ellisalat@gmail.com has all privileges
+  const isSuperUser = supabaseUser?.email === 'ellisalat@gmail.com';
 
   const hasRole = (roles: string | string[]) => {
-    if (!user) return false;
-    // Super user has all roles
+    // Super user has all roles automatically
     if (isSuperUser) return true;
+    if (!user) return false;
     const roleArray = Array.isArray(roles) ? roles : [roles];
     return roleArray.includes(user.role);
   };
@@ -37,11 +37,24 @@ export const useAuth = () => {
   };
 
   const canManageSystem = () => {
-    return isSuperUser;
+    return isSuperUser || hasRole(['admin']);
+  };
+
+  const canCreateTickets = () => {
+    return true; // All authenticated users can create tickets
+  };
+
+  const canEditTickets = () => {
+    return isSuperUser || hasRole(['admin', 'technician']);
+  };
+
+  const canDeleteTickets = () => {
+    return isSuperUser || hasRole(['admin']);
   };
 
   return {
     user: user || null,
+    supabaseUser,
     token: null,
     isAuthenticated,
     isLoading,
@@ -52,5 +65,8 @@ export const useAuth = () => {
     canAssignTickets,
     canViewAllTickets,
     canManageSystem,
+    canCreateTickets,
+    canEditTickets,
+    canDeleteTickets,
   };
 };

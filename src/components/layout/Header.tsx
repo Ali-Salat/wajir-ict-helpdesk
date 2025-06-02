@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Bell, LogOut, User, Shield } from 'lucide-react';
+import { Bell, LogOut, User, Shield, Crown } from 'lucide-react';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import { useAuth } from '@/hooks/useAuth';
 import { useSelector } from 'react-redux';
@@ -44,15 +44,25 @@ const Header = () => {
     if (user?.user_metadata?.full_name) {
       return user.user_metadata.full_name;
     }
+    if (user?.email === 'ellisalat@gmail.com') {
+      return 'Ellis A. Lat';
+    }
     return user?.email?.split('@')[0] || 'User';
   };
 
   const getUserRole = () => {
-    if (isSuperUser) return 'Super Administrator';
+    if (user?.email === 'ellisalat@gmail.com') return 'System Super Administrator';
     if (user?.email?.includes('admin')) return 'System Administrator';
     if (user?.email?.includes('tech')) return 'IT Technician';
     if (user?.email?.includes('supervisor')) return 'IT Supervisor';
     return 'End User';
+  };
+
+  const getProfileImage = () => {
+    if (user?.email === 'ellisalat@gmail.com') {
+      return '/lovable-uploads/ellis-profile.jpg';
+    }
+    return null;
   };
 
   return (
@@ -72,11 +82,16 @@ const Header = () => {
                 Welcome, {getUserDisplayName()}
               </h2>
               {isSuperUser && (
-                <Shield className="h-5 w-5 text-yellow-400" />
+                <div className="flex items-center space-x-1">
+                  <Crown className="h-5 w-5 text-yellow-400" />
+                  <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400">
+                    SUPER USER
+                  </Badge>
+                </div>
               )}
             </div>
             <div className="flex flex-col md:flex-row md:items-center md:space-x-2 text-sm text-blue-100">
-              <span className="font-medium">{getUserRole()}</span>
+              <span className="font-medium text-yellow-200">{getUserRole()}</span>
               <span className="hidden md:inline">•</span>
               <span className="font-bold">WAJIR COUNTY GOVERNMENT</span>
               <span className="hidden md:inline">•</span>
@@ -107,8 +122,18 @@ const Header = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="flex items-center space-x-3 text-white hover:bg-white/10 border border-white/20 px-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md">
-                  {getUserDisplayName().charAt(0).toUpperCase()}
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md overflow-hidden border-2 border-white/30">
+                  {getProfileImage() ? (
+                    <img 
+                      src={getProfileImage()} 
+                      alt={getUserDisplayName()}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                      {getUserDisplayName().charAt(0).toUpperCase()}
+                    </div>
+                  )}
                 </div>
                 <div className="text-left">
                   <div className="text-sm font-medium">{getUserDisplayName()}</div>
