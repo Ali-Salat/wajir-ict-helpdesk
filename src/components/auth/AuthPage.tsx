@@ -127,12 +127,13 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%239C92AC\" fill-opacity=\"0.1\"%3E%3Ccircle cx=\"7\" cy=\"7\" r=\"1\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+      <div className="absolute inset-0 opacity-20">
+        <div className="w-full h-full" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Ccircle cx='7' cy='7' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+        }} />
+      </div>
       
-      {/* Main Content */}
       <div className="relative flex min-h-screen">
-        {/* Left Panel - Branding & Features */}
         <div className="hidden lg:flex lg:w-1/2 flex-col justify-center px-12 text-white">
           <div className="max-w-lg">
             <div className="flex items-center space-x-4 mb-8">
@@ -157,7 +158,6 @@ const AuthPage = () => {
               Professional service delivery, advanced ticketing, and intelligent automation.
             </p>
             
-            {/* Feature Highlights */}
             <div className="space-y-6">
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
@@ -199,7 +199,6 @@ const AuthPage = () => {
           </div>
         </div>
 
-        {/* Right Panel - Login Form */}
         <div className="flex-1 lg:w-1/2 flex items-center justify-center p-8">
           <Card className="w-full max-w-md shadow-2xl border-0 bg-white/95 backdrop-blur-lg">
             <CardHeader className="text-center space-y-6 pb-8">
