@@ -8,7 +8,7 @@ interface UsersState {
   isLoading: boolean;
 }
 
-// Updated initial state with real system users
+// Updated initial state with real system users and Somali names
 const initialSystemUsers: User[] = [
   {
     id: '1',
@@ -76,6 +76,73 @@ const initialSystemUsers: User[] = [
     createdAt: '2024-01-01T00:00:00Z',
     updatedAt: '2024-01-01T00:00:00Z',
   },
+  // Sample requestors with Somali names
+  {
+    id: '7',
+    email: 'farah.hassan@wajir.go.ke',
+    name: 'Farah Hassan',
+    role: 'requester',
+    department: 'Finance and Economic Planning',
+    skills: [],
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: '8',
+    email: 'ahmed.ali@wajir.go.ke',
+    name: 'Ahmed Ali',
+    role: 'requester',
+    department: 'Health Services',
+    skills: [],
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: '9',
+    email: 'maryan.ibrahim@wajir.go.ke',
+    name: 'Maryan Ibrahim',
+    role: 'requester',
+    department: 'Education and ICT',
+    skills: [],
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: '10',
+    email: 'omar.mohamed@wajir.go.ke',
+    name: 'Omar Mohamed',
+    role: 'requester',
+    department: 'Agriculture and Livestock Development',
+    skills: [],
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: '11',
+    email: 'sahra.abdi@wajir.go.ke',
+    name: 'Sahra Abdi',
+    role: 'requester',
+    department: 'Youth, Gender and Social Services',
+    skills: [],
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: '12',
+    email: 'hassan.omar@wajir.go.ke',
+    name: 'Hassan Omar',
+    role: 'requester',
+    department: 'Roads, Transport and Public Works',
+    skills: [],
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  }
 ];
 
 const initialState: UsersState = {

@@ -18,7 +18,7 @@ const TicketDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, canAssignTickets } = useAuth();
+  const { user, supabaseUser, canAssignTickets } = useAuth();
   const { tickets, currentTicket } = useSelector((state: RootState) => state.tickets);
   const { technicians } = useSelector((state: RootState) => state.users);
   const [newComment, setNewComment] = useState('');
@@ -55,39 +55,82 @@ const TicketDetail = () => {
   };
 
   const handleAssignTechnician = (technicianId: string) => {
+    if (!technicianId || technicianId === 'unassign') {
+      const updatedTicket = {
+        ...currentTicket,
+        assignedTechnicianId: undefined,
+        assignedTechnicianName: undefined,
+        updatedAt: new Date().toISOString(),
+      };
+      dispatch(updateTicket(updatedTicket));
+      toast({
+        title: 'Technician unassigned',
+        description: 'Ticket has been unassigned',
+      });
+      return;
+    }
+
     const technician = technicians.find(t => t.id === technicianId);
+    if (!technician) {
+      toast({
+        title: 'Error',
+        description: 'Technician not found',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     const updatedTicket = {
       ...currentTicket,
       assignedTechnicianId: technicianId,
-      assignedTechnicianName: technician?.name || '',
+      assignedTechnicianName: technician.name,
       status: 'in_progress' as any,
       updatedAt: new Date().toISOString(),
     };
     dispatch(updateTicket(updatedTicket));
     toast({
       title: 'Technician assigned',
-      description: `Ticket assigned to ${technician?.name}`,
+      description: `Ticket assigned to ${technician.name}`,
     });
   };
 
   const handleAddComment = async () => {
-    if (!newComment.trim()) return;
+    if (!newComment.trim()) {
+      toast({
+        title: 'Comment required',
+        description: 'Please enter a comment before submitting.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!user && !supabaseUser) {
+      toast({
+        title: 'Authentication required',
+        description: 'You must be logged in to add comments.',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     setIsSubmittingComment(true);
     try {
+      const authorId = user?.id || supabaseUser?.id || 'unknown';
+      const authorName = user?.name || supabaseUser?.user_metadata?.full_name || supabaseUser?.email?.split('@')[0] || 'Unknown User';
+
       const comment: Comment = {
-        id: Date.now().toString(),
+        id: `comment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         ticketId: currentTicket.id,
-        authorId: user!.id,
-        authorName: user!.name,
-        content: newComment,
+        authorId,
+        authorName,
+        content: newComment.trim(),
         isInternal: false,
         createdAt: new Date().toISOString(),
       };
 
       const updatedTicket = {
         ...currentTicket,
-        comments: [...currentTicket.comments, comment],
+        comments: [...(currentTicket.comments || []), comment],
         updatedAt: new Date().toISOString(),
       };
 
@@ -99,6 +142,7 @@ const TicketDetail = () => {
         description: 'Your comment has been added to the ticket.',
       });
     } catch (error) {
+      console.error('Error adding comment:', error);
       toast({
         title: 'Error adding comment',
         description: 'Please try again.',
@@ -190,12 +234,12 @@ const TicketDetail = () => {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <MessageSquare className="mr-2 h-4 w-4" />
-                Comments ({currentTicket.comments.length})
+                Comments ({(currentTicket.comments || []).length})
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {currentTicket.comments.map((comment) => (
+                {(currentTicket.comments || []).map((comment) => (
                   <div key={comment.id} className="border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2">
@@ -210,7 +254,7 @@ const TicketDetail = () => {
                   </div>
                 ))}
                 
-                {currentTicket.comments.length === 0 && (
+                {(!currentTicket.comments || currentTicket.comments.length === 0) && (
                   <p className="text-gray-500 text-center py-4">No comments yet</p>
                 )}
                 
@@ -269,6 +313,7 @@ const TicketDetail = () => {
                       <SelectValue placeholder="Select technician" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="unassign">Unassign</SelectItem>
                       {technicians.map((tech) => (
                         <SelectItem key={tech.id} value={tech.id}>
                           {tech.name}
