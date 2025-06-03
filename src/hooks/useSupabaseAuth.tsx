@@ -88,13 +88,42 @@ export const useSupabaseAuth = () => {
 
   const signOut = async () => {
     try {
+      setIsLoading(true);
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Sign out error:', error);
+        return { error };
       }
-      return { error };
+      
+      // Clear local state immediately
+      setUser(null);
+      setSession(null);
+      
+      console.log('Sign out successful');
+      return { error: null };
     } catch (error) {
       console.error('Sign out exception:', error);
+      return { error: error as any };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resetPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      
+      if (error) {
+        console.error('Password reset error:', error);
+        return { error };
+      }
+      
+      console.log('Password reset email sent');
+      return { error: null };
+    } catch (error) {
+      console.error('Password reset exception:', error);
       return { error: error as any };
     }
   };
@@ -107,5 +136,6 @@ export const useSupabaseAuth = () => {
     signIn,
     signUp,
     signOut,
+    resetPassword,
   };
 };

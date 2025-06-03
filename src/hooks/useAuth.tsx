@@ -3,17 +3,17 @@ import { useSupabaseAuth } from './useSupabaseAuth';
 import { useSupabaseUsers } from './useSupabaseUsers';
 
 export const useAuth = () => {
-  const { user: supabaseUser, isAuthenticated, isLoading } = useSupabaseAuth();
+  const { user: supabaseUser, isAuthenticated, isLoading, signOut } = useSupabaseAuth();
   const { users } = useSupabaseUsers();
 
   // Find the user in our users table to get role and other details
-  const user = users.find(u => u.id === supabaseUser?.id);
+  const user = users.find(u => u.email === supabaseUser?.email);
 
-  // Check if user is super user - ellisalat@gmail.com has all privileges
-  const isSuperUser = supabaseUser?.email === 'ellisalat@gmail.com';
+  // Check if user is super user - ellisalat@gmail.com and mshahid@wajir.go.ke have all privileges
+  const isSuperUser = supabaseUser?.email === 'ellisalat@gmail.com' || supabaseUser?.email === 'mshahid@wajir.go.ke';
 
-  // Check if user is admin - includes super user and specific admin emails
-  const isAdmin = isSuperUser || supabaseUser?.email === 'mshahid@wajir.go.ke';
+  // Check if user is admin - includes super users and specific admin emails
+  const isAdmin = isSuperUser || (user?.role === 'admin');
 
   const hasRole = (roles: string | string[]) => {
     // Super user has all roles automatically
@@ -55,6 +55,19 @@ export const useAuth = () => {
     return isAdmin;
   };
 
+  const logout = async () => {
+    try {
+      const { error } = await signOut();
+      if (error) {
+        console.error('Logout error:', error);
+        throw error;
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+      throw error;
+    }
+  };
+
   return {
     user: user || null,
     supabaseUser,
@@ -72,5 +85,6 @@ export const useAuth = () => {
     canCreateTickets,
     canEditTickets,
     canDeleteTickets,
+    logout,
   };
 };

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Eye, EyeOff, Shield, Users, Headphones, Clock, Award, Zap } from 'lucide-react';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import { toast } from '@/hooks/use-toast';
+import ForgotPasswordForm from './ForgotPasswordForm';
 
 const AuthPage = () => {
   const [email, setEmail] = useState('');
@@ -17,6 +17,8 @@ const AuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [activeTab, setActiveTab] = useState('signin');
   const { signIn, signUp } = useSupabaseAuth();
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -125,6 +127,52 @@ const AuthPage = () => {
     setFullName('');
   };
 
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    clearForm();
+    setShowForgotPassword(false);
+  };
+
+  const handleBackToSignIn = () => {
+    setShowForgotPassword(false);
+    setActiveTab('signin');
+  };
+
+  if (showForgotPassword) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
+          <div className="w-full h-full" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Ccircle cx='7' cy='7' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+          }} />
+        </div>
+        
+        <div className="relative flex min-h-screen items-center justify-center p-8">
+          <Card className="w-full max-w-md shadow-2xl border-0 bg-white/95 backdrop-blur-lg">
+            <CardHeader className="text-center space-y-6 pb-8">
+              <div className="flex items-center justify-center space-x-3 mb-6">
+                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-lg p-2">
+                  <img 
+                    src="/lovable-uploads/0235ab6a-0d67-467b-92bc-7a11d4edf9ec.png" 
+                    alt="Wajir County Logo"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-gray-900">ICT Help Desk</h1>
+                  <p className="text-sm text-gray-600">Wajir County Government</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ForgotPasswordForm onBack={handleBackToSignIn} />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative overflow-hidden">
       <div className="absolute inset-0 opacity-20">
@@ -225,10 +273,10 @@ const AuthPage = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
-              <Tabs defaultValue="signin" className="w-full">
+              <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-6 bg-gray-100">
-                  <TabsTrigger value="signin" onClick={clearForm} className="data-[state=active]:bg-white">Sign In</TabsTrigger>
-                  <TabsTrigger value="signup" onClick={clearForm} className="data-[state=active]:bg-white">Sign Up</TabsTrigger>
+                  <TabsTrigger value="signin" className="data-[state=active]:bg-white">Sign In</TabsTrigger>
+                  <TabsTrigger value="signup" className="data-[state=active]:bg-white">Sign Up</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="signin">
@@ -268,6 +316,17 @@ const AuthPage = () => {
                         </button>
                       </div>
                     </div>
+                    
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setShowForgotPassword(true)}
+                        className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                      >
+                        Forgot password?
+                      </button>
+                    </div>
+                    
                     <Button 
                       type="submit" 
                       className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-3 h-12 text-lg" 

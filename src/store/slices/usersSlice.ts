@@ -8,9 +8,79 @@ interface UsersState {
   isLoading: boolean;
 }
 
+// Updated initial state with real system users
+const initialSystemUsers: User[] = [
+  {
+    id: '1',
+    email: 'ellisalat@gmail.com',
+    name: 'Ellis Alat',
+    role: 'admin',
+    department: 'ICT',
+    skills: ['System Administration', 'Network Management', 'Database Administration'],
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: '2',
+    email: 'mshahid@wajir.go.ke',
+    name: 'Mohamed Shahid',
+    role: 'admin',
+    department: 'ICT',
+    skills: ['System Administration', 'Project Management', 'Cybersecurity'],
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: '3',
+    email: 'xireysalat@gmail.com',
+    name: 'Xirey Salat',
+    role: 'technician',
+    department: 'ICT',
+    skills: ['Hardware Troubleshooting', 'Software Installation', 'Network Configuration'],
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: '4',
+    email: 'yussuf@wajir.go.ke',
+    name: 'Yussuf Abdullahi',
+    role: 'technician',
+    department: 'ICT',
+    skills: ['Email Systems', 'Phone Systems', 'Mobile Device Management'],
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: '5',
+    email: 'abdille@wajir.go.ke',
+    name: 'Abdille Osman',
+    role: 'approver',
+    department: 'ICT',
+    skills: ['Team Management', 'Quality Assurance', 'Process Improvement'],
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: '6',
+    email: 'mabdisalaam@wajir.go.ke',
+    name: 'Mohamed Abdisalaam',
+    role: 'technician',
+    department: 'ICT',
+    skills: ['Network Configuration', 'Server Management', 'Backup & Recovery'],
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+];
+
 const initialState: UsersState = {
-  users: [],
-  technicians: [],
+  users: initialSystemUsers,
+  technicians: initialSystemUsers.filter(user => user.role === 'technician'),
   isLoading: false,
 };
 
