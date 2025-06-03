@@ -128,7 +128,7 @@ const AuthPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative overflow-hidden">
       {/* Background Elements */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.1"%3E%3Ccircle cx="7" cy="7" r="1"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%239C92AC\" fill-opacity=\"0.1\"%3E%3Ccircle cx=\"7\" cy=\"7\" r=\"1\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
       
       {/* Main Content */}
       <div className="relative flex min-h-screen">
@@ -136,63 +136,63 @@ const AuthPage = () => {
         <div className="hidden lg:flex lg:w-1/2 flex-col justify-center px-12 text-white">
           <div className="max-w-lg">
             <div className="flex items-center space-x-4 mb-8">
-              <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-2xl">
+              <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-2xl p-2">
                 <img 
                   src="/lovable-uploads/0235ab6a-0d67-467b-92bc-7a11d4edf9ec.png" 
                   alt="Wajir County Logo"
-                  className="w-12 h-12 object-contain"
+                  className="w-full h-full object-contain"
                 />
               </div>
               <div>
-                <h1 className="text-3xl font-bold">ICT Help Desk</h1>
-                <p className="text-blue-200 font-medium">Wajir County Government</p>
+                <h1 className="text-4xl font-bold">ICT Help Desk</h1>
+                <p className="text-blue-200 font-medium text-lg">Wajir County Government</p>
               </div>
             </div>
             
-            <h2 className="text-4xl font-bold mb-6 leading-tight">
+            <h2 className="text-5xl font-bold mb-6 leading-tight">
               Enterprise-Grade IT Support Platform
             </h2>
-            <p className="text-xl text-blue-100 mb-8 leading-relaxed">
+            <p className="text-xl text-blue-100 mb-12 leading-relaxed">
               Streamline your IT operations with our comprehensive help desk solution. 
               Professional service delivery, advanced ticketing, and intelligent automation.
             </p>
             
             {/* Feature Highlights */}
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <Shield className="w-5 h-5" />
+            <div className="space-y-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+                  <Shield className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">Enterprise Security</h3>
-                  <p className="text-blue-200 text-sm">Role-based access control & audit trails</p>
+                  <h3 className="font-semibold text-lg">Enterprise Security</h3>
+                  <p className="text-blue-200">Role-based access control & audit trails</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-                  <Zap className="w-5 h-5" />
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
+                  <Zap className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">Intelligent Automation</h3>
-                  <p className="text-blue-200 text-sm">Smart routing & auto-assignment</p>
+                  <h3 className="font-semibold text-lg">Intelligent Automation</h3>
+                  <p className="text-blue-200">Smart routing & auto-assignment</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
-                  <Award className="w-5 h-5" />
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
+                  <Award className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">SLA Management</h3>
-                  <p className="text-blue-200 text-sm">Track performance & meet commitments</p>
+                  <h3 className="font-semibold text-lg">SLA Management</h3>
+                  <p className="text-blue-200">Track performance & meet commitments</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
-                  <Clock className="w-5 h-5" />
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center">
+                  <Clock className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">24/7 Availability</h3>
-                  <p className="text-blue-200 text-sm">Round-the-clock support tracking</p>
+                  <h3 className="font-semibold text-lg">24/7 Availability</h3>
+                  <p className="text-blue-200">Round-the-clock support tracking</p>
                 </div>
               </div>
             </div>
@@ -203,12 +203,12 @@ const AuthPage = () => {
         <div className="flex-1 lg:w-1/2 flex items-center justify-center p-8">
           <Card className="w-full max-w-md shadow-2xl border-0 bg-white/95 backdrop-blur-lg">
             <CardHeader className="text-center space-y-6 pb-8">
-              <div className="lg:hidden flex items-center justify-center space-x-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center">
+              <div className="lg:hidden flex items-center justify-center space-x-3 mb-6">
+                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-lg p-2">
                   <img 
                     src="/lovable-uploads/0235ab6a-0d67-467b-92bc-7a11d4edf9ec.png" 
                     alt="Wajir County Logo"
-                    className="w-8 h-8 object-contain"
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <div>
@@ -217,10 +217,10 @@ const AuthPage = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <CardTitle className="text-2xl font-bold text-gray-900">
+                <CardTitle className="text-3xl font-bold text-gray-900">
                   Welcome Back
                 </CardTitle>
-                <p className="text-gray-600">
+                <p className="text-gray-600 text-lg">
                   Sign in to access your professional IT support dashboard
                 </p>
               </div>
@@ -244,7 +244,7 @@ const AuthPage = () => {
                         placeholder="Enter your email"
                         required
                         autoComplete="email"
-                        className="border-gray-200 focus:border-blue-500 focus:ring-blue-200"
+                        className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 h-12"
                       />
                     </div>
                     <div className="space-y-2">
@@ -257,7 +257,7 @@ const AuthPage = () => {
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="Enter your password"
                           required
-                          className="pr-10 border-gray-200 focus:border-blue-500 focus:ring-blue-200"
+                          className="pr-10 border-gray-200 focus:border-blue-500 focus:ring-blue-200 h-12"
                           autoComplete="current-password"
                         />
                         <button
@@ -271,7 +271,7 @@ const AuthPage = () => {
                     </div>
                     <Button 
                       type="submit" 
-                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2.5" 
+                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-3 h-12 text-lg" 
                       disabled={isLoading}
                     >
                       {isLoading ? 'Signing in...' : 'Sign In'}
@@ -291,7 +291,7 @@ const AuthPage = () => {
                         placeholder="Enter your full name"
                         required
                         autoComplete="name"
-                        className="border-gray-200 focus:border-blue-500 focus:ring-blue-200"
+                        className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 h-12"
                       />
                     </div>
                     <div className="space-y-2">
@@ -304,7 +304,7 @@ const AuthPage = () => {
                         placeholder="Enter your email"
                         required
                         autoComplete="email"
-                        className="border-gray-200 focus:border-blue-500 focus:ring-blue-200"
+                        className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 h-12"
                       />
                     </div>
                     <div className="space-y-2">
@@ -318,7 +318,7 @@ const AuthPage = () => {
                           placeholder="Enter a strong password (min 6 characters)"
                           required
                           minLength={6}
-                          className="pr-10 border-gray-200 focus:border-blue-500 focus:ring-blue-200"
+                          className="pr-10 border-gray-200 focus:border-blue-500 focus:ring-blue-200 h-12"
                           autoComplete="new-password"
                         />
                         <button
@@ -340,7 +340,7 @@ const AuthPage = () => {
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           placeholder="Confirm your password"
                           required
-                          className="pr-10 border-gray-200 focus:border-blue-500 focus:ring-blue-200"
+                          className="pr-10 border-gray-200 focus:border-blue-500 focus:ring-blue-200 h-12"
                           autoComplete="new-password"
                         />
                         <button
@@ -354,7 +354,7 @@ const AuthPage = () => {
                     </div>
                     <Button 
                       type="submit" 
-                      className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-2.5" 
+                      className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-3 h-12 text-lg" 
                       disabled={isLoading}
                     >
                       {isLoading ? 'Creating account...' : 'Create Account'}
