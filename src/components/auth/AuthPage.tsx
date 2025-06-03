@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Shield, Users, Headphones, Clock, Award, Zap } from 'lucide-react';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import { toast } from '@/hooks/use-toast';
 
@@ -118,11 +118,6 @@ const AuthPage = () => {
     setIsLoading(false);
   };
 
-  const fillDemoCredentials = (demoEmail: string) => {
-    setEmail(demoEmail);
-    setPassword('Demo123!@#');
-  };
-
   const clearForm = () => {
     setEmail('');
     setPassword('');
@@ -131,258 +126,246 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700">
-      <div className="flex-1 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md shadow-2xl border-0 bg-white/95 backdrop-blur-sm dark:bg-slate-800/95">
-          <CardHeader className="text-center space-y-6 pb-8">
-            <div className="mx-auto w-24 h-24 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-xl p-4">
-              <img 
-                src="/lovable-uploads/0235ab6a-0d67-467b-92bc-7a11d4edf9ec.png" 
-                alt="Wajir County Logo"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div className="space-y-2">
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                ICT Help Desk
-              </CardTitle>
-              <p className="text-xl font-semibold text-slate-700 dark:text-slate-300">
-                WAJIR COUNTY GOVERNMENT
-              </p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Professional IT Support Platform
-              </p>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6 bg-slate-100 dark:bg-slate-700">
-                <TabsTrigger value="signin" onClick={clearForm} className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-600">Sign In</TabsTrigger>
-                <TabsTrigger value="signup" onClick={clearForm} className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-600">Sign Up</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email" className="text-slate-700 dark:text-slate-300">Email Address</Label>
-                    <Input
-                      id="signin-email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email"
-                      required
-                      autoComplete="email"
-                      className="border-slate-200 focus:border-blue-500 dark:border-slate-600"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password" className="text-slate-700 dark:text-slate-300">Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="signin-password"
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter your password"
-                        required
-                        className="pr-10 border-slate-200 focus:border-blue-500 dark:border-slate-600"
-                        autoComplete="current-password"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-                  <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium" disabled={isLoading}>
-                    {isLoading ? 'Signing in...' : 'Sign In'}
-                  </Button>
-                </form>
-              </TabsContent>
-              
-              <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name" className="text-slate-700 dark:text-slate-300">Full Name</Label>
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Enter your full name"
-                      required
-                      autoComplete="name"
-                      className="border-slate-200 focus:border-blue-500 dark:border-slate-600"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email" className="text-slate-700 dark:text-slate-300">Email Address</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email"
-                      required
-                      autoComplete="email"
-                      className="border-slate-200 focus:border-blue-500 dark:border-slate-600"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password" className="text-slate-700 dark:text-slate-300">Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="signup-password"
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter a strong password (min 6 characters)"
-                        required
-                        minLength={6}
-                        className="pr-10 border-slate-200 focus:border-blue-500 dark:border-slate-600"
-                        autoComplete="new-password"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm-password" className="text-slate-700 dark:text-slate-300">Confirm Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="confirm-password"
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Confirm your password"
-                        required
-                        className="pr-10 border-slate-200 focus:border-blue-500 dark:border-slate-600"
-                        autoComplete="new-password"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
-                      >
-                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-                  <Button type="submit" className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium" disabled={isLoading}>
-                    {isLoading ? 'Creating account...' : 'Create Account'}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
-            
-            <div className="mt-6 p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
-              <p className="text-sm font-semibold mb-3 text-center text-slate-700 dark:text-slate-300">Demo Accounts:</p>
-              <div className="text-xs space-y-2">
-                <button 
-                  onClick={() => fillDemoCredentials('ellisalat@gmail.com')}
-                  className="block w-full text-left p-3 rounded-lg bg-gradient-to-r from-yellow-50 to-amber-50 hover:from-yellow-100 hover:to-amber-100 dark:from-yellow-900/20 dark:to-amber-900/20 border border-yellow-200 dark:border-yellow-700 font-semibold text-yellow-800 dark:text-yellow-200 transition-all duration-200"
-                >
-                  👑 Ali Salat - System Super Administrator
-                  <span className="block text-xs text-yellow-600 dark:text-yellow-300 mt-1">ellisalat@gmail.com - All System Rights</span>
-                </button>
-                <button 
-                  onClick={() => fillDemoCredentials('mshahid@wajir.go.ke')}
-                  className="block w-full text-left p-2 rounded-lg text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-200 dark:hover:bg-blue-900/20 transition-colors"
-                >
-                  👨‍💼 Mohamed Shahid - System Administrator
-                </button>
-                <button 
-                  onClick={() => fillDemoCredentials('yussuf@wajir.go.ke')}
-                  className="block w-full text-left p-2 rounded-lg text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-200 dark:hover:bg-blue-900/20 transition-colors"
-                >
-                  🔧 Yussuf Abdullahi - IT Technician
-                </button>
-                <button 
-                  onClick={() => fillDemoCredentials('abdille@wajir.go.ke')}
-                  className="block w-full text-left p-2 rounded-lg text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-200 dark:hover:bg-blue-900/20 transition-colors"
-                >
-                  👤 Abdille Osman - IT Supervisor
-                </button>
-                <button 
-                  onClick={() => fillDemoCredentials('mabdisalaam@wajir.go.ke')}
-                  className="block w-full text-left p-2 rounded-lg text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-200 dark:hover:bg-blue-900/20 transition-colors"
-                >
-                  🔧 Mohamed Abdisalaam - IT Technician
-                </button>
-                <div className="font-semibold text-center mt-3 pt-3 border-t border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300">
-                  🔑 Password: Demo123!@#
-                </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.1"%3E%3Ccircle cx="7" cy="7" r="1"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+      
+      {/* Main Content */}
+      <div className="relative flex min-h-screen">
+        {/* Left Panel - Branding & Features */}
+        <div className="hidden lg:flex lg:w-1/2 flex-col justify-center px-12 text-white">
+          <div className="max-w-lg">
+            <div className="flex items-center space-x-4 mb-8">
+              <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-2xl">
+                <img 
+                  src="/lovable-uploads/0235ab6a-0d67-467b-92bc-7a11d4edf9ec.png" 
+                  alt="Wajir County Logo"
+                  className="w-12 h-12 object-contain"
+                />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold">ICT Help Desk</h1>
+                <p className="text-blue-200 font-medium">Wajir County Government</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-      
-      {/* Professional Footer */}
-      <footer className="bg-slate-900 text-slate-300 py-8 mt-auto">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center">
-                  <img 
-                    src="/lovable-uploads/37b18ab6-301e-4fea-860d-a70e3041499a.png" 
-                    alt="Wajir County Logo"
-                    className="w-6 h-6 object-contain filter brightness-0 invert"
-                  />
+            
+            <h2 className="text-4xl font-bold mb-6 leading-tight">
+              Enterprise-Grade IT Support Platform
+            </h2>
+            <p className="text-xl text-blue-100 mb-8 leading-relaxed">
+              Streamline your IT operations with our comprehensive help desk solution. 
+              Professional service delivery, advanced ticketing, and intelligent automation.
+            </p>
+            
+            {/* Feature Highlights */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <Shield className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-white font-bold text-lg">Wajir County Government</h3>
-                  <p className="text-sm text-slate-400">ICT Department</p>
+                  <h3 className="font-semibold">Enterprise Security</h3>
+                  <p className="text-blue-200 text-sm">Role-based access control & audit trails</p>
                 </div>
               </div>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                Professional IT support platform designed to streamline technical assistance and enhance service delivery across all county departments.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="text-white font-semibold mb-3">Quick Links</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-blue-400 transition-colors">IT Support</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition-colors">Service Catalog</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition-colors">Knowledge Base</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition-colors">System Status</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="text-white font-semibold mb-3">Contact Info</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li>📧 ict@wajir.go.ke</li>
-                <li>📞 +254 xxx xxx xxx</li>
-                <li>🕒 Mon - Fri: 8:00 AM - 5:00 PM</li>
-                <li>📍 Wajir County Headquarters</li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-slate-700 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-slate-500">
-              © 2024 Wajir County Government. All rights reserved.
-            </p>
-            <div className="flex space-x-4 mt-4 md:mt-0">
-              <a href="#" className="text-slate-500 hover:text-blue-400 transition-colors text-sm">Privacy Policy</a>
-              <a href="#" className="text-slate-500 hover:text-blue-400 transition-colors text-sm">Terms of Service</a>
-              <a href="#" className="text-slate-500 hover:text-blue-400 transition-colors text-sm">Support</a>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                  <Zap className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">Intelligent Automation</h3>
+                  <p className="text-blue-200 text-sm">Smart routing & auto-assignment</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                  <Award className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">SLA Management</h3>
+                  <p className="text-blue-200 text-sm">Track performance & meet commitments</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">24/7 Availability</h3>
+                  <p className="text-blue-200 text-sm">Round-the-clock support tracking</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </footer>
+
+        {/* Right Panel - Login Form */}
+        <div className="flex-1 lg:w-1/2 flex items-center justify-center p-8">
+          <Card className="w-full max-w-md shadow-2xl border-0 bg-white/95 backdrop-blur-lg">
+            <CardHeader className="text-center space-y-6 pb-8">
+              <div className="lg:hidden flex items-center justify-center space-x-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center">
+                  <img 
+                    src="/lovable-uploads/0235ab6a-0d67-467b-92bc-7a11d4edf9ec.png" 
+                    alt="Wajir County Logo"
+                    className="w-8 h-8 object-contain"
+                  />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-gray-900">ICT Help Desk</h1>
+                  <p className="text-sm text-gray-600">Wajir County Government</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <CardTitle className="text-2xl font-bold text-gray-900">
+                  Welcome Back
+                </CardTitle>
+                <p className="text-gray-600">
+                  Sign in to access your professional IT support dashboard
+                </p>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <Tabs defaultValue="signin" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-6 bg-gray-100">
+                  <TabsTrigger value="signin" onClick={clearForm} className="data-[state=active]:bg-white">Sign In</TabsTrigger>
+                  <TabsTrigger value="signup" onClick={clearForm} className="data-[state=active]:bg-white">Sign Up</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="signin">
+                  <form onSubmit={handleSignIn} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-email" className="text-gray-700 font-medium">Email Address</Label>
+                      <Input
+                        id="signin-email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter your email"
+                        required
+                        autoComplete="email"
+                        className="border-gray-200 focus:border-blue-500 focus:ring-blue-200"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-password" className="text-gray-700 font-medium">Password</Label>
+                      <div className="relative">
+                        <Input
+                          id="signin-password"
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="Enter your password"
+                          required
+                          className="pr-10 border-gray-200 focus:border-blue-500 focus:ring-blue-200"
+                          autoComplete="current-password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2.5" 
+                      disabled={isLoading}
+                    >
+                      {isLoading ? 'Signing in...' : 'Sign In'}
+                    </Button>
+                  </form>
+                </TabsContent>
+                
+                <TabsContent value="signup">
+                  <form onSubmit={handleSignUp} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-name" className="text-gray-700 font-medium">Full Name</Label>
+                      <Input
+                        id="signup-name"
+                        type="text"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Enter your full name"
+                        required
+                        autoComplete="name"
+                        className="border-gray-200 focus:border-blue-500 focus:ring-blue-200"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email" className="text-gray-700 font-medium">Email Address</Label>
+                      <Input
+                        id="signup-email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter your email"
+                        required
+                        autoComplete="email"
+                        className="border-gray-200 focus:border-blue-500 focus:ring-blue-200"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password" className="text-gray-700 font-medium">Password</Label>
+                      <div className="relative">
+                        <Input
+                          id="signup-password"
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="Enter a strong password (min 6 characters)"
+                          required
+                          minLength={6}
+                          className="pr-10 border-gray-200 focus:border-blue-500 focus:ring-blue-200"
+                          autoComplete="new-password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirm-password" className="text-gray-700 font-medium">Confirm Password</Label>
+                      <div className="relative">
+                        <Input
+                          id="confirm-password"
+                          type={showConfirmPassword ? 'text' : 'password'}
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          placeholder="Confirm your password"
+                          required
+                          className="pr-10 border-gray-200 focus:border-blue-500 focus:ring-blue-200"
+                          autoComplete="new-password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                          {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-2.5" 
+                      disabled={isLoading}
+                    >
+                      {isLoading ? 'Creating account...' : 'Create Account'}
+                    </Button>
+                  </form>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
