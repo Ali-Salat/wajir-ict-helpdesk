@@ -6,25 +6,25 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 215 20% 15%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 20% 15%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 20% 15%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Modern Professional Theme - Light Mode */
-    --primary: 217 91% 60%; /* Modern Blue */
+    /* Enhanced Professional Theme - Light Mode */
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 98%;
 
     --secondary: 215 27% 96%;
-    --secondary-foreground: 215 20% 15%;
+    --secondary-foreground: 222 47% 11%;
 
     --muted: 215 27% 96%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 217 91% 60%; /* Modern Blue */
+    --accent: 217 91% 60%;
     --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84% 60%;
@@ -46,14 +46,14 @@
     --sidebar-border: 216 34% 17%;
     --sidebar-ring: 217 91% 60%;
 
-    /* Wajir theme colors - Enhanced */
+    /* Wajir theme colors */
     --wajir-green: 142 76% 36%;
     --wajir-blue: 217 91% 60%;
     --wajir-gold: 45 100% 60%;
   }
 
   .dark {
-    --background: 222 47% 11%;
+    --background: 222 47% 8%;
     --foreground: 213 31% 91%;
 
     --card: 222 47% 11%;
@@ -62,34 +62,34 @@
     --popover: 222 47% 11%;
     --popover-foreground: 213 31% 91%;
 
-    /* Modern Professional Theme - Dark Mode */
-    --primary: 217 91% 65%; /* Brighter modern blue for dark mode */
-    --primary-foreground: 222 47% 11%;
+    /* Enhanced Professional Theme - Dark Mode */
+    --primary: 217 91% 65%;
+    --primary-foreground: 222 47% 8%;
 
-    --secondary: 216 34% 17%;
+    --secondary: 216 34% 15%;
     --secondary-foreground: 213 31% 91%;
 
-    --muted: 216 34% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 216 34% 15%;
+    --muted-foreground: 215 20% 70%;
 
-    --accent: 217 91% 65%; /* Brighter modern blue for dark mode */
-    --accent-foreground: 222 47% 11%;
+    --accent: 217 91% 65%;
+    --accent-foreground: 222 47% 8%;
 
-    --destructive: 0 62% 50%;
+    --destructive: 0 70% 55%;
     --destructive-foreground: 213 31% 91%;
 
     --border: 216 34% 17%;
     --input: 216 34% 17%;
     --ring: 217 91% 65%;
 
-    /* Dark sidebar with modern colors */
-    --sidebar-background: 222 47% 8%;
+    /* Dark sidebar */
+    --sidebar-background: 222 47% 6%;
     --sidebar-foreground: 213 31% 91%;
     --sidebar-primary: 217 91% 65%;
-    --sidebar-primary-foreground: 222 47% 8%;
-    --sidebar-accent: 216 34% 15%;
+    --sidebar-primary-foreground: 222 47% 6%;
+    --sidebar-accent: 216 34% 12%;
     --sidebar-accent-foreground: 213 31% 91%;
-    --sidebar-border: 216 34% 15%;
+    --sidebar-border: 216 34% 12%;
     --sidebar-ring: 217 91% 65%;
 
     /* Dark theme colors */
@@ -110,26 +110,19 @@
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
 
-  /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
   }
 }
 
-/* Professional header styling */
-.professional-header {
-  background: linear-gradient(135deg, hsl(222, 47%, 11%) 0%, hsl(217, 91%, 25%) 50%, hsl(215, 83%, 30%) 100%);
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
-}
-
-/* Enhanced card styling */
+/* Professional card styling */
 .professional-card {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid hsl(var(--border));
-  background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.95) 100%);
+  background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.98) 100%);
 }
 
-/* Modern button enhancements */
+/* Enhanced button styling */
 .modern-button {
   background: linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(217, 91%, 55%) 100%);
   transition: all 0.2s ease-in-out;
@@ -140,13 +133,6 @@
   background: linear-gradient(135deg, hsl(217, 91%, 55%) 0%, hsl(217, 91%, 50%) 100%);
   box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
   transform: translateY(-1px);
-}
-
-/* Glass morphism effect */
-.glass-effect {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Professional animations */
@@ -180,33 +166,47 @@
   animation: fadeInScale 0.3s ease-out;
 }
 
-/* Theme transition */
+/* Enhanced theme transitions */
 * {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Enhanced focus states */
+/* Professional focus states */
 .focus-ring {
   @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
 }
 
-/* Professional status indicators */
+/* Enhanced status indicators */
 .status-indicator {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold shadow-sm;
 }
 
 .status-open {
-  @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400;
+  @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-800;
 }
 
 .status-in-progress {
-  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400;
+  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800;
 }
 
 .status-resolved {
-  @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+  @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border border-green-200 dark:border-green-800;
 }
 
 .status-closed {
-  @apply bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400;
+  @apply bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300 border border-gray-200 dark:border-gray-700;
+}
+
+/* Enhanced card hover effects */
+.card-hover {
+  @apply hover:shadow-lg hover:shadow-blue-500/10 dark:hover:shadow-blue-400/10 transition-all duration-300;
+}
+
+/* Professional gradient backgrounds */
+.gradient-bg {
+  background: linear-gradient(135deg, hsl(222, 47%, 11%) 0%, hsl(217, 91%, 25%) 50%, hsl(215, 83%, 30%) 100%);
+}
+
+.gradient-bg-dark {
+  background: linear-gradient(135deg, hsl(222, 47%, 6%) 0%, hsl(217, 91%, 20%) 50%, hsl(215, 83%, 25%) 100%);
 }
