@@ -1,4 +1,3 @@
-
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../types';
 
@@ -13,7 +12,7 @@ const initialSystemUsers: User[] = [
   {
     id: '1',
     email: 'ellisalat@gmail.com',
-    name: 'Ellis Alat',
+    name: 'Ali Salat',
     role: 'admin',
     department: 'ICT',
     skills: ['System Administration', 'Network Management', 'Database Administration'],

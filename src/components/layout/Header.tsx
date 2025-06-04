@@ -55,8 +55,8 @@ const Header = () => {
     <header className="bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <h2 className="text-xl font-semibold text-gray-800">
-            Wajir County ICT Help Desk
+          <h2 className="text-xl font-semibold text-gray-800 tracking-wide">
+            WAJIR COUNTY GOVERNMENT - ICT HELP DESK
           </h2>
           {isSuperUser && (
             <Badge variant="destructive" className="bg-yellow-500 text-yellow-900 hover:bg-yellow-600">

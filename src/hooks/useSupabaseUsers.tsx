@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '../types';
@@ -13,7 +12,7 @@ export const useSupabaseUsers = () => {
     {
       id: '1',
       email: 'ellisalat@gmail.com',
-      name: 'Ellis Alat',
+      name: 'Ali Salat',
       role: 'admin',
       department: 'ICT',
       skills: ['System Administration', 'Network Management', 'Database Administration'],
@@ -83,7 +82,6 @@ export const useSupabaseUsers = () => {
       setIsLoading(true);
       setError(null);
       
-      // Try to fetch from database, but fallback to local data if there are issues
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -110,7 +108,6 @@ export const useSupabaseUsers = () => {
         }));
         setUsers(transformedUsers);
       } else {
-        // No users in database, use fallback
         setUsers(fallbackUsers);
       }
     } catch (error: any) {
