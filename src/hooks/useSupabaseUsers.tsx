@@ -17,8 +17,8 @@ export const useSupabaseUsers = () => {
       department: 'ICT',
       skills: ['System Administration', 'Network Management', 'Database Administration'],
       isActive: true,
-      createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-01T00:00:00Z',
+      createdAt: '2025-05-01T00:00:00Z',
+      updatedAt: '2025-05-01T00:00:00Z',
     },
     {
       id: '2',
@@ -28,8 +28,8 @@ export const useSupabaseUsers = () => {
       department: 'ICT',
       skills: ['System Administration', 'Project Management', 'Cybersecurity'],
       isActive: true,
-      createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-01T00:00:00Z',
+      createdAt: '2025-05-02T00:00:00Z',
+      updatedAt: '2025-05-02T00:00:00Z',
     },
     {
       id: '3',
@@ -39,8 +39,8 @@ export const useSupabaseUsers = () => {
       department: 'ICT',
       skills: ['Hardware Troubleshooting', 'Software Installation', 'Network Configuration'],
       isActive: true,
-      createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-01T00:00:00Z',
+      createdAt: '2025-05-03T00:00:00Z',
+      updatedAt: '2025-05-03T00:00:00Z',
     },
     {
       id: '4',
@@ -50,8 +50,8 @@ export const useSupabaseUsers = () => {
       department: 'ICT',
       skills: ['Email Systems', 'Phone Systems', 'Mobile Device Management'],
       isActive: true,
-      createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-01T00:00:00Z',
+      createdAt: '2025-05-04T00:00:00Z',
+      updatedAt: '2025-05-04T00:00:00Z',
     },
     {
       id: '5',
@@ -61,8 +61,8 @@ export const useSupabaseUsers = () => {
       department: 'ICT',
       skills: ['Team Management', 'Quality Assurance', 'Process Improvement'],
       isActive: true,
-      createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-01T00:00:00Z',
+      createdAt: '2025-05-05T00:00:00Z',
+      updatedAt: '2025-05-05T00:00:00Z',
     },
     {
       id: '6',
@@ -72,8 +72,8 @@ export const useSupabaseUsers = () => {
       department: 'ICT',
       skills: ['Network Configuration', 'Server Management', 'Backup & Recovery'],
       isActive: true,
-      createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-01T00:00:00Z',
+      createdAt: '2025-05-06T00:00:00Z',
+      updatedAt: '2025-05-06T00:00:00Z',
     },
   ];
 
