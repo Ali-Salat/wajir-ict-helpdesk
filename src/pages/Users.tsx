@@ -9,12 +9,19 @@ import { Plus, Search, Edit, Trash2, Crown } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useSupabaseUsers } from '../hooks/useSupabaseUsers';
 import CreateUserForm from '../components/users/CreateUserForm';
+import EditUserForm from '../components/users/EditUserForm';
+import DeleteUserDialog from '../components/users/DeleteUserDialog';
+import { User } from '../types';
 
 const Users = () => {
   const { canManageUsers, isSuperUser, supabaseUser } = useAuth();
   const { users, isLoading, refetchUsers } = useSupabaseUsers();
   const [searchTerm, setSearchTerm] = useState('');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   if (!canManageUsers()) {
     return (
@@ -56,6 +63,24 @@ const Users = () => {
 
   const isProtectedUser = (email: string) => {
     return email === 'ellisalat@gmail.com';
+  };
+
+  const handleEditUser = (user: User) => {
+    setSelectedUser(user);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDeleteUser = (user: User) => {
+    setUserToDelete(user);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleUserUpdated = () => {
+    refetchUsers();
+  };
+
+  const handleUserDeleted = () => {
+    refetchUsers();
   };
 
   return (
@@ -122,11 +147,21 @@ const Users = () => {
                   )}
                 </div>
                 <div className="flex space-x-1">
-                  <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-blue-600 hover:text-blue-800"
+                    onClick={() => handleEditUser(user)}
+                  >
                     <Edit className="h-4 w-4" />
                   </Button>
                   {!isProtectedUser(user.email) && isSuperUser && (
-                    <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-800">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-red-600 hover:text-red-800"
+                      onClick={() => handleDeleteUser(user)}
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   )}
@@ -191,6 +226,30 @@ const Users = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Edit User Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+          </DialogHeader>
+          {selectedUser && (
+            <EditUserForm 
+              user={selectedUser}
+              onClose={() => setIsEditDialogOpen(false)} 
+              onUserUpdated={handleUserUpdated}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete User Dialog */}
+      <DeleteUserDialog
+        user={userToDelete}
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onUserDeleted={handleUserDeleted}
+      />
     </div>
   );
 };
