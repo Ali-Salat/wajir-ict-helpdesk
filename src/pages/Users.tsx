@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Search, Edit, Trash2, Crown } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Crown, Users, Building2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useSupabaseUsers } from '../hooks/useSupabaseUsers';
 import CreateUserForm from '../components/users/CreateUserForm';
@@ -45,6 +46,22 @@ const Users = () => {
     user.department?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const formatDepartment = (department: string) => {
+    if (department === 'ICT, Trade, Investment and Industry') {
+      return 'ICT Department';
+    }
+    
+    // Shorten other long department names
+    if (department.length > 40) {
+      const words = department.split(' ');
+      if (words.length > 3) {
+        return words.slice(0, 3).join(' ') + '...';
+      }
+    }
+    
+    return department;
+  };
+
   const getRoleColor = (role: string, email?: string) => {
     if (email === 'ellisalat@gmail.com') return 'default';
     switch (role) {
@@ -57,8 +74,8 @@ const Users = () => {
   };
 
   const getUserRole = (user: any) => {
-    if (user.email === 'ellisalat@gmail.com') return 'Super Administrator';
-    return user.role;
+    if (user.email === 'ellisalat@gmail.com') return 'Super Admin';
+    return user.role.charAt(0).toUpperCase() + user.role.slice(1);
   };
 
   const isProtectedUser = (email: string) => {
@@ -84,16 +101,24 @@ const Users = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-blue-900">System Users Management</h1>
-          <p className="text-blue-700">Manage Wajir County ICT Help Desk users and permissions</p>
+    <div className="space-y-6 p-6">
+      {/* Header */}
+      <div className="flex justify-between items-start">
+        <div className="space-y-1">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Users className="h-6 w-6 text-blue-600" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
+              <p className="text-sm text-gray-600">Manage system users and their permissions</p>
+            </div>
+          </div>
         </div>
         
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button className="bg-blue-600 hover:bg-blue-700 shadow-sm">
               <Plus className="mr-2 h-4 w-4" />
               Add User
             </Button>
@@ -114,115 +139,139 @@ const Users = () => {
       </div>
 
       {/* Search */}
-      <Card className="border-blue-200">
-        <CardContent className="p-6">
+      <Card className="border-gray-200 shadow-sm">
+        <CardContent className="p-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-blue-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Search users by name, email, or department..."
+              placeholder="Search by name, email, or department..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 border-blue-200 focus:border-blue-500"
+              className="pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
         </CardContent>
       </Card>
 
-      {/* Users List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredUsers.map((user) => (
-          <Card key={user.id} className="border-blue-200 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2">
-                    <CardTitle className="text-lg text-blue-900">{user.name}</CardTitle>
-                    {user.email === 'ellisalat@gmail.com' && (
-                      <Crown className="h-5 w-5 text-yellow-500" />
-                    )}
-                  </div>
-                  <p className="text-sm text-blue-600">{user.email}</p>
-                  {user.email === 'ellisalat@gmail.com' && (
-                    <p className="text-xs text-yellow-600 font-medium">System Super Administrator</p>
-                  )}
-                </div>
-                <div className="flex space-x-1">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="text-blue-600 hover:text-blue-800"
-                    onClick={() => handleEditUser(user)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  {!isProtectedUser(user.email) && isSuperUser && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="text-red-600 hover:text-red-800"
-                      onClick={() => handleDeleteUser(user)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-blue-700">Role:</span>
-                  <Badge variant={getRoleColor(user.role, user.email)} className="bg-blue-100 text-blue-800">
-                    {getUserRole(user)}
-                  </Badge>
-                </div>
-                
-                {user.department && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-blue-700">Department:</span>
-                    <span className="text-sm font-medium text-blue-900">{user.department}</span>
-                  </div>
-                )}
-                
-                {user.skills && user.skills.length > 0 && (
-                  <div>
-                    <span className="text-sm text-blue-700">Skills:</span>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {user.skills.map((skill, index) => (
-                        <Badge key={index} variant="outline" className="text-xs border-blue-300 text-blue-800">
-                          {skill}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-blue-700">Status:</span>
-                  <Badge variant={user.isActive ? 'secondary' : 'destructive'} className="bg-blue-100 text-blue-800">
-                    {user.isActive ? 'Active' : 'Inactive'}
-                  </Badge>
-                </div>
-                
-                <div className="text-xs text-blue-500">
-                  Created: {new Date(user.createdAt).toLocaleDateString()}
-                </div>
-                
-                {isProtectedUser(user.email) && (
-                  <div className="text-xs text-yellow-600 bg-yellow-50 p-2 rounded border border-yellow-200">
-                    🔒 Protected System Account
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {/* Users Table */}
+      <Card className="border-gray-200 shadow-sm">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg font-semibold text-gray-900 flex items-center">
+            <Building2 className="mr-2 h-5 w-5 text-blue-600" />
+            System Users ({filteredUsers.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-gray-50">
+                  <TableHead className="font-semibold text-gray-700">User</TableHead>
+                  <TableHead className="font-semibold text-gray-700">Role</TableHead>
+                  <TableHead className="font-semibold text-gray-700">Department</TableHead>
+                  <TableHead className="font-semibold text-gray-700">Skills</TableHead>
+                  <TableHead className="font-semibold text-gray-700">Status</TableHead>
+                  <TableHead className="font-semibold text-gray-700 text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredUsers.map((user) => (
+                  <TableRow key={user.id} className="hover:bg-gray-50 transition-colors">
+                    <TableCell>
+                      <div className="flex items-center space-x-3">
+                        <div className="flex-shrink-0">
+                          <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span className="text-sm font-medium text-blue-700">
+                              {user.name.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex items-center space-x-2">
+                            <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                            {user.email === 'ellisalat@gmail.com' && (
+                              <Crown className="h-4 w-4 text-yellow-500" />
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-500">{user.email}</p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={getRoleColor(user.role, user.email)} className="font-medium">
+                        {getUserRole(user)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="max-w-[200px]">
+                        <p className="text-sm text-gray-900 truncate" title={user.department}>
+                          {formatDepartment(user.department || '')}
+                        </p>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="max-w-[200px]">
+                        {user.skills && user.skills.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {user.skills.slice(0, 2).map((skill, index) => (
+                              <Badge key={index} variant="outline" className="text-xs">
+                                {skill}
+                              </Badge>
+                            ))}
+                            {user.skills.length > 2 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{user.skills.length - 2}
+                              </Badge>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-400">No skills listed</span>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge 
+                        variant={user.isActive ? 'secondary' : 'destructive'}
+                        className={user.isActive ? 'bg-green-100 text-green-800' : ''}
+                      >
+                        {user.isActive ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end space-x-1">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                          onClick={() => handleEditUser(user)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        {!isProtectedUser(user.email) && isSuperUser && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                            onClick={() => handleDeleteUser(user)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
       
       {filteredUsers.length === 0 && (
-        <Card className="border-blue-200">
+        <Card className="border-gray-200">
           <CardContent className="p-12 text-center">
-            <p className="text-blue-500">No users found matching your search criteria.</p>
+            <Users className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+            <p className="text-gray-500">No users found matching your search criteria.</p>
           </CardContent>
         </Card>
       )}
