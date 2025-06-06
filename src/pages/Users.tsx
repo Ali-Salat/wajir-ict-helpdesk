@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,12 +5,13 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Search, Edit, Trash2, Crown, Users as UsersIcon, Building2 } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Crown, Users as UsersIcon, Building2, Key } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useSupabaseUsers } from '../hooks/useSupabaseUsers';
 import CreateUserForm from '../components/users/CreateUserForm';
 import EditUserForm from '../components/users/EditUserForm';
 import DeleteUserDialog from '../components/users/DeleteUserDialog';
+import ResetPasswordDialog from '../components/users/ResetPasswordDialog';
 import { User } from '../types';
 
 const Users = () => {
@@ -23,6 +23,8 @@ const Users = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [resetPasswordDialogOpen, setResetPasswordDialogOpen] = useState(false);
+  const [userToResetPassword, setUserToResetPassword] = useState<User | null>(null);
 
   if (!canManageUsers()) {
     return (
@@ -90,6 +92,11 @@ const Users = () => {
   const handleDeleteUser = (user: User) => {
     setUserToDelete(user);
     setDeleteDialogOpen(true);
+  };
+
+  const handleResetPassword = (user: User) => {
+    setUserToResetPassword(user);
+    setResetPasswordDialogOpen(true);
   };
 
   const handleUserUpdated = () => {
@@ -247,6 +254,15 @@ const Users = () => {
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="text-orange-600 hover:text-orange-800 hover:bg-orange-50"
+                          onClick={() => handleResetPassword(user)}
+                          title="Reset Password"
+                        >
+                          <Key className="h-4 w-4" />
+                        </Button>
                         {!isProtectedUser(user.email) && isSuperUser && (
                           <Button 
                             variant="ghost" 
@@ -298,6 +314,13 @@ const Users = () => {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onUserDeleted={handleUserDeleted}
+      />
+
+      {/* Reset Password Dialog */}
+      <ResetPasswordDialog
+        user={userToResetPassword}
+        open={resetPasswordDialogOpen}
+        onOpenChange={setResetPasswordDialogOpen}
       />
     </div>
   );
