@@ -1,11 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { User } from '../../types';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
-import { setUsers } from '../../store/slices/usersSlice';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface DeleteUserDialogProps {
   user: User | null;
@@ -20,24 +18,46 @@ const DeleteUserDialog: React.FC<DeleteUserDialogProps> = ({
   onOpenChange, 
   onUserDeleted 
 }) => {
-  const dispatch = useDispatch();
   const { toast } = useToast();
-  const { users } = useSelector((state: RootState) => state.users);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!user) return;
 
-    const updatedUsers = users.filter(u => u.id !== user.id);
-    dispatch(setUsers(updatedUsers));
+    setIsDeleting(true);
     
-    toast({
-      title: "User Deleted",
-      description: `${user.name} has been removed from the system.`,
-      variant: "destructive",
-    });
+    try {
+      const { error } = await supabase
+        .from('users')
+        .delete()
+        .eq('id', user.id);
 
-    onUserDeleted();
-    onOpenChange(false);
+      if (error) {
+        console.error('Delete user error:', error);
+        toast({
+          title: "Delete Failed",
+          description: `Failed to delete ${user.name}. ${error.message}`,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "User Deleted",
+          description: `${user.name} has been successfully removed from the system.`,
+          variant: "destructive",
+        });
+        onUserDeleted();
+        onOpenChange(false);
+      }
+    } catch (error: any) {
+      console.error('Delete user exception:', error);
+      toast({
+        title: "Delete Failed",
+        description: `An unexpected error occurred while deleting ${user.name}.`,
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   if (!user) return null;
@@ -53,12 +73,13 @@ const DeleteUserDialog: React.FC<DeleteUserDialogProps> = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
           <AlertDialogAction 
             onClick={handleDelete}
+            disabled={isDeleting}
             className="bg-red-600 hover:bg-red-700"
           >
-            Delete User
+            {isDeleting ? 'Deleting...' : 'Delete User'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
