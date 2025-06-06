@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Search, Edit, Trash2, Crown, Users, Building2 } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Crown, Users as UsersIcon, Building2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useSupabaseUsers } from '../hooks/useSupabaseUsers';
 import CreateUserForm from '../components/users/CreateUserForm';
@@ -107,7 +107,7 @@ const Users = () => {
         <div className="space-y-1">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-blue-100 rounded-lg">
-              <Users className="h-6 w-6 text-blue-600" />
+              <UsersIcon className="h-6 w-6 text-blue-600" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
@@ -270,7 +270,7 @@ const Users = () => {
       {filteredUsers.length === 0 && (
         <Card className="border-gray-200">
           <CardContent className="p-12 text-center">
-            <Users className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+            <UsersIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
             <p className="text-gray-500">No users found matching your search criteria.</p>
           </CardContent>
         </Card>
