@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
@@ -24,27 +23,24 @@ const CreateTicketForm = ({ onClose }: CreateTicketFormProps) => {
     description: '',
     category: '',
     priority: '',
-    requesterDepartment: user?.department || 'ICT Department',
+    requesterDepartment: user?.department || 'ICT, Trade, Investment and Industry',
     requesterOffice: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const wajirDepartments = [
-    'ICT Department',
-    'Finance Department',
-    'Human Resources Department',
-    'Administration Department',
-    'Health Department',
-    'Education Department',
-    'Agriculture Department',
-    'Water Department',
-    'Transport Department',
-    'Trade Department',
-    'Land & Physical Planning Department',
-    'Environment Department',
-    'Youth & Sports Department',
-    'Gender & Social Services Department',
-    'Public Service Board'
+    'Health Services',
+    'Water Services',
+    'Office of the Governor, Public Service and County Administration',
+    'Agriculture, Livestock and Veterinary Services',
+    'ICT, Trade, Investment and Industry',
+    'Finance and Economic Planning',
+    'Education, Social Welfare and Family Affairs',
+    'Roads and Transport',
+    'Lands, Public Works and Urban Development',
+    'Energy, Environment and Climate Change',
+    'Wajir Municipality',
+    'Wajiwasco (Wajir Water and Sewerage Company)'
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {

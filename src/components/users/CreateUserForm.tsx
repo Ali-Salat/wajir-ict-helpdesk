@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,24 +40,18 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
   ];
 
   const wajirDepartments = [
-    'Office of the Governor',
-    'Deputy Governor\'s Office', 
-    'County Secretary',
-    'County Assembly',
     'Health Services',
-    'Education and ICT',
-    'Agriculture and Livestock Development',
-    'Water, Environment and Natural Resources',
-    'Roads, Transport and Public Works',
-    'Trade, Industry and Tourism',
-    'Youth, Gender and Social Services',
-    'Lands, Housing and Urban Development',
+    'Water Services',
+    'Office of the Governor, Public Service and County Administration',
+    'Agriculture, Livestock and Veterinary Services',
+    'ICT, Trade, Investment and Industry',
     'Finance and Economic Planning',
-    'Public Service and Administration',
-    'Emergency Services',
-    'Legal Affairs',
-    'Internal Audit',
-    'Communications'
+    'Education, Social Welfare and Family Affairs',
+    'Roads and Transport',
+    'Lands, Public Works and Urban Development',
+    'Energy, Environment and Climate Change',
+    'Wajir Municipality',
+    'Wajiwasco (Wajir Water and Sewerage Company)'
   ];
 
   const roleDescriptions = {

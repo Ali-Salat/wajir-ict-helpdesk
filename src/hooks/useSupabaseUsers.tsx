@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '../types';
@@ -14,7 +15,7 @@ export const useSupabaseUsers = () => {
       email: 'ellisalat@gmail.com',
       name: 'Ali Salat',
       role: 'admin',
-      department: 'ICT',
+      department: 'ICT, Trade, Investment and Industry',
       skills: ['System Administration', 'Network Management', 'Database Administration'],
       isActive: true,
       createdAt: '2025-05-01T00:00:00Z',
@@ -25,7 +26,7 @@ export const useSupabaseUsers = () => {
       email: 'mshahid@wajir.go.ke',
       name: 'Mohamed Shahid',
       role: 'admin',
-      department: 'ICT',
+      department: 'ICT, Trade, Investment and Industry',
       skills: ['System Administration', 'Project Management', 'Cybersecurity'],
       isActive: true,
       createdAt: '2025-05-02T00:00:00Z',
@@ -36,7 +37,7 @@ export const useSupabaseUsers = () => {
       email: 'xireysalat@gmail.com',
       name: 'Xirey Salat',
       role: 'technician',
-      department: 'ICT',
+      department: 'ICT, Trade, Investment and Industry',
       skills: ['Hardware Troubleshooting', 'Software Installation', 'Network Configuration'],
       isActive: true,
       createdAt: '2025-05-03T00:00:00Z',
@@ -47,7 +48,7 @@ export const useSupabaseUsers = () => {
       email: 'yussuf@wajir.go.ke',
       name: 'Yussuf Abdullahi',
       role: 'technician',
-      department: 'ICT',
+      department: 'ICT, Trade, Investment and Industry',
       skills: ['Email Systems', 'Phone Systems', 'Mobile Device Management'],
       isActive: true,
       createdAt: '2025-05-04T00:00:00Z',
@@ -58,7 +59,7 @@ export const useSupabaseUsers = () => {
       email: 'abdille@wajir.go.ke',
       name: 'Abdille Osman',
       role: 'approver',
-      department: 'ICT',
+      department: 'ICT, Trade, Investment and Industry',
       skills: ['Team Management', 'Quality Assurance', 'Process Improvement'],
       isActive: true,
       createdAt: '2025-05-05T00:00:00Z',
@@ -69,7 +70,7 @@ export const useSupabaseUsers = () => {
       email: 'mabdisalaam@wajir.go.ke',
       name: 'Mohamed Abdisalaam',
       role: 'technician',
-      department: 'ICT',
+      department: 'ICT, Trade, Investment and Industry',
       skills: ['Network Configuration', 'Server Management', 'Backup & Recovery'],
       isActive: true,
       createdAt: '2025-05-06T00:00:00Z',

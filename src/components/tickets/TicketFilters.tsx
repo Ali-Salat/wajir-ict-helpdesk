@@ -125,10 +125,17 @@ const TicketFilters = ({
           <SelectContent>
             <SelectItem value="all">All Departments</SelectItem>
             <SelectItem value="Health Services">Health Services</SelectItem>
-            <SelectItem value="Education and ICT">Education and ICT</SelectItem>
+            <SelectItem value="Water Services">Water Services</SelectItem>
+            <SelectItem value="Office of the Governor, Public Service and County Administration">Office of the Governor, Public Service and County Administration</SelectItem>
+            <SelectItem value="Agriculture, Livestock and Veterinary Services">Agriculture, Livestock and Veterinary Services</SelectItem>
+            <SelectItem value="ICT, Trade, Investment and Industry">ICT, Trade, Investment and Industry</SelectItem>
             <SelectItem value="Finance and Economic Planning">Finance and Economic Planning</SelectItem>
-            <SelectItem value="Agriculture and Livestock Development">Agriculture and Livestock Development</SelectItem>
-            <SelectItem value="Water, Environment and Natural Resources">Water, Environment and Natural Resources</SelectItem>
+            <SelectItem value="Education, Social Welfare and Family Affairs">Education, Social Welfare and Family Affairs</SelectItem>
+            <SelectItem value="Roads and Transport">Roads and Transport</SelectItem>
+            <SelectItem value="Lands, Public Works and Urban Development">Lands, Public Works and Urban Development</SelectItem>
+            <SelectItem value="Energy, Environment and Climate Change">Energy, Environment and Climate Change</SelectItem>
+            <SelectItem value="Wajir Municipality">Wajir Municipality</SelectItem>
+            <SelectItem value="Wajiwasco (Wajir Water and Sewerage Company)">Wajiwasco (Wajir Water and Sewerage Company)</SelectItem>
           </SelectContent>
         </Select>
       </div>
