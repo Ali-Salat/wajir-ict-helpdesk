@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Bell, User, LogOut, Settings, Shield } from 'lucide-react';
+import { Bell, User, LogOut, Settings, Shield, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -55,38 +55,62 @@ const Header = () => {
   return (
     <header className="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 dark:from-slate-800 dark:via-blue-800 dark:to-indigo-800 border-b border-slate-700 dark:border-slate-600 px-6 py-4 shadow-xl">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="flex flex-col">
-            <h1 className="text-2xl font-black text-white tracking-wider uppercase">
-              <span className="bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent drop-shadow-lg">
-                WAJIR COUNTY GOVERNMENT
-              </span>
-            </h1>
-            <span className="text-lg font-bold text-blue-200 dark:text-blue-300 mt-1 tracking-wide">
-              ICT HELP DESK SYSTEM
-            </span>
+        <div className="flex items-center space-x-6">
+          {/* Enhanced Professional Logo */}
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 via-yellow-500 to-orange-500 rounded-2xl shadow-2xl flex items-center justify-center border-2 border-white/20 backdrop-blur-sm">
+                <Building2 className="h-9 w-9 text-white drop-shadow-lg" />
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white shadow-lg animate-pulse"></div>
+            </div>
+            
+            <div className="flex flex-col">
+              <div className="flex items-center space-x-2">
+                <h1 className="text-2xl font-black text-white tracking-wider uppercase">
+                  <span className="bg-gradient-to-r from-white via-blue-100 to-yellow-100 bg-clip-text text-transparent drop-shadow-lg">
+                    WAJIR COUNTY
+                  </span>
+                </h1>
+                <div className="px-2 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg shadow-lg">
+                  <span className="text-xs font-bold text-white tracking-wide">GOVERNMENT</span>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2 mt-1">
+                <span className="text-lg font-bold text-blue-200 dark:text-blue-300 tracking-wide">
+                  ICT HELP DESK SYSTEM
+                </span>
+                <div className="px-2 py-0.5 bg-blue-600/30 rounded-md border border-blue-400/30">
+                  <span className="text-xs text-blue-200 font-medium">v2.0</span>
+                </div>
+              </div>
+            </div>
           </div>
-          {isSuperUser && (
-            <Badge variant="destructive" className="bg-yellow-600 text-yellow-100 hover:bg-yellow-700 shadow-lg border border-yellow-500">
-              <Shield className="w-3 h-3 mr-1" />
-              SUPER USER
-            </Badge>
-          )}
-          {isAdmin && !isSuperUser && (
-            <Badge variant="destructive" className="bg-red-600 text-red-100 hover:bg-red-700 shadow-lg border border-red-500">
-              <Shield className="w-3 h-3 mr-1" />
-              ADMIN
-            </Badge>
-          )}
+          
+          {/* Status Badges */}
+          <div className="flex items-center space-x-2">
+            {isSuperUser && (
+              <Badge variant="destructive" className="bg-gradient-to-r from-yellow-600 to-orange-600 text-white hover:from-yellow-700 hover:to-orange-700 shadow-lg border border-yellow-500/50 animate-pulse">
+                <Shield className="w-3 h-3 mr-1" />
+                SUPER USER
+              </Badge>
+            )}
+            {isAdmin && !isSuperUser && (
+              <Badge variant="destructive" className="bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800 shadow-lg border border-red-500/50">
+                <Shield className="w-3 h-3 mr-1" />
+                ADMIN
+              </Badge>
+            )}
+          </div>
         </div>
         
         <div className="flex items-center space-x-4">
           <ThemeToggle />
           
           <div className="relative">
-            <div className="p-2 rounded-lg bg-white/10 dark:bg-white/5 backdrop-blur-sm border border-white/20 dark:border-white/10">
+            <div className="p-2 rounded-lg bg-white/10 dark:bg-white/5 backdrop-blur-sm border border-white/20 dark:border-white/10 hover:bg-white/20 transition-all duration-200">
               <Bell className="h-5 w-5 text-white drop-shadow-sm" />
-              <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center shadow-lg animate-pulse font-semibold">
+              <span className="absolute -top-1 -right-1 h-4 w-4 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full flex items-center justify-center shadow-lg animate-pulse font-semibold">
                 3
               </span>
             </div>
@@ -94,7 +118,7 @@ const Header = () => {
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center space-x-2 hover:bg-white/10 dark:hover:bg-white/5 transition-all border border-white/20 dark:border-white/10 backdrop-blur-sm">
+              <Button variant="ghost" className="flex items-center space-x-3 hover:bg-white/10 dark:hover:bg-white/5 transition-all border border-white/20 dark:border-white/10 backdrop-blur-sm px-4 py-2">
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center shadow-lg">
                   <User className="h-4 w-4 text-white" />
                 </div>

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,6 +21,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
     password: '',
     role: '',
     department: '',
+    title: '',
     skills: [] as string[],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -106,12 +108,50 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
 
       console.log('Creating user with data:', formData);
 
-      // For now, just show success and close the form since Supabase auth creation might have RLS issues
-      // In a production environment, you would handle user creation through proper admin functions
-      
+      // First, create the user in Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+        email: formData.email,
+        password: formData.password,
+        email_confirm: true,
+        user_metadata: {
+          full_name: formData.fullName,
+          role: formData.role,
+          department: formData.department,
+          title: formData.title
+        }
+      });
+
+      if (authError) {
+        console.error('Auth user creation error:', authError);
+        throw new Error(authError.message);
+      }
+
+      if (!authData.user) {
+        throw new Error('Failed to create user in authentication system');
+      }
+
+      // Then, create the user profile in our users table
+      const { error: userError } = await supabase
+        .from('users')
+        .insert({
+          id: authData.user.id,
+          email: formData.email,
+          name: formData.fullName,
+          role: formData.role as 'admin' | 'approver' | 'technician' | 'requester',
+          department: formData.department,
+          title: formData.title || null,
+        });
+
+      if (userError) {
+        console.error('User profile creation error:', userError);
+        // If profile creation fails, we should clean up the auth user
+        await supabase.auth.admin.deleteUser(authData.user.id);
+        throw new Error(userError.message);
+      }
+
       toast({
-        title: 'User creation initiated',
-        description: `User ${formData.fullName} will be created with role: ${formData.role}`,
+        title: 'User Created Successfully',
+        description: `${formData.fullName} has been added to the system with role: ${formData.role}`,
       });
 
       onUserCreated();
@@ -164,27 +204,40 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password *</Label>
-            <div className="flex gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="password">Password *</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  placeholder="Strong password"
+                  required
+                  minLength={6}
+                  className="border-blue-200 focus:border-blue-500"
+                />
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={generateSecurePassword}
+                  className="whitespace-nowrap"
+                >
+                  Generate
+                </Button>
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="title">Job Title</Label>
               <Input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                placeholder="Strong password"
-                required
-                minLength={6}
+                id="title"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                placeholder="e.g. IT Officer, Director"
                 className="border-blue-200 focus:border-blue-500"
               />
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={generateSecurePassword}
-                className="whitespace-nowrap"
-              >
-                Generate
-              </Button>
             </div>
           </div>
         </div>
