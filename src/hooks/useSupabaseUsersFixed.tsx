@@ -12,8 +12,8 @@ const mapSupabaseUser = (supabaseUser: any): User => ({
   role: supabaseUser.role,
   department: supabaseUser.department,
   title: supabaseUser.title || undefined,
-  skills: [], // Skills not stored in Supabase yet
-  isActive: true, // Default to active
+  skills: supabaseUser.skills || [], // Handle skills if they exist
+  isActive: supabaseUser.is_active !== false, // Default to active if not specified
   createdAt: supabaseUser.created_at,
   updatedAt: supabaseUser.updated_at,
 });
@@ -47,7 +47,7 @@ export const useSupabaseUsersFixed = () => {
     try {
       console.log('Attempting to delete user:', userId);
       
-      // First delete from our users table
+      // Delete from our users table
       const { error: userError } = await supabase
         .from('users')
         .delete()

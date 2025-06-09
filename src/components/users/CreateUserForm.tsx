@@ -18,7 +18,6 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
-    password: '',
     role: '',
     department: '',
     title: '',
@@ -87,54 +86,24 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
     }
   };
 
-  const generateSecurePassword = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-    let password = '';
-    for (let i = 0; i < 12; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    setFormData({ ...formData, password });
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
       // Validate required fields
-      if (!formData.fullName || !formData.email || !formData.password || !formData.role || !formData.department) {
+      if (!formData.fullName || !formData.email || !formData.role || !formData.department) {
         throw new Error('Please fill in all required fields');
       }
 
-      console.log('Creating user with data:', formData);
+      console.log('Creating user profile with data:', formData);
 
-      // First, create the user in Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: formData.email,
-        password: formData.password,
-        email_confirm: true,
-        user_metadata: {
-          full_name: formData.fullName,
-          role: formData.role,
-          department: formData.department,
-          title: formData.title
-        }
-      });
-
-      if (authError) {
-        console.error('Auth user creation error:', authError);
-        throw new Error(authError.message);
-      }
-
-      if (!authData.user) {
-        throw new Error('Failed to create user in authentication system');
-      }
-
-      // Then, create the user profile in our users table
+      // Create the user profile directly in our users table
+      // Note: In a production environment, user creation should be handled by an admin
+      // or through a proper user invitation system with email verification
       const { error: userError } = await supabase
         .from('users')
         .insert({
-          id: authData.user.id,
           email: formData.email,
           name: formData.fullName,
           role: formData.role as 'admin' | 'approver' | 'technician' | 'requester',
@@ -144,14 +113,12 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
 
       if (userError) {
         console.error('User profile creation error:', userError);
-        // If profile creation fails, we should clean up the auth user
-        await supabase.auth.admin.deleteUser(authData.user.id);
-        throw new Error(userError.message);
+        throw new Error(`Failed to create user profile: ${userError.message}`);
       }
 
       toast({
-        title: 'User Created Successfully',
-        description: `${formData.fullName} has been added to the system with role: ${formData.role}`,
+        title: 'User Profile Created',
+        description: `${formData.fullName} has been added to the system. They will need to sign up with their email to complete account creation.`,
       });
 
       onUserCreated();
@@ -204,41 +171,15 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="password">Password *</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  placeholder="Strong password"
-                  required
-                  minLength={6}
-                  className="border-blue-200 focus:border-blue-500"
-                />
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={generateSecurePassword}
-                  className="whitespace-nowrap"
-                >
-                  Generate
-                </Button>
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="title">Job Title</Label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="e.g. IT Officer, Director"
-                className="border-blue-200 focus:border-blue-500"
-              />
-            </div>
+          <div>
+            <Label htmlFor="title">Job Title</Label>
+            <Input
+              id="title"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              placeholder="e.g. IT Officer, Director"
+              className="border-blue-200 focus:border-blue-500"
+            />
           </div>
         </div>
 
@@ -309,6 +250,23 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
           </div>
         )}
 
+        {/* Information Note */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-start space-x-3">
+            <div className="text-blue-600">
+              <svg className="w-5 h-5 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium text-blue-900">Account Creation Note</h4>
+              <p className="text-sm text-blue-700 mt-1">
+                This will create a user profile in the system. The user will need to sign up with their email address to complete their account creation and gain access to the system.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Action Buttons */}
         <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
           <Button type="button" variant="outline" onClick={onClose}>
@@ -319,7 +277,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
             disabled={isSubmitting} 
             className="bg-blue-600 hover:bg-blue-700 min-w-[120px]"
           >
-            {isSubmitting ? 'Creating...' : 'Create User'}
+            {isSubmitting ? 'Creating...' : 'Create User Profile'}
           </Button>
         </div>
       </form>

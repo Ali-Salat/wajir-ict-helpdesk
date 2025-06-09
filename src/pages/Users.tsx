@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -134,12 +135,12 @@ const Users = () => {
           <DialogTrigger asChild>
             <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg transition-all duration-200 hover:shadow-xl">
               <Plus className="mr-2 h-4 w-4" />
-              Add User
+              Add User Profile
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Add New User</DialogTitle>
+              <DialogTitle>Add New User Profile</DialogTitle>
             </DialogHeader>
             <CreateUserForm 
               onClose={() => setIsCreateDialogOpen(false)} 
@@ -260,24 +261,6 @@ const Users = () => {
                           onClick={() => handleEditUser(user)}
                         >
                           <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="text-green-600 hover:text-green-800 hover:bg-green-50 dark:hover:bg-green-900/20"
-                          onClick={() => handleResetPassword(user)}
-                          title="Send Reset Email"
-                        >
-                          <Key className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="text-orange-600 hover:text-orange-800 hover:bg-orange-50 dark:hover:bg-orange-900/20"
-                          onClick={() => handleForceReset(user)}
-                          title="Force Password Reset"
-                        >
-                          <ShieldAlert className="h-4 w-4" />
                         </Button>
                         {!isProtectedUser(user.email) && isSuperUser && (
                           <Button 
