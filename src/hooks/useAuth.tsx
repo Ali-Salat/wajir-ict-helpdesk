@@ -3,7 +3,7 @@ import { useSupabaseAuth } from './useSupabaseAuth';
 import { useSupabaseUsers } from './useSupabaseUsers';
 
 export const useAuth = () => {
-  const { user: supabaseUser, isAuthenticated, isLoading, signOut } = useSupabaseAuth();
+  const { user: supabaseUser, isAuthenticated, isLoading, signOut, signIn } = useSupabaseAuth();
   const { users } = useSupabaseUsers();
 
   // Find the user in our users table to get role and other details
@@ -85,6 +85,7 @@ export const useAuth = () => {
     canCreateTickets,
     canEditTickets,
     canDeleteTickets,
+    signIn,
     logout,
   };
 };
