@@ -5,6 +5,7 @@ export interface User {
   name: string;
   role: 'admin' | 'approver' | 'technician' | 'requester';
   department?: string;
+  title?: string;
   skills?: string[];
   isActive: boolean;
   createdAt: string;

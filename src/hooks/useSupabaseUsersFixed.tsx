@@ -11,7 +11,7 @@ const mapSupabaseUser = (supabaseUser: any): User => ({
   name: supabaseUser.name,
   role: supabaseUser.role,
   department: supabaseUser.department,
-  title: supabaseUser.title,
+  title: supabaseUser.title || undefined,
   skills: [], // Skills not stored in Supabase yet
   isActive: true, // Default to active
   createdAt: supabaseUser.created_at,
