@@ -5,18 +5,19 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Search, Edit, Trash2, Crown, Users as UsersIcon, Building2, Key } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Crown, Users as UsersIcon, Building2, Key, ShieldAlert } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { useSupabaseUsers } from '../hooks/useSupabaseUsers';
+import { useSupabaseUsersFixed } from '../hooks/useSupabaseUsersFixed';
 import CreateUserForm from '../components/users/CreateUserForm';
 import EditUserForm from '../components/users/EditUserForm';
 import DeleteUserDialog from '../components/users/DeleteUserDialog';
 import ResetPasswordDialog from '../components/users/ResetPasswordDialog';
+import ForcePasswordResetDialog from '../components/users/ForcePasswordResetDialog';
 import { User } from '../types';
 
 const Users = () => {
   const { canManageUsers, isSuperUser, supabaseUser } = useAuth();
-  const { users, isLoading, refetchUsers } = useSupabaseUsers();
+  const { users, isLoading, refetchUsers, deleteUser } = useSupabaseUsersFixed();
   const [searchTerm, setSearchTerm] = useState('');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -25,6 +26,8 @@ const Users = () => {
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [resetPasswordDialogOpen, setResetPasswordDialogOpen] = useState(false);
   const [userToResetPassword, setUserToResetPassword] = useState<User | null>(null);
+  const [forceResetDialogOpen, setForceResetDialogOpen] = useState(false);
+  const [userToForceReset, setUserToForceReset] = useState<User | null>(null);
 
   if (!canManageUsers()) {
     return (
@@ -53,7 +56,6 @@ const Users = () => {
       return 'ICT Department';
     }
     
-    // Shorten other long department names
     if (department.length > 40) {
       const words = department.split(' ');
       if (words.length > 3) {
@@ -89,7 +91,7 @@ const Users = () => {
     setIsEditDialogOpen(true);
   };
 
-  const handleDeleteUser = (user: User) => {
+  const handleDeleteUser = async (user: User) => {
     setUserToDelete(user);
     setDeleteDialogOpen(true);
   };
@@ -99,11 +101,16 @@ const Users = () => {
     setResetPasswordDialogOpen(true);
   };
 
+  const handleForceReset = (user: User) => {
+    setUserToForceReset(user);
+    setForceResetDialogOpen(true);
+  };
+
   const handleUserUpdated = () => {
     refetchUsers();
   };
 
-  const handleUserDeleted = () => {
+  const handleUserDeleted = async () => {
     refetchUsers();
   };
 
@@ -113,19 +120,19 @@ const Users = () => {
       <div className="flex justify-between items-start">
         <div className="space-y-1">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <UsersIcon className="h-6 w-6 text-blue-600" />
+            <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
+              <UsersIcon className="h-7 w-7 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-              <p className="text-sm text-gray-600">Manage system users and their permissions</p>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
+              <p className="text-gray-600 dark:text-gray-400">Manage system users and their permissions</p>
             </div>
           </div>
         </div>
         
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700 shadow-sm">
+            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg transition-all duration-200 hover:shadow-xl">
               <Plus className="mr-2 h-4 w-4" />
               Add User
             </Button>
@@ -146,25 +153,25 @@ const Users = () => {
       </div>
 
       {/* Search */}
-      <Card className="border-gray-200 shadow-sm">
-        <CardContent className="p-4">
+      <Card className="border-0 shadow-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+        <CardContent className="p-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <Input
               placeholder="Search by name, email, or department..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              className="pl-12 h-12 border-0 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 transition-colors duration-200"
             />
           </div>
         </CardContent>
       </Card>
 
       {/* Users Table */}
-      <Card className="border-gray-200 shadow-sm">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-semibold text-gray-900 flex items-center">
-            <Building2 className="mr-2 h-5 w-5 text-blue-600" />
+      <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+        <CardHeader className="pb-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-t-lg">
+          <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+            <Building2 className="mr-3 h-6 w-6 text-blue-600" />
             System Users ({filteredUsers.length})
           </CardTitle>
         </CardHeader>
@@ -172,46 +179,46 @@ const Users = () => {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-gray-50">
-                  <TableHead className="font-semibold text-gray-700">User</TableHead>
-                  <TableHead className="font-semibold text-gray-700">Role</TableHead>
-                  <TableHead className="font-semibold text-gray-700">Department</TableHead>
-                  <TableHead className="font-semibold text-gray-700">Skills</TableHead>
-                  <TableHead className="font-semibold text-gray-700">Status</TableHead>
-                  <TableHead className="font-semibold text-gray-700 text-right">Actions</TableHead>
+                <TableRow className="bg-gray-50/50 dark:bg-gray-700/50">
+                  <TableHead className="font-semibold text-gray-700 dark:text-gray-300">User</TableHead>
+                  <TableHead className="font-semibold text-gray-700 dark:text-gray-300">Role</TableHead>
+                  <TableHead className="font-semibold text-gray-700 dark:text-gray-300">Department</TableHead>
+                  <TableHead className="font-semibold text-gray-700 dark:text-gray-300">Skills</TableHead>
+                  <TableHead className="font-semibold text-gray-700 dark:text-gray-300">Status</TableHead>
+                  <TableHead className="font-semibold text-gray-700 dark:text-gray-300 text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredUsers.map((user) => (
-                  <TableRow key={user.id} className="hover:bg-gray-50 transition-colors">
+                  <TableRow key={user.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors border-b border-gray-100 dark:border-gray-700">
                     <TableCell>
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-4">
                         <div className="flex-shrink-0">
-                          <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
-                            <span className="text-sm font-medium text-blue-700">
+                          <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-md">
+                            <span className="text-sm font-bold text-white">
                               {user.name.charAt(0).toUpperCase()}
                             </span>
                           </div>
                         </div>
                         <div>
                           <div className="flex items-center space-x-2">
-                            <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{user.name}</p>
                             {user.email === 'ellisalat@gmail.com' && (
                               <Crown className="h-4 w-4 text-yellow-500" />
                             )}
                           </div>
-                          <p className="text-sm text-gray-500">{user.email}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={getRoleColor(user.role, user.email)} className="font-medium">
+                      <Badge variant={getRoleColor(user.role, user.email)} className="font-medium shadow-sm">
                         {getUserRole(user)}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="max-w-[200px]">
-                        <p className="text-sm text-gray-900 truncate" title={user.department}>
+                        <p className="text-sm text-gray-900 dark:text-white truncate" title={user.department}>
                           {formatDepartment(user.department || '')}
                         </p>
                       </div>
@@ -239,7 +246,7 @@ const Users = () => {
                     <TableCell>
                       <Badge 
                         variant={user.isActive ? 'secondary' : 'destructive'}
-                        className={user.isActive ? 'bg-green-100 text-green-800' : ''}
+                        className={user.isActive ? 'bg-green-100 text-green-800 border-green-200' : ''}
                       >
                         {user.isActive ? 'Active' : 'Inactive'}
                       </Badge>
@@ -249,7 +256,7 @@ const Users = () => {
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                          className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                           onClick={() => handleEditUser(user)}
                         >
                           <Edit className="h-4 w-4" />
@@ -257,17 +264,26 @@ const Users = () => {
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="text-orange-600 hover:text-orange-800 hover:bg-orange-50"
+                          className="text-green-600 hover:text-green-800 hover:bg-green-50 dark:hover:bg-green-900/20"
                           onClick={() => handleResetPassword(user)}
-                          title="Reset Password"
+                          title="Send Reset Email"
                         >
                           <Key className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="text-orange-600 hover:text-orange-800 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                          onClick={() => handleForceReset(user)}
+                          title="Force Password Reset"
+                        >
+                          <ShieldAlert className="h-4 w-4" />
                         </Button>
                         {!isProtectedUser(user.email) && isSuperUser && (
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                            className="text-red-600 hover:text-red-800 hover:bg-red-50 dark:hover:bg-red-900/20"
                             onClick={() => handleDeleteUser(user)}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -284,7 +300,7 @@ const Users = () => {
       </Card>
       
       {filteredUsers.length === 0 && (
-        <Card className="border-gray-200">
+        <Card className="border-0 shadow-lg">
           <CardContent className="p-12 text-center">
             <UsersIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
             <p className="text-gray-500">No users found matching your search criteria.</p>
@@ -314,6 +330,7 @@ const Users = () => {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onUserDeleted={handleUserDeleted}
+        deleteUserFunction={deleteUser}
       />
 
       {/* Reset Password Dialog */}
@@ -321,6 +338,13 @@ const Users = () => {
         user={userToResetPassword}
         open={resetPasswordDialogOpen}
         onOpenChange={setResetPasswordDialogOpen}
+      />
+
+      {/* Force Password Reset Dialog */}
+      <ForcePasswordResetDialog
+        user={userToForceReset}
+        open={forceResetDialogOpen}
+        onOpenChange={setForceResetDialogOpen}
       />
     </div>
   );

@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      password_reset_requirements: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          must_change_password: boolean
+          reset_token: string | null
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          must_change_password?: boolean
+          reset_token?: string | null
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          must_change_password?: boolean
+          reset_token?: string | null
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       tickets: {
         Row: {
           assigned_to: string | null
@@ -116,6 +146,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_password_reset_required: {
+        Args: { user_id: string }
+        Returns: boolean
+      }
+      force_password_reset: {
+        Args: { target_user_id: string }
+        Returns: undefined
+      }
       get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
