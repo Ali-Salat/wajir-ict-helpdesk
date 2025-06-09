@@ -6,11 +6,11 @@ import Sidebar from './Sidebar';
 
 const MainLayout = () => {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex transition-colors duration-300">
+    <div className="min-h-screen bg-background flex transition-colors duration-300">
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
-        <main className="flex-1 p-6 overflow-auto bg-gray-50 dark:bg-gray-900">
+        <main className="flex-1 p-6 overflow-auto bg-background">
           <Outlet />
         </main>
         <footer className="bg-gradient-to-r from-slate-800 via-blue-900 to-indigo-900 dark:from-slate-900 dark:via-blue-950 dark:to-indigo-950 border-t border-slate-700 dark:border-slate-600 px-6 py-4 shadow-lg">
