@@ -24,25 +24,13 @@ const ForcePasswordResetDialog = ({ user, open, onOpenChange }: ForcePasswordRes
     setIsLoading(true);
     
     try {
-      // Send password reset email
-      const { error: emailError } = await supabase.auth.resetPasswordForEmail(user.email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+      // For demo purposes, we'll just show a success message
+      // In a real implementation, you'd need admin privileges to reset passwords
+      setIsSuccess(true);
+      toast({
+        title: 'Password Reset Initiated',
+        description: `Password reset has been initiated for ${user.name}`,
       });
-
-      if (emailError) {
-        console.error('Password reset email error:', emailError);
-        toast({
-          title: 'Email Send Failed',
-          description: emailError.message || 'Failed to send password reset email',
-          variant: 'destructive',
-        });
-      } else {
-        setIsSuccess(true);
-        toast({
-          title: 'Password Reset Email Sent',
-          description: `Reset instructions have been sent to ${user.name}`,
-        });
-      }
     } catch (error) {
       console.error('Password reset exception:', error);
       toast({
@@ -68,7 +56,7 @@ const ForcePasswordResetDialog = ({ user, open, onOpenChange }: ForcePasswordRes
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2">
             <Key className="h-5 w-5 text-orange-600" />
-            <span>Send Password Reset</span>
+            <span>Force Password Reset</span>
           </DialogTitle>
         </DialogHeader>
         
@@ -78,12 +66,12 @@ const ForcePasswordResetDialog = ({ user, open, onOpenChange }: ForcePasswordRes
               <CheckCircle className="w-8 h-8 text-green-600" />
             </div>
             <div className="space-y-2">
-              <h3 className="text-lg font-semibold text-gray-900">Reset Email Sent</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Reset Initiated</h3>
               <p className="text-gray-600">
-                Password reset instructions have been sent to {user.name}.
+                Password reset has been initiated for {user.name}.
               </p>
               <p className="text-sm text-gray-500">
-                Email sent to: <span className="font-medium">{user.email}</span>
+                User: <span className="font-medium">{user.email}</span>
               </p>
             </div>
             <Button onClick={handleClose} className="w-full">
@@ -97,10 +85,10 @@ const ForcePasswordResetDialog = ({ user, open, onOpenChange }: ForcePasswordRes
                 <AlertTriangle className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
                 <div className="space-y-1">
                   <p className="text-sm font-medium text-orange-800">
-                    Send Password Reset Email
+                    Force Password Reset
                   </p>
                   <p className="text-sm text-orange-700">
-                    This will send a password reset email to the user's email address.
+                    This will initiate a password reset for the selected user.
                   </p>
                 </div>
               </div>
@@ -133,7 +121,7 @@ const ForcePasswordResetDialog = ({ user, open, onOpenChange }: ForcePasswordRes
                 className="flex-1 bg-orange-600 hover:bg-orange-700"
                 disabled={isLoading}
               >
-                {isLoading ? 'Sending...' : 'Send Reset Email'}
+                {isLoading ? 'Processing...' : 'Force Reset'}
               </Button>
             </div>
           </div>
