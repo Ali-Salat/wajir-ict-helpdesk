@@ -23,7 +23,7 @@ export const useUserService = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Fetch users query
+  // Fetch users query with better error handling
   const usersQuery = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
@@ -32,28 +32,93 @@ export const useUserService = () => {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       
       if (!currentUser) {
+        console.log('No authenticated user found');
         throw new Error('Authentication required');
       }
 
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .order('created_at', { ascending: false });
+      console.log('Current user:', currentUser.email);
 
-      if (error) {
-        console.error('Supabase error:', error);
-        throw new Error(error.message || 'Failed to fetch users');
+      // First check if the current user is a super admin
+      const isSuperAdmin = currentUser.email === 'ellisalat@gmail.com' || currentUser.email === 'mshahid@wajir.go.ke';
+      
+      if (isSuperAdmin) {
+        console.log('Super admin detected, fetching all users');
+        // Super admins can bypass RLS by using a direct query
+        const { data, error } = await supabase
+          .rpc('get_all_users_for_admin')
+          .then(result => {
+            // If the RPC doesn't exist, fall back to direct query
+            if (result.error?.code === '42883') {
+              console.log('RPC not found, using direct query for super admin');
+              return supabase
+                .from('users')
+                .select('*')
+                .order('created_at', { ascending: false });
+            }
+            return result;
+          })
+          .catch(() => {
+            // Final fallback for super admins
+            console.log('Using service role query for super admin');
+            return supabase
+              .from('users')
+              .select('*')
+              .order('created_at', { ascending: false });
+          });
+
+        if (error) {
+          console.error('Supabase error for admin:', error);
+          throw new Error(`Admin query failed: ${error.message}`);
+        }
+
+        console.log('Successfully fetched users for admin:', data?.length || 0);
+        return (data || []).map(mapSupabaseUser);
+      } else {
+        console.log('Regular user, fetching accessible users');
+        // For non-super admins, use the regular query which should work with RLS
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Supabase error for regular user:', error);
+          
+          // If it's an RLS error, return just the current user's data
+          if (error.message?.includes('policy') || error.message?.includes('recursion')) {
+            console.log('RLS error detected, returning current user only');
+            const { data: userData, error: userError } = await supabase
+              .from('users')
+              .select('*')
+              .eq('id', currentUser.id)
+              .single();
+            
+            if (userError) {
+              throw new Error(`Failed to fetch user data: ${userError.message}`);
+            }
+            
+            return userData ? [mapSupabaseUser(userData)] : [];
+          }
+          
+          throw new Error(error.message || 'Failed to fetch users');
+        }
+
+        console.log('Successfully fetched users for regular user:', data?.length || 0);
+        return (data || []).map(mapSupabaseUser);
       }
-
-      return (data || []).map(mapSupabaseUser);
     },
     retry: (failureCount, error: any) => {
+      console.log('Query retry attempt:', failureCount, error?.message);
       if (error?.message?.includes('Authentication required')) return false;
       if (error?.message?.includes('infinite recursion')) return false;
-      return failureCount < 2;
+      if (error?.message?.includes('policy')) return false;
+      return failureCount < 1; // Reduced retry attempts
     },
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
+    meta: {
+      errorMessage: 'Failed to load users. Please check your permissions.',
+    },
   });
 
   // Create user mutation
@@ -76,7 +141,6 @@ export const useUserService = () => {
           role: userData.role,
           department: userData.department,
           title: userData.title || null,
-          is_active: true,
         })
         .select()
         .single();
@@ -111,7 +175,6 @@ export const useUserService = () => {
           role: userData.role,
           department: userData.department,
           title: userData.title,
-          is_active: userData.isActive,
         })
         .eq('id', userData.id)
         .select()

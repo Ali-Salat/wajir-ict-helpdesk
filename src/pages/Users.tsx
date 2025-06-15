@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { AlertCircle, LogIn, Users as UsersIcon } from 'lucide-react';
+import { AlertCircle, LogIn, Users as UsersIcon, RefreshCw, AlertTriangle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useAuth } from '../hooks/useAuth';
 import { useUserService } from '../hooks/useUserService';
 import EditUserForm from '../components/users/EditUserForm';
@@ -174,6 +175,10 @@ const Users = () => {
     }
   };
 
+  const handleRetry = () => {
+    refetchUsers();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -187,31 +192,74 @@ const Users = () => {
           setIsCreateDialogOpen={setIsCreateDialogOpen}
         />
 
-        {/* User Statistics */}
-        <UserStats users={users} isLoading={isLoading} />
+        {/* Error State with Improved Design */}
+        {error && (
+          <Card className="border-0 shadow-xl bg-red-50/90 backdrop-blur-sm border-red-200">
+            <CardContent className="p-8">
+              <div className="flex items-start space-x-4">
+                <div className="p-3 bg-red-100 rounded-xl">
+                  <AlertTriangle className="h-8 w-8 text-red-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold text-red-900 mb-2">Error Loading Users</h3>
+                  <p className="text-red-700 mb-4">
+                    {error?.message?.includes('recursion') 
+                      ? 'Database configuration issue detected. Please contact system administrator.'
+                      : error?.message?.includes('policy')
+                      ? 'Permission error. You may only have access to limited user data.'
+                      : error?.message || 'Failed to load users. Please try again.'
+                    }
+                  </p>
+                  <div className="flex items-center space-x-3">
+                    <Button
+                      onClick={handleRetry}
+                      disabled={isFetching}
+                      className="bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      <RefreshCw className={`mr-2 h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
+                      Retry
+                    </Button>
+                    {error?.message?.includes('recursion') && (
+                      <p className="text-sm text-red-600">
+                        System administrator needs to fix database policies.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
-        {/* Search and Filters */}
-        <UserSearchAndFilters
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          roleFilter={roleFilter}
-          onRoleFilterChange={setRoleFilter}
-          departmentFilter={departmentFilter}
-          onDepartmentFilterChange={setDepartmentFilter}
-        />
+        {/* User Statistics - Only show if we have data */}
+        {!error && <UserStats users={users} isLoading={isLoading} />}
 
-        {/* Bulk Actions */}
-        <BulkUserActions
-          selectedUsers={selectedUsers}
-          onClearSelection={() => setSelectedUsers([])}
-          onBulkAction={handleBulkAction}
-        />
+        {/* Search and Filters - Only show if we have data or are loading */}
+        {(!error || users.length > 0) && (
+          <UserSearchAndFilters
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            roleFilter={roleFilter}
+            onRoleFilterChange={setRoleFilter}
+            departmentFilter={departmentFilter}
+            onDepartmentFilterChange={setDepartmentFilter}
+          />
+        )}
+
+        {/* Bulk Actions - Only show if we have users */}
+        {users.length > 0 && (
+          <BulkUserActions
+            selectedUsers={selectedUsers}
+            onClearSelection={() => setSelectedUsers([])}
+            onBulkAction={handleBulkAction}
+          />
+        )}
 
         {/* Users Grid */}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
+              <Card key={i} className="animate-pulse border-0 shadow-lg">
                 <CardContent className="p-6">
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3">
@@ -230,15 +278,7 @@ const Users = () => {
               </Card>
             ))}
           </div>
-        ) : error ? (
-          <Card className="border-0 shadow-xl bg-red-50/80 backdrop-blur-sm">
-            <CardContent className="p-8 text-center">
-              <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-red-900 mb-2">Error Loading Users</h3>
-              <p className="text-red-700">{error?.message || 'Failed to load users'}</p>
-            </CardContent>
-          </Card>
-        ) : (
+        ) : !error && users.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredUsers.map((user) => (
               <UserCard
@@ -253,14 +293,17 @@ const Users = () => {
               />
             ))}
           </div>
-        )}
-        
-        {filteredUsers.length === 0 && !isLoading && !error && (
+        ) : !error && (
           <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
             <CardContent className="p-12 text-center">
               <UsersIcon className="mx-auto h-16 w-16 text-gray-400 mb-6" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">No users found</h3>
-              <p className="text-gray-500">No users match your current search criteria.</p>
+              <p className="text-gray-500">
+                {filteredUsers.length === 0 && users.length > 0
+                  ? 'No users match your current search criteria.'
+                  : 'No users have been created yet.'
+                }
+              </p>
             </CardContent>
           </Card>
         )}
