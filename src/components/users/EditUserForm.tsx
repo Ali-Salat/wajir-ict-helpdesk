@@ -7,8 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
 import { User } from '../../types';
-import { useDispatch } from 'react-redux';
-import { updateUser } from '../../store/slices/usersSlice';
+import { useSupabaseUsersFixed } from '../../hooks/useSupabaseUsersFixed';
 import { useToast } from '@/hooks/use-toast';
 
 interface EditUserFormProps {
@@ -18,13 +17,14 @@ interface EditUserFormProps {
 }
 
 const EditUserForm: React.FC<EditUserFormProps> = ({ user, onClose, onUserUpdated }) => {
-  const dispatch = useDispatch();
+  const { updateUser, isUpdating } = useSupabaseUsersFixed();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: user.name,
     email: user.email,
     role: user.role,
     department: user.department || '',
+    title: user.title || '',
     skills: user.skills || [],
     isActive: user.isActive,
   });
@@ -69,24 +69,24 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ user, onClose, onUserUpdate
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const updatedUser: User = {
-      ...user,
-      ...formData,
-      updatedAt: new Date().toISOString(),
-    };
+    try {
+      await updateUser({
+        id: user.id,
+        name: formData.name,
+        role: formData.role,
+        department: formData.department,
+        title: formData.title,
+        isActive: formData.isActive,
+      });
 
-    dispatch(updateUser(updatedUser));
-    
-    toast({
-      title: "User Updated",
-      description: `${formData.name} has been updated successfully.`,
-    });
-
-    onUserUpdated();
-    onClose();
+      onUserUpdated();
+      onClose();
+    } catch (error) {
+      // Error handling is done in the hook
+    }
   };
 
   return (
@@ -151,6 +151,16 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ user, onClose, onUserUpdate
             </SelectContent>
           </Select>
         </div>
+
+        <div className="space-y-2 md:col-span-2">
+          <Label htmlFor="title">Job Title</Label>
+          <Input
+            id="title"
+            value={formData.title}
+            onChange={(e) => handleInputChange('title', e.target.value)}
+            placeholder="e.g. IT Officer, Director"
+          />
+        </div>
       </div>
 
       <div className="space-y-2">
@@ -200,8 +210,12 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ user, onClose, onUserUpdate
         <Button type="button" variant="outline" onClick={onClose}>
           Cancel
         </Button>
-        <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-          Update User
+        <Button 
+          type="submit" 
+          className="bg-blue-600 hover:bg-blue-700"
+          disabled={isUpdating}
+        >
+          {isUpdating ? 'Updating...' : 'Update User'}
         </Button>
       </div>
     </form>

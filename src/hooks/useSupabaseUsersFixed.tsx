@@ -1,8 +1,9 @@
 
 import { useState, useEffect } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@/types';
+import { useToast } from '@/hooks/use-toast';
 
 // Map Supabase user data to our User type
 const mapSupabaseUser = (supabaseUser: any): User => ({
@@ -12,16 +13,23 @@ const mapSupabaseUser = (supabaseUser: any): User => ({
   role: supabaseUser.role,
   department: supabaseUser.department,
   title: supabaseUser.title || undefined,
-  skills: supabaseUser.skills || [], // Handle skills if they exist
-  isActive: supabaseUser.is_active !== false, // Default to active if not specified
+  skills: supabaseUser.skills || [],
+  isActive: supabaseUser.is_active !== false,
   createdAt: supabaseUser.created_at,
   updatedAt: supabaseUser.updated_at,
 });
 
 export const useSupabaseUsersFixed = () => {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
-  const { data: users = [], isLoading, error, refetch } = useQuery({
+  const { 
+    data: users = [], 
+    isLoading, 
+    error, 
+    refetch,
+    isFetching 
+  } = useQuery({
     queryKey: ['supabase-users'],
     queryFn: async () => {
       console.log('Fetching users from Supabase...');
@@ -39,12 +47,14 @@ export const useSupabaseUsersFixed = () => {
       console.log('Fetched users:', data);
       return data.map(mapSupabaseUser);
     },
-    retry: 3,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    retry: 2,
+    staleTime: 1000 * 60 * 2, // 2 minutes
+    refetchOnWindowFocus: false,
   });
 
-  const deleteUser = async (userId: string) => {
-    try {
+  // Delete user mutation
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: string) => {
       console.log('Attempting to delete user:', userId);
       
       // First check if user is protected
@@ -53,37 +63,45 @@ export const useSupabaseUsersFixed = () => {
         throw new Error('Cannot delete protected admin users');
       }
 
-      // Delete from our users table
-      const { error: userError } = await supabase
+      const { error } = await supabase
         .from('users')
         .delete()
         .eq('id', userId);
 
-      if (userError) {
-        console.error('Error deleting from users table:', userError);
-        throw userError;
+      if (error) {
+        console.error('Error deleting user:', error);
+        throw error;
       }
 
-      console.log('Successfully deleted user from users table');
-      
-      // Invalidate and refetch the users query
-      await queryClient.invalidateQueries({ queryKey: ['supabase-users'] });
-      
       return { success: true };
-    } catch (error) {
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['supabase-users'] });
+      toast({
+        title: "User Deleted",
+        description: "User has been successfully removed from the system.",
+        variant: "destructive",
+      });
+    },
+    onError: (error: any) => {
       console.error('Delete user error:', error);
-      throw error;
+      toast({
+        title: "Delete Failed",
+        description: error.message || 'An unexpected error occurred.',
+        variant: "destructive",
+      });
     }
-  };
+  });
 
-  const createUser = async (userData: {
-    email: string;
-    name: string;
-    role: 'admin' | 'approver' | 'technician' | 'requester';
-    department: string;
-    title?: string;
-  }) => {
-    try {
+  // Create user mutation
+  const createUserMutation = useMutation({
+    mutationFn: async (userData: {
+      email: string;
+      name: string;
+      role: 'admin' | 'approver' | 'technician' | 'requester';
+      department: string;
+      title?: string;
+    }) => {
       console.log('Creating user with data:', userData);
 
       const { error } = await supabase
@@ -101,17 +119,64 @@ export const useSupabaseUsersFixed = () => {
         throw error;
       }
 
-      console.log('Successfully created user');
-      
-      // Invalidate and refetch the users query
-      await queryClient.invalidateQueries({ queryKey: ['supabase-users'] });
-      
       return { success: true };
-    } catch (error) {
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['supabase-users'] });
+      toast({
+        title: 'User Created',
+        description: 'User profile has been successfully created.',
+      });
+    },
+    onError: (error: any) => {
       console.error('Create user error:', error);
-      throw error;
+      toast({
+        title: 'Creation Failed',
+        description: error.message || 'Please try again',
+        variant: 'destructive',
+      });
     }
-  };
+  });
+
+  // Update user mutation
+  const updateUserMutation = useMutation({
+    mutationFn: async (userData: Partial<User> & { id: string }) => {
+      console.log('Updating user with data:', userData);
+
+      const { error } = await supabase
+        .from('users')
+        .update({
+          name: userData.name,
+          role: userData.role,
+          department: userData.department,
+          title: userData.title,
+          is_active: userData.isActive,
+        })
+        .eq('id', userData.id);
+
+      if (error) {
+        console.error('Error updating user:', error);
+        throw error;
+      }
+
+      return { success: true };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['supabase-users'] });
+      toast({
+        title: "User Updated",
+        description: "User has been updated successfully.",
+      });
+    },
+    onError: (error: any) => {
+      console.error('Update user error:', error);
+      toast({
+        title: "Update Failed",
+        description: error.message || 'An unexpected error occurred.',
+        variant: "destructive",
+      });
+    }
+  });
 
   const refetchUsers = () => {
     refetch();
@@ -120,9 +185,14 @@ export const useSupabaseUsersFixed = () => {
   return {
     users,
     isLoading,
+    isFetching,
     error,
     refetchUsers,
-    deleteUser,
-    createUser,
+    deleteUser: deleteUserMutation.mutateAsync,
+    createUser: createUserMutation.mutateAsync,
+    updateUser: updateUserMutation.mutateAsync,
+    isDeleting: deleteUserMutation.isPending,
+    isCreating: createUserMutation.isPending,
+    isUpdating: updateUserMutation.isPending,
   };
 };
