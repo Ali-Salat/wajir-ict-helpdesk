@@ -1,20 +1,17 @@
+
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Search, Edit, Trash2, Crown, Users as UsersIcon, Building2, RefreshCw, Download, AlertCircle, LogIn } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertCircle, LogIn, Users as UsersIcon } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { useSupabaseUsersFixed } from '../hooks/useSupabaseUsersFixed';
-import CreateUserForm from '../components/users/CreateUserForm';
+import { useUserService } from '../hooks/useUserService';
 import EditUserForm from '../components/users/EditUserForm';
 import DeleteUserDialog from '../components/users/DeleteUserDialog';
 import UserStats from '../components/users/UserStats';
-import UserTableSkeleton from '../components/users/UserTableSkeleton';
 import BulkUserActions from '../components/users/BulkUserActions';
+import { UserManagementHeader } from '../components/users/UserManagementHeader';
+import { UserSearchAndFilters } from '../components/users/UserSearchAndFilters';
+import { UserCard } from '../components/users/UserCard';
 import { User } from '../types';
 import { useToast } from '@/hooks/use-toast';
 
@@ -29,10 +26,12 @@ const Users = () => {
     deleteUser, 
     updateUser,
     isDeleting 
-  } = useSupabaseUsersFixed();
+  } = useUserService();
   const { toast } = useToast();
   
   const [searchTerm, setSearchTerm] = useState('');
+  const [roleFilter, setRoleFilter] = useState('all');
+  const [departmentFilter, setDepartmentFilter] = useState('all');
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -43,34 +42,32 @@ const Users = () => {
   // Check authentication first
   if (!isAuthenticated) {
     return (
-      <div className="space-y-6 p-6">
-        <div className="flex justify-between items-start">
-          <div className="space-y-1">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
-                <UsersIcon className="h-7 w-7 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
-                <p className="text-gray-600 dark:text-gray-400">Please sign in to access user management</p>
-              </div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="text-center py-12">
+            <div className="p-4 bg-white/80 rounded-2xl shadow-xl backdrop-blur-sm inline-block mb-6">
+              <UsersIcon className="h-16 w-16 text-indigo-600 mx-auto" />
             </div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">User Management</h1>
+            <p className="text-xl text-gray-600 mb-8">Please sign in to access user management</p>
           </div>
-        </div>
 
-        <Card className="border-0 shadow-lg bg-yellow-50 dark:bg-yellow-900/20">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-3">
-              <LogIn className="h-6 w-6 text-yellow-600" />
-              <div>
-                <h3 className="font-semibold text-yellow-900 dark:text-yellow-100">Authentication Required</h3>
-                <p className="text-yellow-700 dark:text-yellow-200">
-                  You need to be signed in to access the user management section.
-                </p>
+          <Card className="border-0 shadow-xl bg-yellow-50/80 backdrop-blur-sm">
+            <CardContent className="p-8">
+              <div className="flex items-center space-x-4">
+                <div className="p-3 bg-yellow-100 rounded-xl">
+                  <LogIn className="h-8 w-8 text-yellow-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-yellow-900">Authentication Required</h3>
+                  <p className="text-yellow-700 mt-2">
+                    You need to be signed in to access the user management section.
+                  </p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
@@ -78,117 +75,48 @@ const Users = () => {
   // Check permissions
   if (!canManageUsers()) {
     return (
-      <div className="space-y-6 p-6">
-        <div className="flex justify-between items-start">
-          <div className="space-y-1">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
-                <UsersIcon className="h-7 w-7 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
-                <p className="text-gray-600 dark:text-gray-400">Access denied</p>
-              </div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="text-center py-12">
+            <div className="p-4 bg-white/80 rounded-2xl shadow-xl backdrop-blur-sm inline-block mb-6">
+              <UsersIcon className="h-16 w-16 text-red-600 mx-auto" />
             </div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">User Management</h1>
+            <p className="text-xl text-gray-600 mb-8">Access denied</p>
           </div>
-        </div>
 
-        <Card className="border-0 shadow-lg bg-red-50 dark:bg-red-900/20">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-3">
-              <AlertCircle className="h-6 w-6 text-red-600" />
-              <div>
-                <h3 className="font-semibold text-red-900 dark:text-red-100">Access Denied</h3>
-                <p className="text-red-700 dark:text-red-200">
-                  You don't have permission to manage users. Please contact an administrator.
-                </p>
+          <Card className="border-0 shadow-xl bg-red-50/80 backdrop-blur-sm">
+            <CardContent className="p-8">
+              <div className="flex items-center space-x-4">
+                <div className="p-3 bg-red-100 rounded-xl">
+                  <AlertCircle className="h-8 w-8 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-red-900">Access Denied</h3>
+                  <p className="text-red-700 mt-2">
+                    You don't have permission to manage users. Please contact an administrator.
+                  </p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
 
-  // Show error state if there's an error loading users
-  if (error && !isLoading) {
-    return (
-      <div className="space-y-6 p-6">
-        <div className="flex justify-between items-start">
-          <div className="space-y-1">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
-                <UsersIcon className="h-7 w-7 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
-                <p className="text-gray-600 dark:text-gray-400">Error loading users</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <Card className="border-0 shadow-lg bg-red-50 dark:bg-red-900/20">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-3">
-              <AlertCircle className="h-6 w-6 text-red-600" />
-              <div>
-                <h3 className="font-semibold text-red-900 dark:text-red-100">Error Loading Users</h3>
-                <p className="text-red-700 dark:text-red-200">
-                  {error?.message || 'Failed to load users. Please try again.'}
-                </p>
-                <Button 
-                  onClick={refetchUsers} 
-                  variant="outline" 
-                  className="mt-3 border-red-300 text-red-700 hover:bg-red-100"
-                >
-                  <RefreshCw className="mr-2 h-4 w-4" />
-                  Try Again
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.department?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const formatDepartment = (department: string) => {
-    if (department === 'ICT, Trade, Investment and Industry') {
-      return 'ICT Department';
-    }
+  // Filter users based on search and filters
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = 
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.department?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    if (department.length > 40) {
-      const words = department.split(' ');
-      if (words.length > 3) {
-        return words.slice(0, 3).join(' ') + '...';
-      }
-    }
+    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+    const matchesDepartment = departmentFilter === 'all' || user.department === departmentFilter;
     
-    return department;
-  };
-
-  const getRoleColor = (role: string, email?: string) => {
-    if (email === 'ellisalat@gmail.com') return 'default';
-    switch (role) {
-      case 'admin': return 'destructive';
-      case 'approver': return 'default';
-      case 'technician': return 'secondary';
-      case 'requester': return 'outline';
-      default: return 'outline';
-    }
-  };
-
-  const getUserRole = (user: any) => {
-    if (user.email === 'ellisalat@gmail.com') return 'Super Admin';
-    return user.role.charAt(0).toUpperCase() + user.role.slice(1);
-  };
+    return matchesSearch && matchesRole && matchesDepartment;
+  });
 
   const isProtectedUser = (email: string) => {
     return email === 'ellisalat@gmail.com' || email === 'mshahid@wajir.go.ke';
@@ -202,14 +130,6 @@ const Users = () => {
   const handleDeleteUser = async (user: User) => {
     setUserToDelete(user);
     setDeleteDialogOpen(true);
-  };
-
-  const handleUserUpdated = () => {
-    refetchUsers();
-  };
-
-  const handleUserDeleted = async () => {
-    refetchUsers();
   };
 
   const handleSelectUser = (user: User, checked: boolean) => {
@@ -241,8 +161,9 @@ const Users = () => {
       }
       setSelectedUsers([]);
       toast({
-        title: "Bulk Action Completed",
+        title: "Success",
         description: `Successfully processed ${users.length} user(s).`,
+        className: 'bg-green-50 border-green-200',
       });
     } catch (error) {
       toast({
@@ -253,255 +174,122 @@ const Users = () => {
     }
   };
 
-  const exportUsers = () => {
-    const csvContent = [
-      ['Name', 'Email', 'Role', 'Department', 'Status'],
-      ...users.map(user => [
-        user.name,
-        user.email,
-        user.role,
-        user.department || '',
-        user.isActive ? 'Active' : 'Inactive'
-      ])
-    ].map(row => row.join(',')).join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'users_export.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
-
   return (
-    <div className="space-y-6 p-6">
-      {/* Header */}
-      <div className="flex justify-between items-start">
-        <div className="space-y-1">
-          <div className="flex items-center space-x-3">
-            <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
-              <UsersIcon className="h-7 w-7 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
-              <p className="text-gray-600 dark:text-gray-400">Create and manage system users</p>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <UserManagementHeader
+          users={users}
+          isFetching={isFetching}
+          onRefresh={refetchUsers}
+          onUserCreated={refetchUsers}
+          isCreateDialogOpen={isCreateDialogOpen}
+          setIsCreateDialogOpen={setIsCreateDialogOpen}
+        />
+
+        {/* User Statistics */}
+        <UserStats users={users} isLoading={isLoading} />
+
+        {/* Search and Filters */}
+        <UserSearchAndFilters
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          roleFilter={roleFilter}
+          onRoleFilterChange={setRoleFilter}
+          departmentFilter={departmentFilter}
+          onDepartmentFilterChange={setDepartmentFilter}
+        />
+
+        {/* Bulk Actions */}
+        <BulkUserActions
+          selectedUsers={selectedUsers}
+          onClearSelection={() => setSelectedUsers([])}
+          onBulkAction={handleBulkAction}
+        />
+
+        {/* Users Grid */}
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <Card key={i} className="animate-pulse">
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="h-14 w-14 bg-gray-200 rounded-xl"></div>
+                      <div className="space-y-2 flex-1">
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-gray-200 rounded"></div>
+                      <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            onClick={exportUsers}
-            disabled={users.length === 0}
-          >
-            <Download className="mr-2 h-4 w-4" />
-            Export
-          </Button>
-          
-          <Button
-            variant="outline"
-            onClick={refetchUsers}
-            disabled={isFetching}
-          >
-            <RefreshCw className={`mr-2 h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-          
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg">
-                <Plus className="mr-2 h-4 w-4" />
-                Create User
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Create New User</DialogTitle>
-              </DialogHeader>
-              <CreateUserForm 
-                onClose={() => setIsCreateDialogOpen(false)} 
-                onUserCreated={() => {
-                  refetchUsers();
-                  setIsCreateDialogOpen(false);
-                }}
+        ) : error ? (
+          <Card className="border-0 shadow-xl bg-red-50/80 backdrop-blur-sm">
+            <CardContent className="p-8 text-center">
+              <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-red-900 mb-2">Error Loading Users</h3>
+              <p className="text-red-700">{error?.message || 'Failed to load users'}</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredUsers.map((user) => (
+              <UserCard
+                key={user.id}
+                user={user}
+                isSelected={selectedUsers.some(u => u.id === user.id)}
+                onSelect={(checked) => handleSelectUser(user, checked)}
+                onEdit={() => handleEditUser(user)}
+                onDelete={() => handleDeleteUser(user)}
+                canDelete={!isProtectedUser(user.email) && isSuperUser}
+                isDeleting={isDeleting}
               />
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
-
-      {/* User Statistics */}
-      <UserStats users={users} isLoading={isLoading} />
-
-      {/* Search */}
-      <Card className="border-0 shadow-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
-        <CardContent className="p-6">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <Input
-              placeholder="Search by name, email, or department..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 h-12 border-0 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600"
-            />
+            ))}
           </div>
-        </CardContent>
-      </Card>
+        )}
+        
+        {filteredUsers.length === 0 && !isLoading && !error && (
+          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
+            <CardContent className="p-12 text-center">
+              <UsersIcon className="mx-auto h-16 w-16 text-gray-400 mb-6" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No users found</h3>
+              <p className="text-gray-500">No users match your current search criteria.</p>
+            </CardContent>
+          </Card>
+        )}
 
-      {/* Bulk Actions */}
-      <BulkUserActions
-        selectedUsers={selectedUsers}
-        onClearSelection={() => setSelectedUsers([])}
-        onBulkAction={handleBulkAction}
-      />
+        {/* Edit User Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Edit User</DialogTitle>
+            </DialogHeader>
+            {selectedUser && (
+              <EditUserForm 
+                user={selectedUser}
+                onClose={() => setIsEditDialogOpen(false)} 
+                onUserUpdated={refetchUsers}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
 
-      {/* Users Table */}
-      {isLoading ? (
-        <UserTableSkeleton />
-      ) : (
-        <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-          <CardHeader className="pb-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-t-lg">
-            <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white flex items-center justify-between">
-              <div className="flex items-center">
-                <Building2 className="mr-3 h-6 w-6 text-blue-600" />
-                System Users ({filteredUsers.length})
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-gray-50/50 dark:bg-gray-700/50">
-                    <TableHead className="w-12">
-                      <Checkbox
-                        checked={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
-                        onCheckedChange={handleSelectAll}
-                      />
-                    </TableHead>
-                    <TableHead className="font-semibold text-gray-700 dark:text-gray-300">User</TableHead>
-                    <TableHead className="font-semibold text-gray-700 dark:text-gray-300">Role</TableHead>
-                    <TableHead className="font-semibold text-gray-700 dark:text-gray-300">Department</TableHead>
-                    <TableHead className="font-semibold text-gray-700 dark:text-gray-300">Status</TableHead>
-                    <TableHead className="font-semibold text-gray-700 dark:text-gray-300 text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredUsers.map((user) => (
-                    <TableRow key={user.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors border-b border-gray-100 dark:border-gray-700">
-                      <TableCell>
-                        <Checkbox
-                          checked={selectedUsers.some(u => u.id === user.id)}
-                          onCheckedChange={(checked) => handleSelectUser(user, checked as boolean)}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-4">
-                          <div className="flex-shrink-0">
-                            <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-md">
-                              <span className="text-sm font-bold text-white">
-                                {user.name.charAt(0).toUpperCase()}
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <div className="flex items-center space-x-2">
-                              <p className="text-sm font-semibold text-gray-900 dark:text-white">{user.name}</p>
-                              {user.email === 'ellisalat@gmail.com' && (
-                                <Crown className="h-4 w-4 text-yellow-500" />
-                              )}
-                            </div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getRoleColor(user.role, user.email)} className="font-medium shadow-sm">
-                          {getUserRole(user)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="max-w-[200px]">
-                          <p className="text-sm text-gray-900 dark:text-white truncate" title={user.department}>
-                            {formatDepartment(user.department || '')}
-                          </p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge 
-                          variant={user.isActive ? 'secondary' : 'destructive'}
-                          className={user.isActive ? 'bg-green-100 text-green-800 border-green-200' : ''}
-                        >
-                          {user.isActive ? 'Active' : 'Inactive'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end space-x-1">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                            onClick={() => handleEditUser(user)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          {!isProtectedUser(user.email) && isSuperUser && (
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="text-red-600 hover:text-red-800 hover:bg-red-50 dark:hover:bg-red-900/20"
-                              onClick={() => handleDeleteUser(user)}
-                              disabled={isDeleting}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-      
-      {filteredUsers.length === 0 && !isLoading && (
-        <Card className="border-0 shadow-lg">
-          <CardContent className="p-12 text-center">
-            <UsersIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <p className="text-gray-500">No users found matching your search criteria.</p>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Edit User Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Edit User</DialogTitle>
-          </DialogHeader>
-          {selectedUser && (
-            <EditUserForm 
-              user={selectedUser}
-              onClose={() => setIsEditDialogOpen(false)} 
-              onUserUpdated={handleUserUpdated}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete User Dialog */}
-      <DeleteUserDialog
-        user={userToDelete}
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onUserDeleted={handleUserDeleted}
-        deleteUserFunction={deleteUser}
-      />
+        {/* Delete User Dialog */}
+        <DeleteUserDialog
+          user={userToDelete}
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          onUserDeleted={refetchUsers}
+          deleteUserFunction={deleteUser}
+        />
+      </div>
     </div>
   );
 };

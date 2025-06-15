@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useSupabaseUsersFixed } from '@/hooks/useSupabaseUsersFixed';
-import { toast } from '@/hooks/use-toast';
+import { useUserService } from '@/hooks/useUserService';
 import { Shield, User, Wrench, Users, UserPlus } from 'lucide-react';
 
 interface CreateUserFormProps {
@@ -14,7 +13,7 @@ interface CreateUserFormProps {
 }
 
 const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
-  const { createUser } = useSupabaseUsersFixed();
+  const { createUser, isCreating } = useUserService();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -22,7 +21,6 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
     department: '',
     title: '',
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const wajirDepartments = [
     'Health Services',
@@ -64,15 +62,11 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
     try {
-      // Validate required fields
       if (!formData.fullName || !formData.email || !formData.role || !formData.department) {
         throw new Error('Please fill in all required fields');
       }
-
-      console.log('Creating user profile with data:', formData);
 
       await createUser({
         email: formData.email,
@@ -84,15 +78,8 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
 
       onUserCreated();
       onClose();
-    } catch (error: any) {
-      console.error('Error creating user:', error);
-      toast({
-        title: 'Error creating user profile',
-        description: error.message || 'Please try again',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSubmitting(false);
+    } catch (error) {
+      // Error handling is done in the hook
     }
   };
 
@@ -101,7 +88,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* User Information Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-blue-900 border-b border-blue-200 pb-2">
+          <h3 className="text-lg font-semibold text-indigo-900 border-b border-indigo-200 pb-2">
             User Information
           </h3>
           
@@ -114,7 +101,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                 placeholder="Enter full name"
                 required
-                className="border-blue-200 focus:border-blue-500"
+                className="border-indigo-200 focus:border-indigo-500"
               />
             </div>
 
@@ -127,7 +114,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="user@wajir.go.ke"
                 required
-                className="border-blue-200 focus:border-blue-500"
+                className="border-indigo-200 focus:border-indigo-500"
               />
             </div>
           </div>
@@ -139,21 +126,21 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="e.g. IT Officer, Director"
-              className="border-blue-200 focus:border-blue-500"
+              className="border-indigo-200 focus:border-indigo-500"
             />
           </div>
         </div>
 
         {/* Role & Access Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-blue-900 border-b border-blue-200 pb-2">
+          <h3 className="text-lg font-semibold text-indigo-900 border-b border-indigo-200 pb-2">
             Role & Access Level
           </h3>
           
           <div>
             <Label>System Role *</Label>
             <Select onValueChange={(value) => setFormData({ ...formData, role: value })} value={formData.role} required>
-              <SelectTrigger className="border-blue-200 focus:border-blue-500">
+              <SelectTrigger className="border-indigo-200 focus:border-indigo-500">
                 <SelectValue placeholder="Select user role" />
               </SelectTrigger>
               <SelectContent>
@@ -162,7 +149,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
                   return (
                     <SelectItem key={role} value={role} className="py-3">
                       <div className="flex items-start space-x-3">
-                        <IconComponent className="h-5 w-5 mt-0.5 text-blue-600" />
+                        <IconComponent className="h-5 w-5 mt-0.5 text-indigo-600" />
                         <div>
                           <div className="font-medium">{info.title}</div>
                           <div className="text-sm text-gray-600">{info.description}</div>
@@ -178,7 +165,7 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
           <div>
             <Label>Department *</Label>
             <Select onValueChange={(value) => setFormData({ ...formData, department: value })} value={formData.department} required>
-              <SelectTrigger className="border-blue-200 focus:border-blue-500">
+              <SelectTrigger className="border-indigo-200 focus:border-indigo-500">
                 <SelectValue placeholder="Select department" />
               </SelectTrigger>
               <SelectContent className="max-h-60 overflow-y-auto">
@@ -191,14 +178,14 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
         </div>
 
         {/* Information Note */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
           <div className="flex items-start space-x-3">
-            <div className="text-blue-600">
+            <div className="text-indigo-600">
               <UserPlus className="w-5 h-5 mt-0.5" />
             </div>
             <div>
-              <h4 className="text-sm font-medium text-blue-900">User Profile Creation</h4>
-              <p className="text-sm text-blue-700 mt-1">
+              <h4 className="text-sm font-medium text-indigo-900">User Profile Creation</h4>
+              <p className="text-sm text-indigo-700 mt-1">
                 This creates a user profile in the system. The user will be able to access the system once they sign up with this email address.
               </p>
             </div>
@@ -212,10 +199,10 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
           </Button>
           <Button 
             type="submit" 
-            disabled={isSubmitting} 
-            className="bg-blue-600 hover:bg-blue-700 min-w-[120px]"
+            disabled={isCreating} 
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 min-w-[120px]"
           >
-            {isSubmitting ? 'Creating...' : 'Create User Profile'}
+            {isCreating ? 'Creating...' : 'Create User Profile'}
           </Button>
         </div>
       </form>
