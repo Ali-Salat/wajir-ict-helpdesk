@@ -19,16 +19,6 @@ const mapSupabaseUser = (supabaseUser: any): User => ({
   updatedAt: supabaseUser.updated_at,
 });
 
-// Generate a temporary password
-const generateTempPassword = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-  let password = '';
-  for (let i = 0; i < 12; i++) {
-    password += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return password;
-};
-
 export const useSupabaseUsersFixed = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
