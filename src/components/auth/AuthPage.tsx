@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -125,7 +126,7 @@ const AuthPage = () => {
                   </div>
                 </div>
                 <p className="text-xl font-bold text-blue-200 tracking-wide">
-                  ICT HELP DESK SYSTEM
+                  GOVERNMENT ICT HELP DESK
                 </p>
               </div>
             </div>
@@ -182,7 +183,7 @@ const AuthPage = () => {
                 </div>
                 <div>
                   <h1 className="text-xl font-black text-gray-900 dark:text-white">WAJIR COUNTY</h1>
-                  <p className="text-sm font-bold text-blue-600">ICT HELP DESK</p>
+                  <p className="text-sm font-bold text-blue-600">GOVERNMENT ICT HELP DESK</p>
                 </div>
               </div>
 
@@ -192,9 +193,9 @@ const AuthPage = () => {
                 </CardTitle>
                 <CardDescription className="text-gray-600 dark:text-gray-400">
                   {authMode === 'signin' 
-                    ? 'Sign in to access the IT Help Desk System' 
+                    ? 'Sign in to access the Government IT Help Desk' 
                     : authMode === 'signup'
-                    ? 'Get started with the IT Help Desk System'
+                    ? 'Get started with the Government IT Help Desk'
                     : "Enter your email and we'll send a link to reset your password."}
                 </CardDescription>
               </div>
