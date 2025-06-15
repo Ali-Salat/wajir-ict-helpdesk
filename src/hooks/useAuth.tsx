@@ -3,7 +3,7 @@ import { useSupabaseAuth } from './useSupabaseAuth';
 import { useUserService } from './useUserService';
 
 export const useAuth = () => {
-  const { user: supabaseUser, isAuthenticated, isLoading, signOut, signIn, signUp } = useSupabaseAuth();
+  const { user: supabaseUser, isAuthenticated, isLoading, signOut, signIn, signUp, resetPassword } = useSupabaseAuth();
   const { users } = useUserService();
 
   // Find the user in our users table to get role and other details
@@ -88,5 +88,6 @@ export const useAuth = () => {
     signIn,
     signUp,
     logout,
+    resetPassword,
   };
 };
