@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -11,7 +12,7 @@ const mapSupabaseProfile = (supabaseProfile: any): User => ({
   name: supabaseProfile.full_name || 'Unknown User',
   role: supabaseProfile.role || 'requester',
   department: supabaseProfile.department || 'Unknown Department',
-  title: undefined,
+  title: supabaseProfile.title || undefined,
   skills: supabaseProfile.skills || [],
   isActive: supabaseProfile.is_active !== false,
   createdAt: supabaseProfile.created_at,
@@ -82,6 +83,7 @@ export const useUserService = () => {
           full_name: userData.name,
           role: userData.role,
           department: userData.department,
+          title: userData.title,
         })
         .select()
         .single();
@@ -117,6 +119,7 @@ export const useUserService = () => {
           department: userData.department,
           skills: userData.skills,
           is_active: userData.isActive,
+          title: userData.title,
         })
         .eq('id', userData.id)
         .select()

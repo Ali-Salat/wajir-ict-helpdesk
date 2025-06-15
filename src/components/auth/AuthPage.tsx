@@ -7,9 +7,10 @@ import { Building2, Shield, Eye, EyeOff, Mail, Lock, ArrowRight, Zap, User as Us
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import ForgotPasswordForm from './ForgotPasswordForm';
 
 const AuthPage = () => {
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [authMode, setAuthMode] = useState<'signin' | 'signup' | 'forgot_password'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -187,18 +188,22 @@ const AuthPage = () => {
 
               <div className="space-y-2">
                 <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {authMode === 'signin' ? 'Welcome Back' : 'Create an Account'}
+                  {authMode === 'signin' ? 'Welcome Back' : authMode === 'signup' ? 'Create an Account' : 'Forgot Password'}
                 </CardTitle>
                 <CardDescription className="text-gray-600 dark:text-gray-400">
                   {authMode === 'signin' 
                     ? 'Sign in to access the IT Help Desk System' 
-                    : 'Get started with the IT Help Desk System'}
+                    : authMode === 'signup'
+                    ? 'Get started with the IT Help Desk System'
+                    : "Enter your email and we'll send a link to reset your password."}
                 </CardDescription>
               </div>
             </CardHeader>
             
             <CardContent className="space-y-6">
-              {authMode === 'signin' ? (
+              {authMode === 'forgot_password' ? (
+                <ForgotPasswordForm onBack={() => setAuthMode('signin')} />
+              ) : authMode === 'signin' ? (
                 <form onSubmit={handleSignIn} className="space-y-6">
                   <div className="space-y-4">
                     <div className="space-y-2">
@@ -240,6 +245,15 @@ const AuthPage = () => {
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                         >
                           {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                        </button>
+                      </div>
+                      <div className="text-right pt-1">
+                        <button 
+                          type="button"
+                          onClick={() => setAuthMode('forgot_password')}
+                          className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                        >
+                          Forgot your password?
                         </button>
                       </div>
                     </div>
@@ -345,30 +359,31 @@ const AuthPage = () => {
                   </Button>
                 </form>
               )}
-
-              <div className="text-center space-y-4">
-                <div className="relative text-center my-2">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-gray-200 dark:border-gray-700"></span>
+              {authMode !== 'forgot_password' && (
+                <div className="text-center space-y-4">
+                  <div className="relative text-center my-2">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t border-gray-200 dark:border-gray-700"></span>
+                    </div>
+                    <span className="relative px-2 bg-white/95 dark:bg-gray-900/95 text-xs text-gray-500 dark:text-gray-400 uppercase">
+                      {authMode === 'signin' ? 'Or' : ''}
+                    </span>
                   </div>
-                  <span className="relative px-2 bg-white/95 dark:bg-gray-900/95 text-xs text-gray-500 dark:text-gray-400 uppercase">
-                    {authMode === 'signin' ? 'Or' : ''}
-                  </span>
-                </div>
-                
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {authMode === 'signin' ? "Don't have an account?" : "Already have an account?"}{' '}
-                  <button onClick={toggleAuthMode} className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
-                    {authMode === 'signin' ? 'Sign up' : 'Sign in'}
-                  </button>
-                </p>
-
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    © 2025 Wajir County Government. All rights reserved.
+                  
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {authMode === 'signin' ? "Don't have an account?" : "Already have an account?"}{' '}
+                    <button onClick={toggleAuthMode} className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                      {authMode === 'signin' ? 'Sign up' : 'Sign in'}
+                    </button>
                   </p>
+
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      © 2025 Wajir County Government. All rights reserved.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>

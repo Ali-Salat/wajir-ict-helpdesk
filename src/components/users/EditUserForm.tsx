@@ -77,6 +77,7 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ user, onClose, onUserUpdate
         department: formData.department,
         skills: formData.skills,
         isActive: formData.isActive,
+        title: formData.title,
       });
 
       onUserUpdated();
