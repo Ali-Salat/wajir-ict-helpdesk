@@ -23,7 +23,11 @@ const AuthPage = () => {
 
     try {
       console.log('Attempting sign in with:', email);
-      await signIn(email, password);
+      const { error } = await signIn(email, password);
+      
+      if (error) {
+        throw error;
+      }
       
       toast({
         title: 'Welcome back!',
