@@ -154,7 +154,7 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: undefined
       }
-      get_current_user_role: {
+      get_user_role_safe: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
