@@ -84,7 +84,7 @@ export const useSupabaseUsers = () => {
       setError(null);
       
       const { data, error } = await supabase
-        .from('users')
+        .from('profiles')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -96,16 +96,16 @@ export const useSupabaseUsers = () => {
       }
 
       if (data && data.length > 0) {
-        const transformedUsers: User[] = data.map(user => ({
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role as 'admin' | 'approver' | 'technician' | 'requester',
-          department: user.department,
-          skills: user.title ? user.title.split(', ') : [],
-          isActive: true,
-          createdAt: user.created_at,
-          updatedAt: user.updated_at,
+        const transformedUsers: User[] = data.map(profile => ({
+          id: profile.id,
+          email: profile.id, // Using id as email placeholder since email is not stored in profiles
+          name: profile.full_name || 'Unknown User',
+          role: profile.role as 'admin' | 'approver' | 'technician' | 'requester',
+          department: profile.department || 'Unknown Department',
+          skills: profile.skills || [],
+          isActive: profile.is_active !== false,
+          createdAt: profile.created_at,
+          updatedAt: profile.updated_at,
         }));
         setUsers(transformedUsers);
       } else {

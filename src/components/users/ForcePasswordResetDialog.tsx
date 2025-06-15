@@ -24,22 +24,7 @@ const ForcePasswordResetDialog = ({ user, open, onOpenChange }: ForcePasswordRes
     setIsLoading(true);
     
     try {
-      // First, force password reset requirement
-      const { error: forceError } = await supabase.rpc('force_password_reset', {
-        target_user_id: user.id
-      });
-
-      if (forceError) {
-        console.error('Force password reset error:', forceError);
-        toast({
-          title: 'Reset Failed',
-          description: forceError.message || 'Failed to force password reset',
-          variant: 'destructive',
-        });
-        return;
-      }
-
-      // Then send password reset email
+      // Send password reset email
       const { error: emailError } = await supabase.auth.resetPasswordForEmail(user.email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
@@ -48,14 +33,14 @@ const ForcePasswordResetDialog = ({ user, open, onOpenChange }: ForcePasswordRes
         console.error('Password reset email error:', emailError);
         toast({
           title: 'Email Send Failed',
-          description: 'Password reset policy applied but email failed to send',
+          description: emailError.message || 'Failed to send password reset email',
           variant: 'destructive',
         });
       } else {
         setIsSuccess(true);
         toast({
-          title: 'Password Reset Enforced',
-          description: `${user.name} must change their password on next login`,
+          title: 'Password Reset Email Sent',
+          description: `Reset instructions have been sent to ${user.name}`,
         });
       }
     } catch (error) {
@@ -83,7 +68,7 @@ const ForcePasswordResetDialog = ({ user, open, onOpenChange }: ForcePasswordRes
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2">
             <Key className="h-5 w-5 text-orange-600" />
-            <span>Force Password Reset</span>
+            <span>Send Password Reset</span>
           </DialogTitle>
         </DialogHeader>
         
@@ -93,12 +78,12 @@ const ForcePasswordResetDialog = ({ user, open, onOpenChange }: ForcePasswordRes
               <CheckCircle className="w-8 h-8 text-green-600" />
             </div>
             <div className="space-y-2">
-              <h3 className="text-lg font-semibold text-gray-900">Password Reset Enforced</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Reset Email Sent</h3>
               <p className="text-gray-600">
-                {user.name} will be required to change their password on next login.
+                Password reset instructions have been sent to {user.name}.
               </p>
               <p className="text-sm text-gray-500">
-                A reset email has also been sent to: <span className="font-medium">{user.email}</span>
+                Email sent to: <span className="font-medium">{user.email}</span>
               </p>
             </div>
             <Button onClick={handleClose} className="w-full">
@@ -112,11 +97,10 @@ const ForcePasswordResetDialog = ({ user, open, onOpenChange }: ForcePasswordRes
                 <AlertTriangle className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
                 <div className="space-y-1">
                   <p className="text-sm font-medium text-orange-800">
-                    Force Password Reset
+                    Send Password Reset Email
                   </p>
                   <p className="text-sm text-orange-700">
-                    This will require the user to change their password on next login. 
-                    A password reset email will also be sent immediately.
+                    This will send a password reset email to the user's email address.
                   </p>
                 </div>
               </div>
@@ -149,7 +133,7 @@ const ForcePasswordResetDialog = ({ user, open, onOpenChange }: ForcePasswordRes
                 className="flex-1 bg-orange-600 hover:bg-orange-700"
                 disabled={isLoading}
               >
-                {isLoading ? 'Processing...' : 'Force Reset'}
+                {isLoading ? 'Sending...' : 'Send Reset Email'}
               </Button>
             </div>
           </div>

@@ -5,29 +5,29 @@ import { supabase } from '@/integrations/supabase/client';
 import { User } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 
-// Map Supabase user data to our User type
-const mapSupabaseUser = (supabaseUser: any): User => ({
-  id: supabaseUser.id,
-  email: supabaseUser.email,
-  name: supabaseUser.name,
-  role: supabaseUser.role,
-  department: supabaseUser.department,
-  title: supabaseUser.title || undefined,
-  skills: supabaseUser.skills || [],
-  isActive: supabaseUser.is_active !== false,
-  createdAt: supabaseUser.created_at,
-  updatedAt: supabaseUser.updated_at,
+// Map Supabase profile data to our User type
+const mapSupabaseProfile = (supabaseProfile: any): User => ({
+  id: supabaseProfile.id,
+  email: supabaseProfile.id, // We'll need to get this from auth.users or store it in profiles
+  name: supabaseProfile.full_name || 'Unknown User',
+  role: supabaseProfile.role || 'requester',
+  department: supabaseProfile.department || 'Unknown Department',
+  title: undefined,
+  skills: supabaseProfile.skills || [],
+  isActive: supabaseProfile.is_active !== false,
+  createdAt: supabaseProfile.created_at,
+  updatedAt: supabaseProfile.updated_at,
 });
 
 export const useUserService = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Fetch users query with better error handling
+  // Fetch profiles query with better error handling
   const usersQuery = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
-      console.log('Fetching users from Supabase...');
+      console.log('Fetching profiles from Supabase...');
       
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       
@@ -38,81 +38,44 @@ export const useUserService = () => {
 
       console.log('Current user:', currentUser.email);
 
-      // First check if the current user is a super admin
+      // Check if the current user is a super admin
       const isSuperAdmin = currentUser.email === 'ellisalat@gmail.com' || currentUser.email === 'mshahid@wajir.go.ke';
       
       if (isSuperAdmin) {
-        console.log('Super admin detected, fetching all users');
-        // Super admins can bypass RLS by using a direct query
+        console.log('Super admin detected, fetching all profiles');
         const { data, error } = await supabase
-          .rpc('get_all_users_for_admin')
-          .then(result => {
-            // If the RPC doesn't exist, fall back to direct query
-            if (result.error?.code === '42883') {
-              console.log('RPC not found, using direct query for super admin');
-              return supabase
-                .from('users')
-                .select('*')
-                .order('created_at', { ascending: false });
-            }
-            return result;
-          })
-          .catch(() => {
-            // Final fallback for super admins
-            console.log('Using service role query for super admin');
-            return supabase
-              .from('users')
-              .select('*')
-              .order('created_at', { ascending: false });
-          });
+          .from('profiles')
+          .select('*')
+          .order('created_at', { ascending: false });
 
         if (error) {
           console.error('Supabase error for admin:', error);
           throw new Error(`Admin query failed: ${error.message}`);
         }
 
-        console.log('Successfully fetched users for admin:', data?.length || 0);
-        return (data || []).map(mapSupabaseUser);
+        console.log('Successfully fetched profiles for admin:', data?.length || 0);
+        return (data || []).map(mapSupabaseProfile);
       } else {
-        console.log('Regular user, fetching accessible users');
-        // For non-super admins, use the regular query which should work with RLS
+        console.log('Regular user, fetching accessible profiles');
         const { data, error } = await supabase
-          .from('users')
+          .from('profiles')
           .select('*')
+          .eq('id', currentUser.id)
           .order('created_at', { ascending: false });
 
         if (error) {
           console.error('Supabase error for regular user:', error);
-          
-          // If it's an RLS error, return just the current user's data
-          if (error.message?.includes('policy') || error.message?.includes('recursion')) {
-            console.log('RLS error detected, returning current user only');
-            const { data: userData, error: userError } = await supabase
-              .from('users')
-              .select('*')
-              .eq('id', currentUser.id)
-              .single();
-            
-            if (userError) {
-              throw new Error(`Failed to fetch user data: ${userError.message}`);
-            }
-            
-            return userData ? [mapSupabaseUser(userData)] : [];
-          }
-          
-          throw new Error(error.message || 'Failed to fetch users');
+          throw new Error(error.message || 'Failed to fetch profiles');
         }
 
-        console.log('Successfully fetched users for regular user:', data?.length || 0);
-        return (data || []).map(mapSupabaseUser);
+        console.log('Successfully fetched profiles for regular user:', data?.length || 0);
+        return (data || []).map(mapSupabaseProfile);
       }
     },
     retry: (failureCount, error: any) => {
       console.log('Query retry attempt:', failureCount, error?.message);
       if (error?.message?.includes('Authentication required')) return false;
-      if (error?.message?.includes('infinite recursion')) return false;
-      if (error?.message?.includes('policy')) return false;
-      return failureCount < 1; // Reduced retry attempts
+      return failureCount < 1;
     },
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
@@ -133,14 +96,12 @@ export const useUserService = () => {
       const userId = crypto.randomUUID();
 
       const { data, error } = await supabase
-        .from('users')
+        .from('profiles')
         .insert({
           id: userId,
-          email: userData.email,
-          name: userData.name,
+          full_name: userData.name,
           role: userData.role,
           department: userData.department,
-          title: userData.title || null,
         })
         .select()
         .single();
@@ -169,12 +130,11 @@ export const useUserService = () => {
   const updateUserMutation = useMutation({
     mutationFn: async (userData: Partial<User> & { id: string }) => {
       const { data, error } = await supabase
-        .from('users')
+        .from('profiles')
         .update({
-          name: userData.name,
+          full_name: userData.name,
           role: userData.role,
           department: userData.department,
-          title: userData.title,
         })
         .eq('id', userData.id)
         .select()
@@ -210,7 +170,7 @@ export const useUserService = () => {
       }
 
       const { error } = await supabase
-        .from('users')
+        .from('profiles')
         .delete()
         .eq('id', userId);
 
