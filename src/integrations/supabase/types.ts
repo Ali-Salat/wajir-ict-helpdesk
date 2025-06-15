@@ -154,9 +154,13 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: undefined
       }
-      get_user_role_safe: {
+      get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      is_admin_user: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
     }
     Enums: {
