@@ -73,21 +73,15 @@ export const useSupabaseUsersFixed = () => {
         throw new Error('Cannot delete protected admin users');
       }
 
-      // Delete from auth.users first (this will cascade to users table)
-      const { error: authError } = await supabase.auth.admin.deleteUser(userId);
-      
-      if (authError) {
-        console.error('Error deleting auth user:', authError);
-        // If auth deletion fails, try deleting from users table directly
-        const { error } = await supabase
-          .from('users')
-          .delete()
-          .eq('id', userId);
+      // Delete from users table - this should cascade properly
+      const { error } = await supabase
+        .from('users')
+        .delete()
+        .eq('id', userId);
 
-        if (error) {
-          console.error('Error deleting user from users table:', error);
-          throw error;
-        }
+      if (error) {
+        console.error('Error deleting user:', error);
+        throw error;
       }
 
       return { success: true };
@@ -110,7 +104,7 @@ export const useSupabaseUsersFixed = () => {
     }
   });
 
-  // Create user mutation - now creates actual auth users
+  // Create user mutation - simplified to just create profile
   const createUserMutation = useMutation({
     mutationFn: async (userData: {
       email: string;
@@ -119,34 +113,17 @@ export const useSupabaseUsersFixed = () => {
       department: string;
       title?: string;
     }) => {
-      console.log('Creating user with data:', userData);
+      console.log('Creating user profile with data:', userData);
 
-      // Generate temporary password
+      // Generate a unique ID for the user
+      const userId = crypto.randomUUID();
       const tempPassword = generateTempPassword();
 
-      // Create user in Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: userData.email,
-        password: tempPassword,
-        email_confirm: true, // Auto-confirm email
-        user_metadata: {
-          name: userData.name,
-          role: userData.role,
-          department: userData.department,
-          title: userData.title || null,
-        }
-      });
-
-      if (authError) {
-        console.error('Error creating auth user:', authError);
-        throw authError;
-      }
-
-      // Create user profile in users table
+      // Create user profile directly in users table
       const { error: profileError } = await supabase
         .from('users')
         .insert({
-          id: authData.user.id,
+          id: userId,
           email: userData.email,
           name: userData.name,
           role: userData.role,
@@ -156,23 +133,21 @@ export const useSupabaseUsersFixed = () => {
 
       if (profileError) {
         console.error('Error creating user profile:', profileError);
-        // If profile creation fails, clean up auth user
-        await supabase.auth.admin.deleteUser(authData.user.id);
         throw profileError;
       }
 
       return { 
         success: true, 
-        user: authData.user,
+        userId,
         tempPassword 
       };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['supabase-users'] });
       toast({
-        title: 'User Created Successfully',
-        description: `User account created. Temporary password: ${data.tempPassword}`,
-        duration: 10000, // Show for 10 seconds so they can copy the password
+        title: 'User Profile Created',
+        description: `User profile created successfully. The user can sign up with their email to access the system.`,
+        duration: 8000,
       });
     },
     onError: (error: any) => {
@@ -205,26 +180,6 @@ export const useSupabaseUsersFixed = () => {
       if (error) {
         console.error('Error updating user:', error);
         throw error;
-      }
-
-      // If updating user metadata, also update auth user
-      if (userData.name || userData.role || userData.department || userData.title) {
-        const { error: authError } = await supabase.auth.admin.updateUserById(
-          userData.id,
-          {
-            user_metadata: {
-              name: userData.name,
-              role: userData.role,
-              department: userData.department,
-              title: userData.title,
-            }
-          }
-        );
-
-        if (authError) {
-          console.warn('Could not update auth user metadata:', authError);
-          // Don't throw error for metadata update failure
-        }
       }
 
       return { success: true };
