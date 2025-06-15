@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -180,7 +179,7 @@ const Users = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
-              <p className="text-gray-600 dark:text-gray-400">Manage system users and their permissions</p>
+              <p className="text-gray-600 dark:text-gray-400">Create and manage system users with full access credentials</p>
             </div>
           </div>
         </div>
@@ -208,12 +207,12 @@ const Users = () => {
             <DialogTrigger asChild>
               <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg transition-all duration-200 hover:shadow-xl">
                 <Plus className="mr-2 h-4 w-4" />
-                Add User Profile
+                Create User Account
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
-                <DialogTitle>Add New User Profile</DialogTitle>
+                <DialogTitle>Create New User Account</DialogTitle>
               </DialogHeader>
               <CreateUserForm 
                 onClose={() => setIsCreateDialogOpen(false)} 
