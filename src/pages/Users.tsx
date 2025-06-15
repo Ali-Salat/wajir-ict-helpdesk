@@ -6,18 +6,16 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Search, Edit, Trash2, Crown, Users as UsersIcon, Building2, Key, ShieldAlert } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Crown, Users as UsersIcon, Building2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useSupabaseUsersFixed } from '../hooks/useSupabaseUsersFixed';
 import CreateUserForm from '../components/users/CreateUserForm';
 import EditUserForm from '../components/users/EditUserForm';
 import DeleteUserDialog from '../components/users/DeleteUserDialog';
-import ResetPasswordDialog from '../components/users/ResetPasswordDialog';
-import ForcePasswordResetDialog from '../components/users/ForcePasswordResetDialog';
 import { User } from '../types';
 
 const Users = () => {
-  const { canManageUsers, isSuperUser, supabaseUser } = useAuth();
+  const { canManageUsers, isSuperUser } = useAuth();
   const { users, isLoading, refetchUsers, deleteUser } = useSupabaseUsersFixed();
   const [searchTerm, setSearchTerm] = useState('');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -25,10 +23,6 @@ const Users = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
-  const [resetPasswordDialogOpen, setResetPasswordDialogOpen] = useState(false);
-  const [userToResetPassword, setUserToResetPassword] = useState<User | null>(null);
-  const [forceResetDialogOpen, setForceResetDialogOpen] = useState(false);
-  const [userToForceReset, setUserToForceReset] = useState<User | null>(null);
 
   if (!canManageUsers()) {
     return (
@@ -84,7 +78,7 @@ const Users = () => {
   };
 
   const isProtectedUser = (email: string) => {
-    return email === 'ellisalat@gmail.com';
+    return email === 'ellisalat@gmail.com' || email === 'mshahid@wajir.go.ke';
   };
 
   const handleEditUser = (user: User) => {
@@ -95,16 +89,6 @@ const Users = () => {
   const handleDeleteUser = async (user: User) => {
     setUserToDelete(user);
     setDeleteDialogOpen(true);
-  };
-
-  const handleResetPassword = (user: User) => {
-    setUserToResetPassword(user);
-    setResetPasswordDialogOpen(true);
-  };
-
-  const handleForceReset = (user: User) => {
-    setUserToForceReset(user);
-    setForceResetDialogOpen(true);
   };
 
   const handleUserUpdated = () => {
@@ -184,7 +168,6 @@ const Users = () => {
                   <TableHead className="font-semibold text-gray-700 dark:text-gray-300">User</TableHead>
                   <TableHead className="font-semibold text-gray-700 dark:text-gray-300">Role</TableHead>
                   <TableHead className="font-semibold text-gray-700 dark:text-gray-300">Department</TableHead>
-                  <TableHead className="font-semibold text-gray-700 dark:text-gray-300">Skills</TableHead>
                   <TableHead className="font-semibold text-gray-700 dark:text-gray-300">Status</TableHead>
                   <TableHead className="font-semibold text-gray-700 dark:text-gray-300 text-right">Actions</TableHead>
                 </TableRow>
@@ -222,26 +205,6 @@ const Users = () => {
                         <p className="text-sm text-gray-900 dark:text-white truncate" title={user.department}>
                           {formatDepartment(user.department || '')}
                         </p>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="max-w-[200px]">
-                        {user.skills && user.skills.length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
-                            {user.skills.slice(0, 2).map((skill, index) => (
-                              <Badge key={index} variant="outline" className="text-xs">
-                                {skill}
-                              </Badge>
-                            ))}
-                            {user.skills.length > 2 && (
-                              <Badge variant="outline" className="text-xs">
-                                +{user.skills.length - 2}
-                              </Badge>
-                            )}
-                          </div>
-                        ) : (
-                          <span className="text-sm text-gray-400">No skills listed</span>
-                        )}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -314,20 +277,6 @@ const Users = () => {
         onOpenChange={setDeleteDialogOpen}
         onUserDeleted={handleUserDeleted}
         deleteUserFunction={deleteUser}
-      />
-
-      {/* Reset Password Dialog */}
-      <ResetPasswordDialog
-        user={userToResetPassword}
-        open={resetPasswordDialogOpen}
-        onOpenChange={setResetPasswordDialogOpen}
-      />
-
-      {/* Force Password Reset Dialog */}
-      <ForcePasswordResetDialog
-        user={userToForceReset}
-        open={forceResetDialogOpen}
-        onOpenChange={setForceResetDialogOpen}
       />
     </div>
   );

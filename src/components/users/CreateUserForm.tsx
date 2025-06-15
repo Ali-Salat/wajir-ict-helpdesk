@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { supabase } from '@/integrations/supabase/client';
+import { useSupabaseUsersFixed } from '@/hooks/useSupabaseUsersFixed';
 import { toast } from '@/hooks/use-toast';
 import { Shield, User, Wrench, Users } from 'lucide-react';
 
@@ -15,30 +14,15 @@ interface CreateUserFormProps {
 }
 
 const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
+  const { createUser } = useSupabaseUsersFixed();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     role: '',
     department: '',
     title: '',
-    skills: [] as string[],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const availableSkills = [
-    'Hardware Troubleshooting', 
-    'Software Installation', 
-    'Network Configuration', 
-    'Email Systems', 
-    'Phone Systems', 
-    'Database Administration', 
-    'Cybersecurity', 
-    'Cloud Services',
-    'Server Management',
-    'Active Directory',
-    'Backup & Recovery',
-    'Mobile Device Management'
-  ];
 
   const wajirDepartments = [
     'Health Services',
@@ -78,14 +62,6 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
     }
   };
 
-  const handleSkillChange = (skill: string, checked: boolean) => {
-    if (checked) {
-      setFormData({ ...formData, skills: [...formData.skills, skill] });
-    } else {
-      setFormData({ ...formData, skills: formData.skills.filter(s => s !== skill) });
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -98,27 +74,17 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
 
       console.log('Creating user profile with data:', formData);
 
-      // Create the user profile directly in our users table
-      // Note: In a production environment, user creation should be handled by an admin
-      // or through a proper user invitation system with email verification
-      const { error: userError } = await supabase
-        .from('users')
-        .insert({
-          email: formData.email,
-          name: formData.fullName,
-          role: formData.role as 'admin' | 'approver' | 'technician' | 'requester',
-          department: formData.department,
-          title: formData.title || null,
-        });
-
-      if (userError) {
-        console.error('User profile creation error:', userError);
-        throw new Error(`Failed to create user profile: ${userError.message}`);
-      }
+      await createUser({
+        email: formData.email,
+        name: formData.fullName,
+        role: formData.role as 'admin' | 'approver' | 'technician' | 'requester',
+        department: formData.department,
+        title: formData.title || undefined,
+      });
 
       toast({
         title: 'User Profile Created',
-        description: `${formData.fullName} has been added to the system. They will need to sign up with their email to complete account creation.`,
+        description: `${formData.fullName} has been added to the system.`,
       });
 
       onUserCreated();
@@ -229,27 +195,6 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
           </div>
         </div>
 
-        {/* Technical Skills Section */}
-        {formData.role === 'technician' && (
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-blue-900 border-b border-blue-200 pb-2">
-              Technical Expertise
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {availableSkills.map((skill) => (
-                <div key={skill} className="flex items-center space-x-2 p-2 rounded border border-gray-200 hover:bg-blue-50">
-                  <Checkbox
-                    id={skill}
-                    checked={formData.skills.includes(skill)}
-                    onCheckedChange={(checked) => handleSkillChange(skill, checked as boolean)}
-                  />
-                  <Label htmlFor={skill} className="text-sm cursor-pointer flex-1">{skill}</Label>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Information Note */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <div className="flex items-start space-x-3">
@@ -259,9 +204,9 @@ const CreateUserForm = ({ onClose, onUserCreated }: CreateUserFormProps) => {
               </svg>
             </div>
             <div>
-              <h4 className="text-sm font-medium text-blue-900">Account Creation Note</h4>
+              <h4 className="text-sm font-medium text-blue-900">User Profile Creation</h4>
               <p className="text-sm text-blue-700 mt-1">
-                This will create a user profile in the system. The user will need to sign up with their email address to complete their account creation and gain access to the system.
+                This creates a user profile in the system. The user will be able to access the system once they sign up with this email address.
               </p>
             </div>
           </div>
