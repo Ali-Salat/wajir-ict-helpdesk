@@ -1,10 +1,10 @@
 
 import { useSupabaseAuth } from './useSupabaseAuth';
-import { useSupabaseUsers } from './useSupabaseUsers';
+import { useSupabaseUsersFixed } from './useSupabaseUsersFixed';
 
 export const useAuth = () => {
   const { user: supabaseUser, isAuthenticated, isLoading, signOut, signIn } = useSupabaseAuth();
-  const { users } = useSupabaseUsers();
+  const { users } = useSupabaseUsersFixed();
 
   // Find the user in our users table to get role and other details
   const user = users.find(u => u.email === supabaseUser?.email);

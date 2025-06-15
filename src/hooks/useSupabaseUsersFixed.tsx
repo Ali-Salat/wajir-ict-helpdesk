@@ -44,18 +44,23 @@ export const useSupabaseUsersFixed = () => {
     queryFn: async () => {
       console.log('Fetching users from Supabase...');
       
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .order('created_at', { ascending: false });
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching users:', error);
+        if (error) {
+          console.error('Error fetching users:', error);
+          throw error;
+        }
+
+        console.log('Fetched users successfully:', data);
+        return data.map(mapSupabaseUser);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
         throw error;
       }
-
-      console.log('Fetched users:', data);
-      return data.map(mapSupabaseUser);
     },
     retry: 2,
     staleTime: 1000 * 60 * 2, // 2 minutes
@@ -73,18 +78,24 @@ export const useSupabaseUsersFixed = () => {
         throw new Error('Cannot delete protected admin users');
       }
 
-      // Delete from users table - this should cascade properly
-      const { error } = await supabase
-        .from('users')
-        .delete()
-        .eq('id', userId);
+      try {
+        // Delete from users table
+        const { error } = await supabase
+          .from('users')
+          .delete()
+          .eq('id', userId);
 
-      if (error) {
-        console.error('Error deleting user:', error);
+        if (error) {
+          console.error('Error deleting user:', error);
+          throw error;
+        }
+
+        console.log('User deleted successfully');
+        return { success: true };
+      } catch (error) {
+        console.error('Failed to delete user:', error);
         throw error;
       }
-
-      return { success: true };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['supabase-users'] });
@@ -98,13 +109,13 @@ export const useSupabaseUsersFixed = () => {
       console.error('Delete user error:', error);
       toast({
         title: "Delete Failed",
-        description: error.message || 'An unexpected error occurred.',
+        description: error.message || 'An unexpected error occurred while deleting the user.',
         variant: "destructive",
       });
     }
   });
 
-  // Create user mutation - simplified to just create profile
+  // Create user mutation
   const createUserMutation = useMutation({
     mutationFn: async (userData: {
       email: string;
@@ -115,32 +126,39 @@ export const useSupabaseUsersFixed = () => {
     }) => {
       console.log('Creating user profile with data:', userData);
 
-      // Generate a unique ID for the user
-      const userId = crypto.randomUUID();
-      const tempPassword = generateTempPassword();
+      try {
+        // Generate a unique ID for the user
+        const userId = crypto.randomUUID();
 
-      // Create user profile directly in users table
-      const { error: profileError } = await supabase
-        .from('users')
-        .insert({
-          id: userId,
-          email: userData.email,
-          name: userData.name,
-          role: userData.role,
-          department: userData.department,
-          title: userData.title || null,
-        });
+        // Create user profile directly in users table
+        const { data, error } = await supabase
+          .from('users')
+          .insert({
+            id: userId,
+            email: userData.email,
+            name: userData.name,
+            role: userData.role,
+            department: userData.department,
+            title: userData.title || null,
+          })
+          .select()
+          .single();
 
-      if (profileError) {
-        console.error('Error creating user profile:', profileError);
-        throw profileError;
+        if (error) {
+          console.error('Error creating user profile:', error);
+          throw error;
+        }
+
+        console.log('User profile created successfully:', data);
+        return { 
+          success: true, 
+          userId,
+          user: data
+        };
+      } catch (error) {
+        console.error('Failed to create user profile:', error);
+        throw error;
       }
-
-      return { 
-        success: true, 
-        userId,
-        tempPassword 
-      };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['supabase-users'] });
@@ -165,24 +183,31 @@ export const useSupabaseUsersFixed = () => {
     mutationFn: async (userData: Partial<User> & { id: string }) => {
       console.log('Updating user with data:', userData);
 
-      // Update user profile
-      const { error } = await supabase
-        .from('users')
-        .update({
-          name: userData.name,
-          role: userData.role,
-          department: userData.department,
-          title: userData.title,
-          is_active: userData.isActive,
-        })
-        .eq('id', userData.id);
+      try {
+        // Update user profile
+        const { data, error } = await supabase
+          .from('users')
+          .update({
+            name: userData.name,
+            role: userData.role,
+            department: userData.department,
+            title: userData.title,
+          })
+          .eq('id', userData.id)
+          .select()
+          .single();
 
-      if (error) {
-        console.error('Error updating user:', error);
+        if (error) {
+          console.error('Error updating user:', error);
+          throw error;
+        }
+
+        console.log('User updated successfully:', data);
+        return { success: true, user: data };
+      } catch (error) {
+        console.error('Failed to update user:', error);
         throw error;
       }
-
-      return { success: true };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['supabase-users'] });
@@ -195,7 +220,7 @@ export const useSupabaseUsersFixed = () => {
       console.error('Update user error:', error);
       toast({
         title: "Update Failed",
-        description: error.message || 'An unexpected error occurred.',
+        description: error.message || 'An unexpected error occurred while updating the user.',
         variant: "destructive",
       });
     }
