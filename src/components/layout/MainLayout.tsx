@@ -18,7 +18,7 @@ const MainLayout = () => {
             <div className="text-white text-sm">
               <span className="font-bold tracking-wide">WAJIR COUNTY GOVERNMENT</span>
               <span className="mx-2">•</span>
-              <span className="text-blue-200 dark:text-blue-300 font-medium">ICT Help Desk System</span>
+              <span className="text-blue-200 dark:text-blue-300 font-medium">ICT Help Desk</span>
             </div>
             <div className="text-white text-sm font-medium">
               © 2025 Wajir County Government. All rights reserved.

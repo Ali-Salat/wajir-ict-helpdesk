@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Bell, User, LogOut, Settings, Shield, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -69,16 +68,13 @@ const Header = () => {
               <div className="flex items-center space-x-2">
                 <h1 className="text-2xl font-black text-white tracking-wider uppercase">
                   <span className="bg-gradient-to-r from-white via-blue-100 to-yellow-100 bg-clip-text text-transparent drop-shadow-lg">
-                    WAJIR COUNTY
+                    WAJIR COUNTY GOVERNMENT
                   </span>
                 </h1>
-                <div className="px-2 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg shadow-lg">
-                  <span className="text-xs font-bold text-white tracking-wide">GOVERNMENT</span>
-                </div>
               </div>
               <div className="flex items-center space-x-2 mt-1">
                 <span className="text-lg font-bold text-blue-200 dark:text-blue-300 tracking-wide">
-                  ICT HELP DESK SYSTEM
+                  ICT HELP DESK
                 </span>
                 <div className="px-2 py-0.5 bg-blue-600/30 rounded-md border border-blue-400/30">
                   <span className="text-xs text-blue-200 font-medium">v2.0</span>

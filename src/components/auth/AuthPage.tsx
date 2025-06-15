@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -118,15 +117,12 @@ const AuthPage = () => {
                 <div className="flex items-center space-x-3">
                   <h1 className="text-4xl font-black text-white tracking-wider">
                     <span className="bg-gradient-to-r from-white via-blue-100 to-yellow-100 bg-clip-text text-transparent drop-shadow-lg">
-                      WAJIR COUNTY
+                      WAJIR COUNTY GOVERNMENT
                     </span>
                   </h1>
-                  <div className="px-3 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg shadow-lg">
-                    <span className="text-sm font-bold text-white tracking-wide">GOV</span>
-                  </div>
                 </div>
                 <p className="text-xl font-bold text-blue-200 tracking-wide">
-                  GOVERNMENT ICT HELP DESK
+                  ICT HELP DESK
                 </p>
               </div>
             </div>
@@ -182,8 +178,8 @@ const AuthPage = () => {
                   <Building2 className="h-7 w-7 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-black text-gray-900 dark:text-white">WAJIR COUNTY</h1>
-                  <p className="text-sm font-bold text-blue-600">GOVERNMENT ICT HELP DESK</p>
+                  <h1 className="text-xl font-black text-gray-900 dark:text-white">WAJIR COUNTY GOVERNMENT</h1>
+                  <p className="text-sm font-bold text-blue-600">ICT HELP DESK</p>
                 </div>
               </div>
 
@@ -193,9 +189,9 @@ const AuthPage = () => {
                 </CardTitle>
                 <CardDescription className="text-gray-600 dark:text-gray-400">
                   {authMode === 'signin' 
-                    ? 'Sign in to access the Government IT Help Desk' 
+                    ? 'Sign in to access the ICT Help Desk' 
                     : authMode === 'signup'
-                    ? 'Get started with the Government IT Help Desk'
+                    ? 'Get started with the ICT Help Desk'
                     : "Enter your email and we'll send a link to reset your password."}
                 </CardDescription>
               </div>
