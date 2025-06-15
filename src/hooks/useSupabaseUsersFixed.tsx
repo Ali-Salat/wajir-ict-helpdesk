@@ -35,37 +35,27 @@ export const useSupabaseUsersFixed = () => {
       console.log('Fetching users from Supabase...');
       
       try {
-        // First check if we have an authenticated user
+        // Check authentication first
         const { data: { user: currentUser } } = await supabase.auth.getUser();
         console.log('Current authenticated user:', currentUser?.email);
-
-        // Try to get current user's session
-        const { data: { session } } = await supabase.auth.getSession();
-        console.log('Current session exists:', !!session);
 
         if (!currentUser) {
           console.error('No authenticated user found');
           throw new Error('Not authenticated');
         }
 
+        // Fetch users with proper error handling
         const { data, error } = await supabase
           .from('users')
           .select('*')
           .order('created_at', { ascending: false });
 
         if (error) {
-          console.error('Error fetching users:', error);
-          console.error('Error details:', {
-            message: error.message,
-            details: error.details,
-            hint: error.hint,
-            code: error.code
-          });
+          console.error('Supabase error fetching users:', error);
           throw error;
         }
 
-        console.log('Fetched users successfully:', data?.length, 'users');
-        console.log('Sample user data:', data?.[0]);
+        console.log('Successfully fetched users:', data?.length || 0, 'users');
         
         if (!data || data.length === 0) {
           console.warn('No users found in database');
@@ -73,19 +63,23 @@ export const useSupabaseUsersFixed = () => {
         }
 
         return data.map(mapSupabaseUser);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to fetch users:', error);
         throw error;
       }
     },
     retry: (failureCount, error: any) => {
-      // Don't retry if it's an auth error
-      if (error?.message?.includes('Not authenticated') || error?.code === 'PGRST301') {
+      // Don't retry auth errors
+      if (error?.message?.includes('Not authenticated')) {
+        return false;
+      }
+      // Don't retry RLS policy errors
+      if (error?.code === '42P17' || error?.message?.includes('infinite recursion')) {
         return false;
       }
       return failureCount < 2;
     },
-    staleTime: 1000 * 60 * 2, // 2 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes
     refetchOnWindowFocus: false,
   });
 
@@ -94,30 +88,22 @@ export const useSupabaseUsersFixed = () => {
     mutationFn: async (userId: string) => {
       console.log('Attempting to delete user:', userId);
       
-      // First check if user is protected
       const userToDelete = users.find(u => u.id === userId);
       if (userToDelete && (userToDelete.email === 'ellisalat@gmail.com' || userToDelete.email === 'mshahid@wajir.go.ke')) {
         throw new Error('Cannot delete protected admin users');
       }
 
-      try {
-        // Delete from users table
-        const { error } = await supabase
-          .from('users')
-          .delete()
-          .eq('id', userId);
+      const { error } = await supabase
+        .from('users')
+        .delete()
+        .eq('id', userId);
 
-        if (error) {
-          console.error('Error deleting user:', error);
-          throw error;
-        }
-
-        console.log('User deleted successfully');
-        return { success: true };
-      } catch (error) {
-        console.error('Failed to delete user:', error);
+      if (error) {
+        console.error('Error deleting user:', error);
         throw error;
       }
+
+      return { success: true };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['supabase-users'] });
@@ -148,46 +134,35 @@ export const useSupabaseUsersFixed = () => {
     }) => {
       console.log('Creating user profile with data:', userData);
 
-      try {
-        // Generate a unique ID for the user
-        const userId = crypto.randomUUID();
+      const userId = crypto.randomUUID();
 
-        // Create user profile directly in users table
-        const { data, error } = await supabase
-          .from('users')
-          .insert({
-            id: userId,
-            email: userData.email,
-            name: userData.name,
-            role: userData.role,
-            department: userData.department,
-            title: userData.title || null,
-          })
-          .select()
-          .single();
+      const { data, error } = await supabase
+        .from('users')
+        .insert({
+          id: userId,
+          email: userData.email,
+          name: userData.name,
+          role: userData.role,
+          department: userData.department,
+          title: userData.title || null,
+        })
+        .select()
+        .single();
 
-        if (error) {
-          console.error('Error creating user profile:', error);
-          throw error;
-        }
-
-        console.log('User profile created successfully:', data);
-        return { 
-          success: true, 
-          userId,
-          user: data
-        };
-      } catch (error) {
-        console.error('Failed to create user profile:', error);
+      if (error) {
+        console.error('Error creating user profile:', error);
         throw error;
       }
+
+      console.log('User profile created successfully:', data);
+      return { success: true, userId, user: data };
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['supabase-users'] });
       toast({
         title: 'User Profile Created',
-        description: `User profile created successfully. The user can sign up with their email to access the system.`,
-        duration: 8000,
+        description: 'User profile created successfully.',
+        duration: 5000,
       });
     },
     onError: (error: any) => {
@@ -205,31 +180,25 @@ export const useSupabaseUsersFixed = () => {
     mutationFn: async (userData: Partial<User> & { id: string }) => {
       console.log('Updating user with data:', userData);
 
-      try {
-        // Update user profile
-        const { data, error } = await supabase
-          .from('users')
-          .update({
-            name: userData.name,
-            role: userData.role,
-            department: userData.department,
-            title: userData.title,
-          })
-          .eq('id', userData.id)
-          .select()
-          .single();
+      const { data, error } = await supabase
+        .from('users')
+        .update({
+          name: userData.name,
+          role: userData.role,
+          department: userData.department,
+          title: userData.title,
+        })
+        .eq('id', userData.id)
+        .select()
+        .single();
 
-        if (error) {
-          console.error('Error updating user:', error);
-          throw error;
-        }
-
-        console.log('User updated successfully:', data);
-        return { success: true, user: data };
-      } catch (error) {
-        console.error('Failed to update user:', error);
+      if (error) {
+        console.error('Error updating user:', error);
         throw error;
       }
+
+      console.log('User updated successfully:', data);
+      return { success: true, user: data };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['supabase-users'] });

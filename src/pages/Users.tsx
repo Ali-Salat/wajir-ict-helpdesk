@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,7 +40,7 @@ const Users = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
-  // Check if user is authenticated first
+  // Check authentication first
   if (!isAuthenticated) {
     return (
       <div className="space-y-6 p-6">
@@ -76,10 +75,37 @@ const Users = () => {
     );
   }
 
+  // Check permissions
   if (!canManageUsers()) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-500">You don't have permission to manage users.</p>
+      <div className="space-y-6 p-6">
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <div className="flex items-center space-x-3">
+              <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
+                <UsersIcon className="h-7 w-7 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
+                <p className="text-gray-600 dark:text-gray-400">Access denied</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Card className="border-0 shadow-lg bg-red-50 dark:bg-red-900/20">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-3">
+              <AlertCircle className="h-6 w-6 text-red-600" />
+              <div>
+                <h3 className="font-semibold text-red-900 dark:text-red-100">Access Denied</h3>
+                <p className="text-red-700 dark:text-red-200">
+                  You don't have permission to manage users. Please contact an administrator.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -96,7 +122,7 @@ const Users = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
-                <p className="text-gray-600 dark:text-gray-400">Create and manage system users with full access credentials</p>
+                <p className="text-gray-600 dark:text-gray-400">Error loading users</p>
               </div>
             </div>
           </div>
@@ -111,11 +137,6 @@ const Users = () => {
                 <p className="text-red-700 dark:text-red-200">
                   {error?.message || 'Failed to load users. Please try again.'}
                 </p>
-                {error?.message?.includes('Not authenticated') && (
-                  <p className="text-red-600 dark:text-red-300 mt-2 text-sm">
-                    Your session may have expired. Please refresh the page and sign in again.
-                  </p>
-                )}
                 <Button 
                   onClick={refetchUsers} 
                   variant="outline" 
@@ -264,7 +285,7 @@ const Users = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
-              <p className="text-gray-600 dark:text-gray-400">Create and manage system users with full access credentials</p>
+              <p className="text-gray-600 dark:text-gray-400">Create and manage system users</p>
             </div>
           </div>
         </div>
@@ -290,14 +311,14 @@ const Users = () => {
           
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg transition-all duration-200 hover:shadow-xl">
+              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg">
                 <Plus className="mr-2 h-4 w-4" />
-                Create User Account
+                Create User
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
-                <DialogTitle>Create New User Account</DialogTitle>
+                <DialogTitle>Create New User</DialogTitle>
               </DialogHeader>
               <CreateUserForm 
                 onClose={() => setIsCreateDialogOpen(false)} 
@@ -323,7 +344,7 @@ const Users = () => {
               placeholder="Search by name, email, or department..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 h-12 border-0 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 transition-colors duration-200"
+              className="pl-12 h-12 border-0 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600"
             />
           </div>
         </CardContent>
@@ -347,11 +368,6 @@ const Users = () => {
                 <Building2 className="mr-3 h-6 w-6 text-blue-600" />
                 System Users ({filteredUsers.length})
               </div>
-              <Checkbox
-                checked={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
-                onCheckedChange={handleSelectAll}
-                className="mr-2"
-              />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
