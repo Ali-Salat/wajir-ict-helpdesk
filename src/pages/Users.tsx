@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Search, Edit, Trash2, Crown, Users as UsersIcon, Building2, RefreshCw, Download, AlertCircle } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Crown, Users as UsersIcon, Building2, RefreshCw, Download, AlertCircle, LogIn } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useSupabaseUsersFixed } from '../hooks/useSupabaseUsersFixed';
 import CreateUserForm from '../components/users/CreateUserForm';
@@ -19,7 +20,7 @@ import { User } from '../types';
 import { useToast } from '@/hooks/use-toast';
 
 const Users = () => {
-  const { canManageUsers, isSuperUser } = useAuth();
+  const { canManageUsers, isSuperUser, isAuthenticated } = useAuth();
   const { 
     users, 
     isLoading, 
@@ -39,6 +40,41 @@ const Users = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
+
+  // Check if user is authenticated first
+  if (!isAuthenticated) {
+    return (
+      <div className="space-y-6 p-6">
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <div className="flex items-center space-x-3">
+              <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
+                <UsersIcon className="h-7 w-7 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
+                <p className="text-gray-600 dark:text-gray-400">Please sign in to access user management</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Card className="border-0 shadow-lg bg-yellow-50 dark:bg-yellow-900/20">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-3">
+              <LogIn className="h-6 w-6 text-yellow-600" />
+              <div>
+                <h3 className="font-semibold text-yellow-900 dark:text-yellow-100">Authentication Required</h3>
+                <p className="text-yellow-700 dark:text-yellow-200">
+                  You need to be signed in to access the user management section.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (!canManageUsers()) {
     return (
@@ -75,6 +111,11 @@ const Users = () => {
                 <p className="text-red-700 dark:text-red-200">
                   {error?.message || 'Failed to load users. Please try again.'}
                 </p>
+                {error?.message?.includes('Not authenticated') && (
+                  <p className="text-red-600 dark:text-red-300 mt-2 text-sm">
+                    Your session may have expired. Please refresh the page and sign in again.
+                  </p>
+                )}
                 <Button 
                   onClick={refetchUsers} 
                   variant="outline" 

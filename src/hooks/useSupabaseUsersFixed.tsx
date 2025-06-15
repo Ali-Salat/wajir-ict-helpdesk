@@ -35,6 +35,19 @@ export const useSupabaseUsersFixed = () => {
       console.log('Fetching users from Supabase...');
       
       try {
+        // First check if we have an authenticated user
+        const { data: { user: currentUser } } = await supabase.auth.getUser();
+        console.log('Current authenticated user:', currentUser?.email);
+
+        // Try to get current user's session
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log('Current session exists:', !!session);
+
+        if (!currentUser) {
+          console.error('No authenticated user found');
+          throw new Error('Not authenticated');
+        }
+
         const { data, error } = await supabase
           .from('users')
           .select('*')
@@ -42,17 +55,36 @@ export const useSupabaseUsersFixed = () => {
 
         if (error) {
           console.error('Error fetching users:', error);
+          console.error('Error details:', {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+          });
           throw error;
         }
 
-        console.log('Fetched users successfully:', data);
+        console.log('Fetched users successfully:', data?.length, 'users');
+        console.log('Sample user data:', data?.[0]);
+        
+        if (!data || data.length === 0) {
+          console.warn('No users found in database');
+          return [];
+        }
+
         return data.map(mapSupabaseUser);
       } catch (error) {
         console.error('Failed to fetch users:', error);
         throw error;
       }
     },
-    retry: 2,
+    retry: (failureCount, error: any) => {
+      // Don't retry if it's an auth error
+      if (error?.message?.includes('Not authenticated') || error?.code === 'PGRST301') {
+        return false;
+      }
+      return failureCount < 2;
+    },
     staleTime: 1000 * 60 * 2, // 2 minutes
     refetchOnWindowFocus: false,
   });
