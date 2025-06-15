@@ -1,20 +1,21 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Building2, Shield, Eye, EyeOff, Mail, Lock, ArrowRight, Zap } from 'lucide-react';
+import { Building2, Shield, Eye, EyeOff, Mail, Lock, ArrowRight, Zap, User as UserIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 
 const AuthPage = () => {
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -45,6 +46,45 @@ const AuthPage = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      console.log('Attempting sign up with:', email, fullName);
+      const { error } = await signUp(email, password, fullName);
+      
+      if (error) {
+        throw error;
+      }
+      
+      toast({
+        title: 'Account created!',
+        description: "We've sent a confirmation link to your email. Please check your inbox.",
+      });
+
+      setAuthMode('signin');
+      
+    } catch (error: any) {
+      console.error('Sign up failed:', error);
+      toast({
+        title: 'Sign up failed',
+        description: error.message || 'Could not create your account. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const toggleAuthMode = () => {
+    setAuthMode(prevMode => prevMode === 'signin' ? 'signup' : 'signin');
+    setEmail('');
+    setPassword('');
+    setFullName('');
+    setShowPassword(false);
   };
 
   return (
@@ -130,7 +170,7 @@ const AuthPage = () => {
           </div>
         </div>
 
-        {/* Right Side - Login Form */}
+        {/* Right Side - Form */}
         <div className="flex items-center justify-center px-4">
           <Card className="w-full max-w-md bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-0 shadow-2xl">
             <CardHeader className="space-y-4 text-center pb-8">
@@ -147,88 +187,182 @@ const AuthPage = () => {
 
               <div className="space-y-2">
                 <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
-                  Welcome Back
+                  {authMode === 'signin' ? 'Welcome Back' : 'Create an Account'}
                 </CardTitle>
                 <CardDescription className="text-gray-600 dark:text-gray-400">
-                  Sign in to access the IT Help Desk System
+                  {authMode === 'signin' 
+                    ? 'Sign in to access the IT Help Desk System' 
+                    : 'Get started with the IT Help Desk System'}
                 </CardDescription>
               </div>
             </CardHeader>
             
             <CardContent className="space-y-6">
-              <form onSubmit={handleSignIn} className="space-y-6">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Email Address
-                    </Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <Input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="your.email@wajir.go.ke"
-                        required
-                        className="pl-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:focus:border-blue-400"
-                      />
+              {authMode === 'signin' ? (
+                <form onSubmit={handleSignIn} className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Email Address
+                      </Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          id="email"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="your.email@wajir.go.ke"
+                          required
+                          className="pl-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:focus:border-blue-400"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Password
+                      </Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          id="password"
+                          type={showPassword ? "text" : "password"}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="Enter your password"
+                          required
+                          className="pl-10 pr-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:focus:border-blue-400"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                        >
+                          {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                        </button>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Password
-                    </Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <Input
-                        id="password"
-                        type={showPassword ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter your password"
-                        required
-                        className="pl-10 pr-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:focus:border-blue-400"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                      >
-                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                      </button>
+                  <Button 
+                    type="submit" 
+                    disabled={isLoading || !email || !password}
+                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg transition-all duration-200 hover:shadow-xl group"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        <span>Signing in...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center space-x-2">
+                        <span>Sign In</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    )}
+                  </Button>
+                </form>
+              ) : (
+                <form onSubmit={handleSignUp} className="space-y-6">
+                   <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="fullName" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Full Name
+                      </Label>
+                      <div className="relative">
+                        <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          id="fullName"
+                          type="text"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          placeholder="Enter your full name"
+                          required
+                          className="pl-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:focus:border-blue-400"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Email Address
+                      </Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          id="email"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="your.email@wajir.go.ke"
+                          required
+                          className="pl-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:focus:border-blue-400"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Password
+                      </Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          id="password"
+                          type={showPassword ? "text" : "password"}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="Create a password"
+                          required
+                          className="pl-10 pr-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:focus:border-blue-400"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                        >
+                          {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-
-                <Button 
-                  type="submit" 
-                  disabled={isLoading || !email || !password}
-                  className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg transition-all duration-200 hover:shadow-xl group"
-                >
-                  {isLoading ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      <span>Signing in...</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center space-x-2">
-                      <span>Sign In</span>
-                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  )}
-                </Button>
-              </form>
+                  <Button 
+                    type="submit" 
+                    disabled={isLoading || !email || !password || !fullName}
+                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg transition-all duration-200 hover:shadow-xl group"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        <span>Creating Account...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center space-x-2">
+                        <span>Sign Up</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    )}
+                  </Button>
+                </form>
+              )}
 
               <div className="text-center space-y-4">
-                <button 
-                  type="button"
-                  className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors"
-                >
-                  Forgot your password?
-                </button>
+                <div className="relative text-center my-2">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-gray-200 dark:border-gray-700"></span>
+                  </div>
+                  <span className="relative px-2 bg-white/95 dark:bg-gray-900/95 text-xs text-gray-500 dark:text-gray-400 uppercase">
+                    {authMode === 'signin' ? 'Or' : ''}
+                  </span>
+                </div>
                 
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {authMode === 'signin' ? "Don't have an account?" : "Already have an account?"}{' '}
+                  <button onClick={toggleAuthMode} className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                    {authMode === 'signin' ? 'Sign up' : 'Sign in'}
+                  </button>
+                </p>
+
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                   <p className="text-xs text-gray-500 dark:text-gray-400">
                     © 2025 Wajir County Government. All rights reserved.

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -68,6 +67,7 @@ export const useSupabaseAuth = () => {
           data: {
             full_name: fullName,
           },
+          emailRedirectTo: `${window.location.origin}/dashboard`,
         },
       });
       
