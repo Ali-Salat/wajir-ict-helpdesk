@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -203,9 +202,7 @@ const Users = () => {
                 <div className="flex-1">
                   <h3 className="text-xl font-semibold text-red-900 mb-2">Error Loading Users</h3>
                   <p className="text-red-700 mb-4">
-                    {error?.message?.includes('recursion') 
-                      ? 'Database configuration issue detected. Please contact system administrator.'
-                      : error?.message?.includes('policy')
+                    {error?.message?.includes('policy')
                       ? 'Permission error. You may only have access to limited user data.'
                       : error?.message || 'Failed to load users. Please try again.'
                     }
@@ -219,11 +216,6 @@ const Users = () => {
                       <RefreshCw className={`mr-2 h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
                       Retry
                     </Button>
-                    {error?.message?.includes('recursion') && (
-                      <p className="text-sm text-red-600">
-                        System administrator needs to fix database policies.
-                      </p>
-                    )}
                   </div>
                 </div>
               </div>

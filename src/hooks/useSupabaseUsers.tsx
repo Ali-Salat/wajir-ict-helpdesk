@@ -98,7 +98,7 @@ export const useSupabaseUsers = () => {
       if (data && data.length > 0) {
         const transformedUsers: User[] = data.map(profile => ({
           id: profile.id,
-          email: profile.id, // Using id as email placeholder since email is not stored in profiles
+          email: profile.email, // Email is now stored in profiles
           name: profile.full_name || 'Unknown User',
           role: profile.role as 'admin' | 'approver' | 'technician' | 'requester',
           department: profile.department || 'Unknown Department',

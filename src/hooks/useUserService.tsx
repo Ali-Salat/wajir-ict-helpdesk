@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 // Map Supabase profile data to our User type
 const mapSupabaseProfile = (supabaseProfile: any): User => ({
   id: supabaseProfile.id,
-  email: supabaseProfile.id, // We'll need to get this from auth.users or store it in profiles
+  email: supabaseProfile.email, // Use the new email field from profiles
   name: supabaseProfile.full_name || 'Unknown User',
   role: supabaseProfile.role || 'requester',
   department: supabaseProfile.department || 'Unknown Department',
@@ -36,41 +35,21 @@ export const useUserService = () => {
         throw new Error('Authentication required');
       }
 
-      console.log('Current user:', currentUser.email);
+      console.log('Fetching profiles for user:', currentUser.email);
 
-      // Check if the current user is a super admin
-      const isSuperAdmin = currentUser.email === 'ellisalat@gmail.com' || currentUser.email === 'mshahid@wajir.go.ke';
-      
-      if (isSuperAdmin) {
-        console.log('Super admin detected, fetching all profiles');
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .order('created_at', { ascending: false });
+      // RLS policies now handle all permission logic, simplifying the query.
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-        if (error) {
-          console.error('Supabase error for admin:', error);
-          throw new Error(`Admin query failed: ${error.message}`);
-        }
-
-        console.log('Successfully fetched profiles for admin:', data?.length || 0);
-        return (data || []).map(mapSupabaseProfile);
-      } else {
-        console.log('Regular user, fetching accessible profiles');
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', currentUser.id)
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          console.error('Supabase error for regular user:', error);
-          throw new Error(error.message || 'Failed to fetch profiles');
-        }
-
-        console.log('Successfully fetched profiles for regular user:', data?.length || 0);
-        return (data || []).map(mapSupabaseProfile);
+      if (error) {
+        console.error('Supabase error fetching profiles:', error);
+        throw new Error(error.message || 'Failed to fetch profiles');
       }
+
+      console.log('Successfully fetched profiles:', data?.length || 0);
+      return (data || []).map(mapSupabaseProfile);
     },
     retry: (failureCount, error: any) => {
       console.log('Query retry attempt:', failureCount, error?.message);
@@ -166,7 +145,7 @@ export const useUserService = () => {
       const user = usersQuery.data?.find(u => u.id === userId);
       
       if (user && (user.email === 'ellisalat@gmail.com' || user.email === 'mshahid@wajir.go.ke')) {
-        throw new Error('Cannot delete protected admin users');
+        throw new Error('Cannot delete protected admin users.');
       }
 
       const { error } = await supabase
@@ -174,7 +153,10 @@ export const useUserService = () => {
         .delete()
         .eq('id', userId);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error deleting user profile:", error);
+        throw error;
+      }
       return { success: true };
     },
     onSuccess: () => {
@@ -188,7 +170,7 @@ export const useUserService = () => {
     onError: (error: any) => {
       toast({
         title: 'Delete Failed',
-        description: error.message || 'Failed to delete user',
+        description: error.message || 'Failed to delete user. This might be a protected user or a database issue.',
         variant: 'destructive',
       });
     }
