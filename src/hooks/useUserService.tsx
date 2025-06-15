@@ -78,6 +78,7 @@ export const useUserService = () => {
         .from('profiles')
         .insert({
           id: userId,
+          email: userData.email,
           full_name: userData.name,
           role: userData.role,
           department: userData.department,
@@ -114,6 +115,8 @@ export const useUserService = () => {
           full_name: userData.name,
           role: userData.role,
           department: userData.department,
+          skills: userData.skills,
+          is_active: userData.isActive,
         })
         .eq('id', userData.id)
         .select()

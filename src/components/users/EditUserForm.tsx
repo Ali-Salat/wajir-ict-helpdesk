@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -76,7 +75,7 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ user, onClose, onUserUpdate
         name: formData.name,
         role: formData.role,
         department: formData.department,
-        title: formData.title,
+        skills: formData.skills,
         isActive: formData.isActive,
       });
 
