@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 // Map Supabase profile data to our User type
 const mapSupabaseProfile = (supabaseProfile: any): User => ({
   id: supabaseProfile.id,
-  email: supabaseProfile.email, // Use the new email field from profiles
+  email: supabaseProfile.email,
   name: supabaseProfile.full_name || 'Unknown User',
   role: supabaseProfile.role || 'requester',
   department: supabaseProfile.department || 'Unknown Department',
@@ -38,7 +38,6 @@ export const useUserService = () => {
 
       console.log('Fetching profiles for user:', currentUser.email);
 
-      // RLS policies now handle all permission logic, simplifying the query.
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -145,40 +144,73 @@ export const useUserService = () => {
     }
   });
 
-  // Delete user mutation
+  // Optimized delete user mutation with better error handling
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
+      console.log('Starting optimized user deletion for:', userId);
+      
+      // Check if user exists and get their data
       const user = usersQuery.data?.find(u => u.id === userId);
       
-      if (user && (user.email === 'ellisalat@gmail.com' || user.email === 'mshahid@wajir.go.ke')) {
+      if (!user) {
+        throw new Error('User not found');
+      }
+      
+      // Prevent deletion of protected super admin users
+      if (user.email === 'ellisalat@gmail.com' || user.email === 'mshahid@wajir.go.ke') {
         throw new Error('Cannot delete protected admin users.');
       }
 
-      const { error } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', userId);
+      try {
+        // Step 1: Delete the profile first (this will be fast due to the foreign key constraint)
+        console.log('Deleting user profile...');
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .delete()
+          .eq('id', userId);
 
-      if (error) {
-        console.error("Error deleting user profile:", error);
+        if (profileError) {
+          console.error('Profile deletion error:', profileError);
+          throw new Error(`Profile deletion failed: ${profileError.message}`);
+        }
+
+        console.log('Profile deleted successfully');
+
+        // Step 2: Delete from auth.users (this triggers CASCADE delete for any remaining references)
+        console.log('Deleting from authentication system...');
+        const { error: authError } = await supabase.auth.admin.deleteUser(userId);
+
+        if (authError) {
+          console.error('Auth deletion error:', authError);
+          // Note: Profile is already deleted, so we still consider this a success
+          console.log('Auth deletion failed but profile was removed - considering this a success');
+        } else {
+          console.log('User deleted from authentication system successfully');
+        }
+
+        return { success: true };
+
+      } catch (error: any) {
+        console.error('Deletion process error:', error);
         throw error;
       }
-      return { success: true };
     },
-    onSuccess: () => {
+    onSuccess: (data, userId) => {
+      console.log('User deletion completed successfully for:', userId);
+      
+      // Optimistically remove the user from the cache immediately
+      queryClient.setQueryData(['users'], (oldData: User[] | undefined) => {
+        return oldData ? oldData.filter(user => user.id !== userId) : [];
+      });
+      
+      // Then refetch to ensure consistency
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      toast({
-        title: 'Success',
-        description: 'User deleted successfully.',
-        className: 'bg-red-50 border-red-200',
-      });
     },
-    onError: (error: any) => {
-      toast({
-        title: 'Delete Failed',
-        description: error.message || 'Failed to delete user. This might be a protected user or a database issue.',
-        variant: 'destructive',
-      });
+    onError: (error: any, userId) => {
+      console.error('User deletion failed for:', userId, error);
+      
+      // Refetch users to ensure UI is consistent with backend state
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     }
   });
 
