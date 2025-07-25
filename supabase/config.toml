@@ -1,1 +1,24 @@
 project_id = "fwkhtaalkfmqhyfbqudu"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[auth]
+enabled = true
+port = 54324
+external_url = "http://127.0.0.1:54321"
+jwt_expiry = 3600
+
+[functions.mongodb-bridge]
+verify_jwt = false
+
+[functions.mongodb-auth]
+verify_jwt = false
+
+[storage]
+enabled = true
+port = 54325
