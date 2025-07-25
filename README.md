@@ -4,6 +4,10 @@
 **URL**: https://icthelpdesk008.netlify.app
 
 **URL**: https://lovable.dev/projects/faa505fd-51b0-4b87-b0e9-c75af3983dfd
+**Canva link for the pitch deck**: https://www.canva.com/design/DAGojEb66aI/cc2xtuQshR3R8OHaEajATA/edit?utm_content=DAGojEb66aI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+**user**: testuser@gmail.com **password:** 123456789
+**user-admin**: testadmin@gmail.com **password:** 123456789
+
 
 ## How can I edit this code?
 
