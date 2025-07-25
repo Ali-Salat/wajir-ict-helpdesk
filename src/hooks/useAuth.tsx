@@ -1,10 +1,10 @@
 
 import { useSupabaseAuth } from './useSupabaseAuth';
-import { useUserService } from './useUserService';
+import { useMongoUserService } from './useMongoUserService';
 
 export const useAuth = () => {
   const { user: supabaseUser, isAuthenticated, isLoading, signOut, signIn, signUp, resetPassword } = useSupabaseAuth();
-  const { users } = useUserService();
+  const { users } = useMongoUserService();
 
   // Find the user in our users table to get role and other details
   const user = users.find(u => u.email === supabaseUser?.email);

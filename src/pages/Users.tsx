@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { AlertCircle, LogIn, Users as UsersIcon, RefreshCw, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '../hooks/useAuth';
-import { useUserService } from '../hooks/useUserService';
+import { useMongoUserService } from '../hooks/useMongoUserService';
 import EditUserForm from '../components/users/EditUserForm';
 import DeleteUserDialog from '../components/users/DeleteUserDialog';
 import UserStats from '../components/users/UserStats';
@@ -26,7 +26,7 @@ const Users = () => {
     deleteUser, 
     updateUser,
     isDeleting 
-  } = useUserService();
+  } = useMongoUserService();
   const { toast } = useToast();
   
   const [searchTerm, setSearchTerm] = useState('');

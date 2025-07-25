@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
 import { User } from '../../types';
-import { useUserService } from '../../hooks/useUserService';
+import { useMongoUserService } from '../../hooks/useMongoUserService';
 
 interface EditUserFormProps {
   user: User;
@@ -15,7 +15,7 @@ interface EditUserFormProps {
 }
 
 const EditUserForm: React.FC<EditUserFormProps> = ({ user, onClose, onUserUpdated }) => {
-  const { updateUser, isUpdating } = useUserService();
+  const { updateUser, isUpdating } = useMongoUserService();
   const [formData, setFormData] = useState({
     name: user.name,
     email: user.email,
